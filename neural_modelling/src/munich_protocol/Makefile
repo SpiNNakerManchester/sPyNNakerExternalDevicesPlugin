@@ -1,5 +1,5 @@
-MODELS = robot_motor_control munich_protocol
-BUILD_DIRS := $(addprefix src/, $(MODELS))
+MODELS = pushbot_lif
+BUILD_DIRS := $(addprefix builds/, $(MODELS))
 
 all: $(BUILD_DIRS)
 	for d in $(BUILD_DIRS); do (cd $$d; "$(MAKE)") || exit $$?; done

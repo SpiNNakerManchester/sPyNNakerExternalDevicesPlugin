@@ -3,16 +3,18 @@
 from spinn_front_end_common.abstract_models.impl.\
     provides_key_to_atom_mapping_impl import \
     ProvidesKeyToAtomMappingImpl
-from spinn_front_end_common.abstract_models.impl.\
-    send_me_multicast_commands_vertex import SendMeMulticastCommandsVertex
+from spinn_front_end_common.abstract_models.\
+    abstract_send_me_multicast_commands_vertex \
+    import AbstractSendMeMulticastCommandsVertex
 from spynnaker_external_devices_plugin.pyNN.protocols.\
     munich_io_spinnaker_link_protocol import MunichIoSpiNNakerLinkProtocol
+from pacman.model.decorators.overrides import overrides
 
 UART_ID = 0
 
 
 class PushBotMotorDevice(
-        SendMeMulticastCommandsVertex, ProvidesKeyToAtomMappingImpl):
+        AbstractSendMeMulticastCommandsVertex, ProvidesKeyToAtomMappingImpl):
 
     n_motors = 0
 
@@ -27,37 +29,38 @@ class PushBotMotorDevice(
         self._this_motor_instance_id = PushBotMotorDevice.n_motors
         PushBotMotorDevice.n_motors += 1
 
-        SendMeMulticastCommandsVertex.__init__(
-            self, start_resume_commands=self._get_start_resume_commands(),
-            pause_stop_commands=self._get_pause_stop_commands(),
-            timed_commands=self._get_timed_commands())
         ProvidesKeyToAtomMappingImpl.__init__(self)
 
-    def _get_start_resume_commands(self):
+    @property
+    @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)
+    def start_resume_commands(self):
         commands = list()
 
         # add mode command if not done already
-        if not self._protocol.has_set_off_configuration_command():
+        if not self._protocol.sent_mode_command():
             commands.append(self._protocol.get_set_mode_command())
 
         # only the first motor instance needs to send the enable command
         if self._this_motor_instance_id == 0:
             # device specific commands
             commands.append(self._protocol.generic_motor_enable_disable(
-                enable_disable=1, uart_id=self._uart_id, time=0))
+                enable_disable=1, uart_id=self._uart_id))
         return commands
 
-    def _get_pause_stop_commands(self):
+    @property
+    @overrides(AbstractSendMeMulticastCommandsVertex.pause_stop_commands)
+    def pause_stop_commands(self):
         commands = list()
 
         # only the first motor instance needs to send the disable command
         if self._this_motor_instance_id == 0:
             commands.append(self._protocol.generic_motor_enable_disable(
-                enable_disable=0, uart_id=self._uart_id, time=-1))
+                enable_disable=0, uart_id=self._uart_id))
         return commands
 
-    @staticmethod
-    def _get_timed_commands():
+    @property
+    @overrides(AbstractSendMeMulticastCommandsVertex.timed_commands)
+    def timed_commands(self):
         return []
 
     @property
@@ -89,12 +92,12 @@ class PushBotMotorDevice(
     @property
     def enable_motor_key(self):
         return self._protocol.generic_motor_enable_disable(
-            enable_disable=1, uart_id=self._uart_id, time=0).key
+            enable_disable=1, uart_id=self._uart_id).key
 
     @property
     def disable_motor_key(self):
         return self._protocol.generic_motor_enable_disable(
-            enable_disable=0, uart_id=self._uart_id, time=-1).key
+            enable_disable=0, uart_id=self._uart_id).key
 
     @property
     def model_name(self):

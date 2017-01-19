@@ -33,9 +33,11 @@ logger = logging.getLogger(__name__)
 
 @add_metaclass(ABCMeta)
 class AbstractPushBotControlModuleModel(
-        AbstractPopulationVertex, AbstractProvidesOutgoingPartitionConstraints):
-    """ Leaky integrate and fire neuron with an exponentially decaying \
-        current input
+        AbstractPopulationVertex,
+        AbstractProvidesOutgoingPartitionConstraints):
+    """ Abstract control module for the pushbot, based on the LIF neuron,\
+        but without spikes, and using the voltage as the output to the various\
+        devices
     """
 
     _model_based_max_atoms_per_core = 15
@@ -95,7 +97,7 @@ class AbstractPushBotControlModuleModel(
             ring_buffer_sigma=None,
             incoming_spike_buffer_size=None, constraints=None,
 
-            # defualt params for the neuron model type
+            # default params for the neuron model type
             tau_m=default_parameters['tau_m'], cm=default_parameters['cm'],
             v_rest=default_parameters['v_rest'],
             v_reset=default_parameters['v_reset'],
@@ -137,15 +139,10 @@ class AbstractPushBotControlModuleModel(
                 "or to control the tone/melody of the speaker.")
 
         self._laser_device = laser_vertex
-
         self._led_device_front = front_led
-
         self._led_device_back = back_led
-
         self._motor_0 = motor_0
-
         self._motor_1 = motor_1
-
         self._speaker = speaker_vertex
 
         # collect keys from the different components and their command
@@ -155,14 +152,12 @@ class AbstractPushBotControlModuleModel(
         # motor 0 stuff
         self._partition_id_to_key[self.MOTOR_0_PERMANENT_PARTITION_ID] = \
             self._motor_0.permanent_key
-
         self._partition_id_to_key[self.MOTOR_0_LEAKY_PARTITION_ID] = \
             self._motor_0.leaky_key
 
         # motor 1 stuff
         self._partition_id_to_key[self.MOTOR_1_PERMANENT_PARTITION_ID] = \
             self._motor_1.permanent_key
-
         self._partition_id_to_key[self.MOTOR_1_LEAKY_PARTITION_ID] = \
             self._motor_1.leaky_key
 
@@ -179,36 +174,30 @@ class AbstractPushBotControlModuleModel(
         # led device back
         self._partition_id_to_key[self.LED_BACK_FREQUENCY_PARTITION_ID] = \
             self._led_device_back.frequency_key
-
         self._partition_id_to_key[self.LED_BACK_ACTIVE_TIME_PARTITION_ID] = \
             self._led_device_back.active_time_key
-
         self._partition_id_to_key[self.LED_BACK_TOTAL_PERIOD_PARTITION_ID] = \
             self._led_device_back.total_period_key
 
         # led device front
         self._partition_id_to_key[self.LED_FRONT_FREQUENCY_PARTITION_ID] = \
             self._led_device_front.frequency_key
-
         self._partition_id_to_key[self.LED_FRONT_ACTIVE_TIME_PARTITION_ID] = \
             self._led_device_front.active_time_key
-
         self._partition_id_to_key[self.LED_FRONT_TOTAL_PERIOD_PARTITION_ID] = \
             self._led_device_front.total_period_key
 
         # laser device
         self._partition_id_to_key[self.LASER_FREQUENCY_PARTITION_ID] = \
             self._laser_device.frequency_key
-
         self._partition_id_to_key[self.LASER_ACTIVE_TIME_PARTITION_ID] = \
             self._laser_device.active_time_key
-
         self._partition_id_to_key[self.LASER_TOTAL_PERIOD_PARTITION_ID] = \
             self._laser_device.total_period_key
 
         # sort out neuron ids to be in a numerical order
-        self._neuron_to_command_id_mapping, protocol_key_offset_mapping, \
-        self._key_to_atom_map, self._atom_to_key_map = \
+        (self._neuron_to_command_id_mapping, protocol_key_offset_mapping,
+         self._key_to_atom_map, self._atom_to_key_map) = \
             self._generate_neuron_mappings(
                 motor_0_permanent_velocity_neuron_id,
                 motor_0_leaky_velocity_neuron_id,
@@ -240,9 +229,9 @@ class AbstractPushBotControlModuleModel(
             self, n_neurons=n_neurons,
             binary="push_bot_spinnaker_link_control_module_n_model.aplx",
             label=label,
-            max_atoms_per_core=
-            AbstractPushBotControlModuleModel.
-            _model_based_max_atoms_per_core,
+            max_atoms_per_core=(
+                AbstractPushBotControlModuleModel.
+                _model_based_max_atoms_per_core),
             spikes_per_second=spikes_per_second,
             ring_buffer_sigma=ring_buffer_sigma,
             incoming_spike_buffer_size=incoming_spike_buffer_size,
@@ -331,7 +320,7 @@ class AbstractPushBotControlModuleModel(
             key_offset_map[speaker_total_period_neuron_id] = \
                 laser_device.protocol_instance_key
             key_to_atom_map[self._partition_id_to_key[
-                    self.SPEAKER_TOTAL_PERIOD_PARTITION_ID]] =\
+                self.SPEAKER_TOTAL_PERIOD_PARTITION_ID]] =\
                 speaker_total_period_neuron_id
             atom_to_key_map[speaker_total_period_neuron_id] = \
                 self._partition_id_to_key[
@@ -343,7 +332,7 @@ class AbstractPushBotControlModuleModel(
             key_offset_map[leds_total_period_neuron_id] = \
                 led_device_back.protocol_instance_key
             key_to_atom_map[self._partition_id_to_key[
-                    self.LED_BACK_TOTAL_PERIOD_PARTITION_ID]] = \
+                self.LED_BACK_TOTAL_PERIOD_PARTITION_ID]] = \
                 leds_total_period_neuron_id
             atom_to_key_map[leds_total_period_neuron_id] = \
                 self._partition_id_to_key[
@@ -379,7 +368,7 @@ class AbstractPushBotControlModuleModel(
             key_offset_map[front_led_active_time_neuron_id] = \
                 led_device_front.protocol_instance_key
             key_to_atom_map[self._partition_id_to_key[
-                    self.LED_FRONT_ACTIVE_TIME_PARTITION_ID]] = \
+                self.LED_FRONT_ACTIVE_TIME_PARTITION_ID]] = \
                 front_led_active_time_neuron_id
             atom_to_key_map[front_led_active_time_neuron_id] = \
                 self._partition_id_to_key[
@@ -391,7 +380,7 @@ class AbstractPushBotControlModuleModel(
             key_offset_map[back_led_active_time_neuron_id] = \
                 led_device_front.protocol_instance_key
             key_to_atom_map[self._partition_id_to_key[
-                    self.LED_BACK_ACTIVE_TIME_PARTITION_ID]] = \
+                self.LED_BACK_ACTIVE_TIME_PARTITION_ID]] = \
                 back_led_active_time_neuron_id
             atom_to_key_map[back_led_active_time_neuron_id] = \
                 self._partition_id_to_key[
@@ -403,7 +392,7 @@ class AbstractPushBotControlModuleModel(
             key_offset_map[speaker_tone_frequency_neuron_id] = \
                 speaker.protocol_instance_key
             key_to_atom_map[self._partition_id_to_key[
-                    self.SPEAKER_TONE_FREQUENCY_PARTITION_ID]] = \
+                self.SPEAKER_TONE_FREQUENCY_PARTITION_ID]] = \
                 speaker_tone_frequency_neuron_id
             atom_to_key_map[speaker_tone_frequency_neuron_id] = \
                 self._partition_id_to_key[
@@ -424,7 +413,7 @@ class AbstractPushBotControlModuleModel(
             key_offset_map[led_frequency_neuron_id] = \
                 led_device_back.protocol_instance_key
             key_to_atom_map[self._partition_id_to_key[
-                    self.LED_FRONT_FREQUENCY_PARTITION_ID]] = \
+                self.LED_FRONT_FREQUENCY_PARTITION_ID]] = \
                 led_frequency_neuron_id
             atom_to_key_map[led_frequency_neuron_id] = \
                 self._partition_id_to_key[

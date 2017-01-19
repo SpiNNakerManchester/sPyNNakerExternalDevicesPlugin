@@ -10,9 +10,6 @@ from pacman.model.constraints.placer_constraints.\
     PlacerRadialPlacementFromChipConstraint
 from spinn_front_end_common.utilities.notification_protocol.\
     socket_address import SocketAddress
-from spinn_front_end_common.utility_models.commands.\
-    multi_cast_command_without_payload import \
-    MultiCastCommandWithoutPayload
 from spinn_front_end_common.utility_models.live_packet_gather import \
     LivePacketGather
 from spinnman.connections.connection_listener import ConnectionListener
@@ -34,10 +31,8 @@ logger = logging.getLogger(__name__)
 
 
 class PushBotLiveSpikesConnection(object):
-    """ A connection for receiving and sending live spikes from and to\
-        SpiNNaker and a ethernet connected push bot. This in reality supports
-        the close loop functionality of a neural network running on spinnaker
-        which controls and reacts to packets from a ethernet connected push bot.
+    """ A connection for receiving and sending live spikes between\
+        SpiNNaker and a Ethernet connected pushbot.
     """
 
     def __init__(
@@ -64,10 +59,7 @@ class PushBotLiveSpikesConnection(object):
             laser_frequency_neuron_id, led_frequency_neuron_id,
             database_ack_port_num, database_notify_host,
             database_notify_port_num):
-        """ constructor that builds the pops and connections and sets everything
-        off for making the close loop between ethernet based push bot and
-        a neural network running on spinnaker.
-
+        """
         :param spinnaker_control_packet_port:
         :param spinnaker_injection_packet_port:
         :param ip_address:
@@ -141,30 +133,30 @@ class PushBotLiveSpikesConnection(object):
             # update socket interface with new demands.
             spynnaker_external_devices.add_socket_address(database_socket)
 
-
             self._control_module_pop = self._build_control_module_pop(
                 control_n_neurons, spikes_per_second, ring_buffer_sigma,
                 incoming_spike_buffer_size, control_constraints, tau_m,
-                cm, v_rest, v_reset, tau_syn_E, tau_syn_I, tau_refrac, i_offset,
-                v_init, board_address, uart_id, laser_start_active_time,
-                laser_start_total_period, laser_start_frequency,
-                front_led_start_active_time, front_led_total_period,
-                front_led_start_frequency, back_led_start_active_time,
-                back_led_total_period, back_led_start_frequency,
-                speaker_start_active_time, speaker_start_total_period,
-                speaker_start_frequency, speaker_melody_value,
-                motor_0_permanent_velocity_neuron_id,
+                cm, v_rest, v_reset, tau_syn_E, tau_syn_I, tau_refrac,
+                i_offset, v_init, board_address, uart_id,
+                laser_start_active_time, laser_start_total_period,
+                laser_start_frequency, front_led_start_active_time,
+                front_led_total_period, front_led_start_frequency,
+                back_led_start_active_time, back_led_total_period,
+                back_led_start_frequency, speaker_start_active_time,
+                speaker_start_total_period, speaker_start_frequency,
+                speaker_melody_value, motor_0_permanent_velocity_neuron_id,
                 motor_0_leaky_velocity_neuron_id,
                 motor_1_permanent_velocity_neuron_id,
                 motor_1_leaky_velocity_neuron_id, laser_total_period_neuron_id,
                 speaker_total_period_neuron_id, leds_total_period_neuron_id,
                 laser_active_time_neuron_id, speaker_active_time_neuron_id,
-                front_led_active_time_neuron_id, back_led_active_time_neuron_id,
+                front_led_active_time_neuron_id,
+                back_led_active_time_neuron_id,
                 speaker_tone_frequency_neuron_id, speaker_melody_neuron_id,
                 laser_frequency_neuron_id, led_frequency_neuron_id)
 
             self._control_module_pop._vertex.add_constraint(
-                PlacerRadialPlacementFromChipConstraint(0,0))
+                PlacerRadialPlacementFromChipConstraint(0, 0))
 
             # build the gatherer
             live_packet_gather = LivePacketGather(
@@ -172,7 +164,7 @@ class PushBotLiveSpikesConnection(object):
                 message_type=EIEIOType.KEY_PAYLOAD_32_BIT,
                 payload_as_time_stamps=False, use_payload_prefix=False)
             live_packet_gather.add_constraint(
-                PlacerRadialPlacementFromChipConstraint(0,0))
+                PlacerRadialPlacementFromChipConstraint(0, 0))
             spynnaker_external_devices.add_application_vertex(
                 live_packet_gather)
 
@@ -214,7 +206,7 @@ class PushBotLiveSpikesConnection(object):
             self._spinnaker_connection.add_pause_stop_callback(
                 self._retina_injector_pop.label, self.stop_signals)
 
-        # handle packets coming from the push bot
+        # handle packets coming from the pushbot
         self._push_bot_connection = PushBotWIFIConnection(
             local_host=push_bot_ip_address)
         self._push_bot_connection_listener = \
@@ -228,9 +220,9 @@ class PushBotLiveSpikesConnection(object):
         self._buffered_ascii = ''
 
     def receive_control_packets_from_spinnaker(self, _, atom, payload):
-        """ receives packets from the control module in spinnaker and
-        converts spinnaker link packets into ethernet packets adn sends them
-        to the push bot.
+        """ receives packets from the control module in spinnaker and\
+            converts spinnaker link packets into Ethernet packets and sends\
+            them to the pushbot.
 
         :param _:  label, but we know this is the control module.
         :param atom: the atom within the control module that fired
@@ -240,64 +232,62 @@ class PushBotLiveSpikesConnection(object):
         if self._finished_start_up:
             ethernet_message = \
                 self._translate_spinnaker_link_to_ethernet_commands(
-                    self._control_module_pop.
-                        _vertex.get_key_from_atom_mapping(atom),
-                    payload)
+                    self._control_module_pop._vertex.get_key_from_atom_mapping(
+                        atom), payload)
             if ethernet_message is not None:
                 self._push_bot_connection.send(ethernet_message)
             else:
                 logger.warning("The command from atom {} has no corresponding"
-                               " ethernet command".format(atom))
+                               " Ethernet command".format(atom))
 
     def start_callback(self, _, spinnaker_connection):
-        """ collects the commands needed for starting the simulation and then
-        does a translation between spinnaker link and ethernet commands and
-        sends the ethernet ones to the push bot.
+        """ Collect the commands needed for starting the simulation and then\
+            does a translation between spinnaker link and Ethernet commands\
+            and sends the Ethernet ones to the pushbot.
 
         :return:
         """
-        logger.info("starting to send start / pause commands to the push bot")
+        logger.info("starting to send start / pause commands to the pushbot")
 
         # configure the listener to start listening
         self._push_bot_connection_listener.start()
 
-        # collect commands from the push bot components
+        # collect commands from the pushbot components
         commands = list()
         commands.extend(self._retina_pop._start_resume_commands)
 
-        # if no control module is being used, don't get stop commands from it
-        # aka when only retina is being used
+        # if control module is being used, get commands from it
         if self._control_module_pop is not None:
             commands.extend(
                 self._control_module_pop._vertex.get_start_resume_commands)
 
-        # send the commands to the push bot
+        # send the commands to the pushbot
         self._send_commands(commands)
 
         # flag that packets can be sent now
         self._finished_start_up = True
 
     def stop_signals(self, _, spinnaker_connection):
-        """ sends the shut down commands to the push bot bits
+        """ Send the shut down commands to the pushbot bits
+
         :return:
         """
-        logger.info("Sending stop commands to the push bot components")
+        logger.info("Sending stop commands to the pushbot components")
         self._finished_start_up = False
         commands = list()
         commands.extend(self._retina_pop._get_pause_stop_commands())
 
-        # if no control module is being used, don't get stop commands from it
-        # aka when only retina is being used
+        # if control module is being used, get stop commands from it
         if self._control_module_pop is not None:
             commands.extend(
                 self._control_module_pop._vertex.get_stop_pause_commands)
 
-        # send commands to push bot
+        # send commands to pushbot
         self._send_commands(commands)
 
     def close(self):
-        """ shuts down all the connections and sends the shut down commands to
-        the push bot bits.
+        """ Shut down all the connections and sends the shut down commands to\
+            the pushbot bits.
 
         :return:
         """
@@ -307,14 +297,13 @@ class PushBotLiveSpikesConnection(object):
         self._push_bot_connection_listener.close()
 
     def _send_commands(self, commands):
-        """ translates spinnaker link commands into ethernet commands and then
-        sends them to the push bot.
+        """ Translate spinnaker link commands into Ethernet commands and then\
+            send them to the pushbot
 
         :param commands: the set of commands to send
-        :return:
         """
         for command in commands:
-            if isinstance(command, MultiCastCommandWithoutPayload):
+            if command.is_payload:
                 ethernet_message = self.\
                     _translate_spinnaker_link_no_payload_to_ethernet_commands(
                         command.key)
@@ -323,25 +312,26 @@ class PushBotLiveSpikesConnection(object):
                     self._translate_spinnaker_link_to_ethernet_commands(
                         command.key, command.payload)
 
-            # if there is a mapping between spinnaker link and ethernet command
+            # if there is a mapping between spinnaker link and Ethernet command
             # send packet, otherwise give a warning
             if ethernet_message is not None:
-                logger.info(
-                    "sending ethernet command {}".format(ethernet_message))
+                logger.debug(
+                    "sending Ethernet command {}".format(ethernet_message))
                 self._push_bot_connection.send(ethernet_message)
             else:
-                logger.warn("The command {} has no mapping for the ethernet "
+                logger.warn("The command {} has no mapping for the Ethernet "
                             "protocol currently implemented.".format(command))
 
     @staticmethod
     def _build_retina_injector(spinnaker_injection_packet_port):
-        """ builds the spike injector stand in for the retina, and a retina pop
-        (mainly for getting start and stop commands out of)
+        """ builds the spike injector stand in for the retina, and a retina\
+            pop (mainly for getting start and stop commands out of)
 
-        :param spinnaker_injection_packet_port: the port to which the
-        spike injector is going to recieve packets from.
-        :return: the spike injector stand in pop, and a retina pop for command
-        extraction.
+        :param spinnaker_injection_packet_port:\
+            the port listen on for packets
+        :return:\
+            the spike injector stand in pop, and a retina pop for\
+            command extraction
         """
 
         spike_injector_pop = Population(
@@ -374,7 +364,7 @@ class PushBotLiveSpikesConnection(object):
             front_led_active_time_neuron_id, back_led_active_time_neuron_id,
             speaker_tone_frequency_neuron_id, speaker_melody_neuron_id,
             laser_frequency_neuron_id, led_frequency_neuron_id):
-        """ builds the control module for the ethernet connection
+        """ Build the control module for the Ethernet connection
 
         :param control_n_neurons:
         :param spikes_per_second:
@@ -480,44 +470,46 @@ class PushBotLiveSpikesConnection(object):
 
     def _translate_spinnaker_link_to_ethernet_commands(
             self, command_key, command_payload):
-        """ converts between spinnaker link and ethernet packet formats
+        """ convert between spinnaker link and Ethernet packet formats
 
         :param command_key: the spinnaker link command key
-        :param command_payload:  the spinnaker link command payload
-        :return: the ethernet command (including the payload) or None
-        if the command doesnt meet the requirements of the ethernet command set
+        :param command_payload: the spinnaker link command payload
+        :return:\
+            the Ethernet command (including the payload) or None\
+            if the command doesn't match one the Ethernet commands
         """
 
         # disable retina key
         if command_key == self._retina_pop.disable_retina_command_key:
             return self._ethernet_protocol.disable_retina()
 
-        # set retina key (which doesnt do much for ethernet)
+        # set retina key (which doesn't do much for Ethernet)
         elif command_key == self._retina_pop.set_retina_command_key:
             return self._ethernet_protocol.enable_retina()
 
         if self._control_module_pop is not None:
-            # motor 0 leaky command
+
+            # motor 0 leaky velocity command
             if (command_key ==
                     self._control_module_pop._vertex.
                     motor_0_leaky_command_key):
                 return self._ethernet_protocol.motor_0_leaky_velocity(
                     command_payload)
 
-            # motor 0 perm command
+            # motor 0 permanent velocity command
             elif (command_key ==
                     self._control_module_pop._vertex.motor_0_perm_command_key):
                 return self._ethernet_protocol.motor_0_permanent_velocity(
                     command_payload)
 
-            # motor 1 leaky command
+            # motor 1 leaky velocity command
             elif (command_key ==
                     self._control_module_pop._vertex.
                     motor_1_leaky_command_key):
                 return self._ethernet_protocol.motor_1_leaky_velocity(
                     command_payload)
 
-            # motor 1 perm command
+            # motor 1 permanent velocity command
             elif (command_key ==
                     self._control_module_pop._vertex.motor_1_perm_command_key):
                 return self._ethernet_protocol.motor_1_permanent_velocity(
@@ -588,14 +580,10 @@ class PushBotLiveSpikesConnection(object):
         return None
 
     def receive_packets_from_push_bot_retina(self, data):
-        """
-        receives retina packets from the push bot and converts them into
-        neuron spikes within the spike injector system.
+        """ Receive retina packets from the pushbot and converts them into\
+            neuron spikes within the spike injector system.
 
-        most of this code swiped from nengo for processing the packets coming
-        from the retina. Looks full of numpy, but seems to do the job.
-        :param data:
-        :return:
+        :param data: Data to be processed
         """
         neuron_ids = list()
 
@@ -605,9 +593,11 @@ class PushBotLiveSpikesConnection(object):
             self._old_data = None
 
         if self._retina_packet_size is None:
+
             # no retina events, so everything should be ascii
             self._buffered_ascii += data
         else:
+
             # find the ascii events
             data_all = numpy.fromstring(data, numpy.uint8)
             ascii_index = numpy.where(
@@ -615,6 +605,7 @@ class PushBotLiveSpikesConnection(object):
 
             offset = 0
             while len(ascii_index) > 0:
+
                 # if there's an ascii event, remove it from the data
                 index = ascii_index[0] * self._retina_packet_size
                 stop_index = numpy.where(data_all[index:] >= 0x80)[0]
@@ -637,7 +628,9 @@ class PushBotLiveSpikesConnection(object):
             if extra != 0:
                 self._old_data = data[-extra:]
                 data_all = data_all[:-extra]
+
             if len(data_all) > 0:
+
                 # now process those retina events
                 neuron_ids.append(self._process_retina(data_all))
 
@@ -658,11 +651,11 @@ class PushBotLiveSpikesConnection(object):
 
     @property
     def populations(self):
-        """
-        returns the populations that this connection is encapsulating the
-        data transfer between them and the push bot over ethernet
-        :return: the spike injector which is a stand in for the retina of the
-        push bot, and the control module which is a stand in for the
-        motors, leds, speaker, laser etc
+        """ The populations for the retina and control module
+
+        :return:\
+            the spike injector which is a stand in for the retina of the\
+            pushbot, and the control module which is a stand in for the\
+            motors, LEDs, speaker, laser etc
         """
         return self._retina_injector_pop, self._control_module_pop

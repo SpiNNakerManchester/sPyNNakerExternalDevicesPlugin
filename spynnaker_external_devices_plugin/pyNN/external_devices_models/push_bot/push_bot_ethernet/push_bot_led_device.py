@@ -4,16 +4,18 @@
 from spinn_front_end_common.abstract_models.impl.\
     provides_key_to_atom_mapping_impl import \
     ProvidesKeyToAtomMappingImpl
-from spinn_front_end_common.abstract_models.impl.\
-    send_me_multicast_commands_vertex import SendMeMulticastCommandsVertex
+from spinn_front_end_common.abstract_models.\
+    abstract_send_me_multicast_commands_vertex \
+    import AbstractSendMeMulticastCommandsVertex
 from spynnaker_external_devices_plugin.pyNN.protocols.\
     munich_io_spinnaker_link_protocol import MunichIoSpiNNakerLinkProtocol
+from pacman.model.decorators.overrides import overrides
 
 UART_ID = 0
 
 
 class PushBotLEDDevice(
-        SendMeMulticastCommandsVertex, ProvidesKeyToAtomMappingImpl):
+        AbstractSendMeMulticastCommandsVertex, ProvidesKeyToAtomMappingImpl):
 
     _N_LEDS = 0
 
@@ -37,43 +39,42 @@ class PushBotLEDDevice(
         self._start_frequency = start_frequency
         self._is_front_led = front_led
 
-        SendMeMulticastCommandsVertex.__init__(
-            self, start_resume_commands=self._get_start_resume_commands(),
-            pause_stop_commands=self._get_pause_stop_commands(),
-            timed_commands=self._get_timed_commands())
         ProvidesKeyToAtomMappingImpl.__init__(self)
         self._N_LEDS += 1
 
-    def _get_start_resume_commands(self):
+    @property
+    @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)
+    def start_resume_commands(self):
         commands = list()
 
         # add mode command if not done already
-        if not self._protocol.has_set_off_configuration_command():
+        if not self._protocol.sent_mode_command():
             commands.append(self._protocol.get_set_mode_command())
 
         # device specific commands
         if self._is_front_led:
             commands.append(self._protocol.push_bot_led_front_active_time(
-                active_time=self._start_active_time, uart_id=self._uart_id,
-                time=0))
+                active_time=self._start_active_time, uart_id=self._uart_id))
         else:
             commands.append(self._protocol.push_bot_led_back_active_time(
-                active_time=self._start_active_time, uart_id=self._uart_id,
-                time=0))
+                active_time=self._start_active_time, uart_id=self._uart_id))
         return commands
 
-    def _get_pause_stop_commands(self):
+    @property
+    @overrides(AbstractSendMeMulticastCommandsVertex.pause_stop_commands)
+    def pause_stop_commands(self):
         commands = list()
         if self._is_front_led:
             commands.append(self._protocol.push_bot_led_front_active_time(
-                active_time=0, uart_id=self._uart_id, time=0))
+                active_time=0, uart_id=self._uart_id))
         else:
             commands.append(self._protocol.push_bot_led_back_active_time(
-                active_time=0, uart_id=self._uart_id, time=0))
+                active_time=0, uart_id=self._uart_id))
         return commands
 
-    @staticmethod
-    def _get_timed_commands():
+    @property
+    @overrides(AbstractSendMeMulticastCommandsVertex.timed_commands)
+    def timed_commands(self):
         return []
 
     @property
@@ -105,4 +106,4 @@ class PushBotLEDDevice(
 
     @property
     def model_name(self):
-        return "push bot led device"
+        return "pushbot led device"

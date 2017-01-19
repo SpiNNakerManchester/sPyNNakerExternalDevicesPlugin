@@ -18,8 +18,8 @@ class PushBotSpiNNakerLinkRetinaDevice(
     def __init__(
             self, spinnaker_link_id, label=None,
             polarity=PushBotRetinaDevice.PushBotRetinaPolarity.Merged,
-            n_neurons=
-            PushBotRetinaDevice.PushBotRetinaResolution.Native128.value,
+            n_neurons=(
+                PushBotRetinaDevice.PushBotRetinaResolution.Native128.value),
             board_address=None):
 
         # Validate number of timestamp bytes

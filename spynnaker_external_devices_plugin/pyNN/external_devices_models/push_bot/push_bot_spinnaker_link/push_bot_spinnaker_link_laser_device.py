@@ -3,7 +3,8 @@
 from pacman.model.graphs.application.impl.\
     application_spinnaker_link_vertex import \
     ApplicationSpiNNakerLinkVertex
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot.push_bot_ethernet.push_bot_laser_device import \
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_ethernet.push_bot_laser_device import \
     PushBotLaserDevice
 from spynnaker_external_devices_plugin.pyNN.protocols.\
     munich_io_spinnaker_link_protocol import MunichIoSpiNNakerLinkProtocol
@@ -18,8 +19,8 @@ class PushBotSpiNNakerLinkLaserDevice(
             board_address=None):
 
         # as you are working with a spinnaker link, you use a separate
-        # command sender which needs different keys for routing key alloc to
-        # work correctly (edges from different verts cannot share keys
+        # command sender which needs different keys for routing key allocation
+        # to work correctly (edges from different vertices cannot share keys
         # currently).
         protocol = MunichIoSpiNNakerLinkProtocol(
             mode=MunichIoSpiNNakerLinkProtocol.MODES.PUSH_BOT)

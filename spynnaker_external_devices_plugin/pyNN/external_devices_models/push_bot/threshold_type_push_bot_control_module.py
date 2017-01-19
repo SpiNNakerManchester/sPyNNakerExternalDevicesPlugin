@@ -3,7 +3,7 @@ from spynnaker.pyNN.models.neural_properties.neural_parameter \
 from data_specification.enums.data_type import DataType
 from spynnaker.pyNN.models.neuron.threshold_types.abstract_threshold_type \
     import AbstractThresholdType
-import math
+
 
 class ThresholdTypePushBotControlModule(AbstractThresholdType):
     """ A threshold that is a static value
@@ -22,7 +22,7 @@ class ThresholdTypePushBotControlModule(AbstractThresholdType):
         for neuron_id in range(0, n_neurons):
             self._ids.append(mapping[neuron_id])
             self._protocol_key_offset.append(
-                 protocol_key_offset_mapping[neuron_id])
+                protocol_key_offset_mapping[neuron_id])
 
     def get_n_threshold_parameters(self):
         return 3
