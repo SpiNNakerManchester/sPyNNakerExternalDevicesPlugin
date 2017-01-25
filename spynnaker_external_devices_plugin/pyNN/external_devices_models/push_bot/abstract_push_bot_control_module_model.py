@@ -227,7 +227,7 @@ class AbstractPushBotControlModuleModel(
 
         AbstractPopulationVertex.__init__(
             self, n_neurons=n_neurons,
-            binary="push_bot_spinnaker_link_control_module_n_model.aplx",
+            binary="pushbot_lif.aplx",
             label=label,
             max_atoms_per_core=(
                 AbstractPushBotControlModuleModel.
@@ -459,7 +459,7 @@ class AbstractPushBotControlModuleModel(
         return partitions
 
     @property
-    def get_start_resume_commands(self):
+    def start_resume_commands(self):
         commands = list()
         commands.extend(self._laser_device.start_resume_commands)
         commands.extend(self._led_device_front.start_resume_commands)
@@ -470,7 +470,7 @@ class AbstractPushBotControlModuleModel(
         return commands
 
     @property
-    def get_stop_pause_commands(self):
+    def pause_stop_commands(self):
         commands = list()
         commands.extend(self._laser_device.pause_stop_commands)
         commands.extend(self._led_device_front.pause_stop_commands)

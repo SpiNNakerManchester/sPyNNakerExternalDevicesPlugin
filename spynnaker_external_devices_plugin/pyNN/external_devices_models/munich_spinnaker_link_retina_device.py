@@ -102,7 +102,7 @@ class MunichRetinaDevice(
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)
-    def start_pause_commands(self):
+    def start_resume_commands(self):
         commands = list()
         # change the retina key it transmits with
         # (based off if its right or left)

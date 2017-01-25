@@ -105,8 +105,6 @@ def updatefig(frame):
             # Mask out x, y coordinates
             payload &= coordinate_mask
 
-            print payload
-
             # Increment these pixels
             image_data[payload] += 1.0
 

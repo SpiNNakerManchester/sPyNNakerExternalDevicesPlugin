@@ -254,12 +254,12 @@ class PushBotLiveSpikesConnection(object):
 
         # collect commands from the pushbot components
         commands = list()
-        commands.extend(self._retina_pop._start_resume_commands)
+        commands.extend(self._retina_pop.start_resume_commands)
 
         # if control module is being used, get commands from it
         if self._control_module_pop is not None:
             commands.extend(
-                self._control_module_pop._vertex.get_start_resume_commands)
+                self._control_module_pop._vertex.start_resume_commands)
 
         # send the commands to the pushbot
         self._send_commands(commands)
@@ -275,12 +275,12 @@ class PushBotLiveSpikesConnection(object):
         logger.info("Sending stop commands to the pushbot components")
         self._finished_start_up = False
         commands = list()
-        commands.extend(self._retina_pop._get_pause_stop_commands())
+        commands.extend(self._retina_pop.pause_stop_commands)
 
         # if control module is being used, get stop commands from it
         if self._control_module_pop is not None:
             commands.extend(
-                self._control_module_pop._vertex.get_stop_pause_commands)
+                self._control_module_pop._vertex.pause_stop_commands)
 
         # send commands to pushbot
         self._send_commands(commands)
@@ -302,15 +302,16 @@ class PushBotLiveSpikesConnection(object):
 
         :param commands: the set of commands to send
         """
+        print commands
         for command in commands:
             if command.is_payload:
-                ethernet_message = self.\
-                    _translate_spinnaker_link_no_payload_to_ethernet_commands(
-                        command.key)
-            else:
                 ethernet_message = \
                     self._translate_spinnaker_link_to_ethernet_commands(
                         command.key, command.payload)
+            else:
+                ethernet_message = \
+                    self._translate_spinnaker_link_to_ethernet_commands(
+                        command.key)
 
             # if there is a mapping between spinnaker link and Ethernet command
             # send packet, otherwise give a warning
@@ -335,8 +336,8 @@ class PushBotLiveSpikesConnection(object):
         """
 
         spike_injector_pop = Population(
-            PushBotRetinaDevice.PushBotRetinaResolution.
-            Native128.value, SpikeInjector,
+            PushBotRetinaDevice.PushBotRetinaResolution.Native128.value,
+            SpikeInjector,
             {'port': spinnaker_injection_packet_port},
             "The_Push_bot_Retina_spike_injector")
         real_retina_pop = PushBotRetinaDevice(
@@ -463,13 +464,8 @@ class PushBotLiveSpikesConnection(object):
             }, "The_Push_bot_control_module_for_ethernet_comms")
         return control_pop
 
-    def _translate_spinnaker_link_no_payload_to_ethernet_commands(
-            self, command_key):
-        return self._translate_spinnaker_link_to_ethernet_commands(
-            command_key, None)
-
     def _translate_spinnaker_link_to_ethernet_commands(
-            self, command_key, command_payload):
+            self, command_key, command_payload=None):
         """ convert between spinnaker link and Ethernet packet formats
 
         :param command_key: the spinnaker link command key
@@ -493,12 +489,16 @@ class PushBotLiveSpikesConnection(object):
             if (command_key ==
                     self._control_module_pop._vertex.
                     motor_0_leaky_command_key):
+                logger.info("Sending Motor 0 Leaky Velocity = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.motor_0_leaky_velocity(
                     command_payload)
 
             # motor 0 permanent velocity command
             elif (command_key ==
                     self._control_module_pop._vertex.motor_0_perm_command_key):
+                logger.info("Sending Motor 0 Velocity = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.motor_0_permanent_velocity(
                     command_payload)
 
@@ -506,74 +506,98 @@ class PushBotLiveSpikesConnection(object):
             elif (command_key ==
                     self._control_module_pop._vertex.
                     motor_1_leaky_command_key):
+                logger.info("Sending Motor 1 Leaky Velocity = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.motor_1_leaky_velocity(
                     command_payload)
 
             # motor 1 permanent velocity command
             elif (command_key ==
                     self._control_module_pop._vertex.motor_1_perm_command_key):
+                logger.info("Sending Motor 1 Velocity = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.motor_1_permanent_velocity(
                     command_payload)
 
             # laser total period command
             elif (command_key == self._control_module_pop._vertex.
                     laser_config_total_period_command_key):
+                logger.info("Sending Laser Period = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.laser_total_period(
                     command_payload)
 
             # laser active time
             elif (command_key == self._control_module_pop._vertex.
                     laser_config_active_time_command_key):
+                logger.info("Sending Laser Active Time = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.laser_active_time(
                     command_payload)
 
             # laser frequency
             elif (command_key == self._control_module_pop._vertex.
                     laser_config_frequency_command_key):
+                logger.info("Sending Laser Frequency = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.laser_frequency(command_payload)
 
             # led total period command
             elif (command_key == self._control_module_pop._vertex.
                     led_config_total_period_command_key):
+                logger.info("Sending LED Period = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.led_total_period(
                     command_payload)
 
             # led active time
             elif (command_key == self._control_module_pop._vertex.
                   led_config_active_time_command_key):
+                logger.info("Sending LED Active Time = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.led_active_time(command_payload)
 
             # led frequency
             elif (command_key == self._control_module_pop._vertex.
                     led_config_frequency_command_key):
+                logger.info("Sending LED Frequency = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.led_frequency(command_payload)
 
             # speaker total period
             elif (command_key == self._control_module_pop._vertex.
                     speaker_config_total_period_command_key):
+                logger.info("Sending Speaker Period = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.speaker_total_period(
                     command_payload)
 
             # speaker active time
             elif (command_key == self._control_module_pop._vertex.
                     speaker_config_active_time_command_key):
+                logger.info("Sending Speaker Active Time = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.speaker_active_time(
                     command_payload)
 
             # speaker frequency
             elif (command_key == self._control_module_pop._vertex.
                     speaker_set_tone_command_key):
+                logger.info("Sending Speaker Frequency = {}".format(
+                    command_payload))
                 return self._ethernet_protocol.speaker_frequency(
                     command_payload)
 
             # motor enable
             elif (command_key == self._control_module_pop._vertex.
                     enable_motor_key):
+                logger.info("Sending Motor Enable")
                 return self._ethernet_protocol.enable_motor()
 
             # motor disable
             elif (command_key == self._control_module_pop._vertex.
                     disable_motor_key):
+                logger.info("Sending Motor Disable")
                 return self._ethernet_protocol.disable_motor()
             else:
                 return None
