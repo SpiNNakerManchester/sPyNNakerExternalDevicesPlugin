@@ -59,7 +59,7 @@ def activate_live_output_for(
         occur in the simulation
 
     :param population: The population to activate the live output for
-    :type population: Population
+    :type population: spynnaker.pyNN.models.pynn_population.Population
     :param database_notify_host: the hostname for the device which is\
             listening to the database notification.
     :type database_notify_host: str
