@@ -146,9 +146,10 @@ class MunichIoProtocol(object):
             time=0, repeat=1, delay_between_repeats=100)
 
     def bias_values(self, bias_id, bias_value):
+        # CYB ADDED "JUNK" to get file past sphink
         return MultiCastCommand(
-            key=,
-            payload=,
+            key="JUNK",
+            payload="JUNK",
             time=0, repeat=1, delay_between_repeats=100)
 
     def set_retina_transmission(
