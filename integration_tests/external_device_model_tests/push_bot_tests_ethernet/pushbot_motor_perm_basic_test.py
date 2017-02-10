@@ -1,16 +1,9 @@
-import math
-import numpy
 from collections import namedtuple
-
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import socket
 
 from enum import Enum
 
 import spynnaker.pyNN as p
 import spynnaker_external_devices_plugin.pyNN as q
-from spinn_front_end_common.utility_models.command_sender import CommandSender
 
 # Named tuple bundling together configuration elements of a push bot resolution
 # config
@@ -52,7 +45,7 @@ p.setup(timestep=1.0)
 
 push_bot_control_module = p.Population(
     2,
-    q.PushBotSpinnakerLinkControlModuleNModel,
+    q.PushBotLifSpinnakerLink,
     {
         'spinnaker_link_id': 0, 'speaker_start_frequency': 0,
         'motor_0_permanent_velocity_neuron_id': 0,

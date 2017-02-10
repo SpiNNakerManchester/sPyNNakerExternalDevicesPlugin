@@ -1,35 +1,39 @@
-
-# pynn imports
 from pacman.model.graphs.application.impl.\
     application_spinnaker_link_vertex import \
     ApplicationSpiNNakerLinkVertex
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
-    push_bot.push_bot_ethernet.push_bot_speaker_device import \
-    PushBotSpeakerDevice
-from spynnaker_external_devices_plugin.pyNN.protocols.\
-    munich_io_spinnaker_link_protocol import MunichIoSpiNNakerLinkProtocol
-
-UART_ID = 0
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_ethernet.push_bot_ethernet_speaker_device import \
+    PushBotEthernetSpeakerDevice
 
 
 class PushBotSpiNNakerLinkSpeakerDevice(
-        PushBotSpeakerDevice, ApplicationSpiNNakerLinkVertex):
+        PushBotEthernetSpeakerDevice, ApplicationSpiNNakerLinkVertex):
+    """ The speaker of a PushBot
+    """
 
     def __init__(
-            self, spinnaker_link_id, uart_id=0, start_active_time=0,
-            start_total_period=0, start_frequency=None, melody_value=None,
-            label=None, n_neurons=1, board_address=None):
+            self, speaker, protocol, spinnaker_link_id,
+            n_neurons=1, label=None, board_address=None,
+            start_active_time=50, start_total_period=100, start_frequency=None,
+            start_melody=None):
+        """
 
-        # as you are working with a spinnaker link, you use a separate
-        # command sender which needs different keys for routing key allocation
-        # to work correctly (edges from different vertices cannot share keys
-        # currently).
-        protocol = MunichIoSpiNNakerLinkProtocol(
-            mode=MunichIoSpiNNakerLinkProtocol.MODES.PUSH_BOT)
-        PushBotSpeakerDevice.__init__(
-            self, uart_id, start_active_time,
-            start_total_period, start_frequency, melody_value,
-            command_sender_protocol=protocol)
+        :param speaker: The PushBotSpeaker value to control
+        :param protocol: The protocol instance to get commands from
+        :param spinnaker_link_id: The SpiNNakerLink connected to
+        :param n_neurons: The number of neurons in the device
+        :param label: The label of the device
+        :param board_address:\
+            The IP address of the board that the device is connected to
+        :param start_active_time: The "active time" to set at the start
+        :param start_total_period: The "total period" to set at the start
+        :param start_frequency: The "frequency" to set at the start
+        :param start_melody: The "melody" to set at the start
+        """
+
+        PushBotEthernetSpeakerDevice.__init__(
+            self, speaker, protocol, start_active_time,
+            start_total_period, start_frequency, start_melody)
         ApplicationSpiNNakerLinkVertex.__init__(
             self, spinnaker_link_id=spinnaker_link_id, n_atoms=n_neurons,
             board_address=board_address, label=label)

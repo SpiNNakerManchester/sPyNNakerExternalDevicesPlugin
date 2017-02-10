@@ -1,4 +1,4 @@
-MODELS = pushbot_lif
+MODELS = external_device_lif_control
 BUILD_DIRS := $(addprefix builds/, $(MODELS))
 
 all: $(BUILD_DIRS)

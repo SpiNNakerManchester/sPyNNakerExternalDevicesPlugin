@@ -1,37 +1,37 @@
-
-
-# pacman imports
 from pacman.model.graphs.application.impl.\
     application_spinnaker_link_vertex import \
     ApplicationSpiNNakerLinkVertex
 
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
-    push_bot.push_bot_ethernet.push_bot_led_device import \
-    PushBotLEDDevice
-from spynnaker_external_devices_plugin.pyNN.protocols.\
-    munich_io_spinnaker_link_protocol import MunichIoSpiNNakerLinkProtocol
-
-UART_ID = 0
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_ethernet.push_bot_ethernet_led_device \
+    import PushBotEthernetLEDDevice
 
 
 class PushBotSpiNNakerLinkLEDDevice(
-        PushBotLEDDevice, ApplicationSpiNNakerLinkVertex):
-
-    _N_LEDS = 0
+        PushBotEthernetLEDDevice, ApplicationSpiNNakerLinkVertex):
+    """ The LED of a PushBot
+    """
 
     def __init__(
-            self, spinnaker_link_id, uart_id=0, start_active_time=0,
-            start_total_period=0, start_frequency=0, front_led=True,
-            label=None, n_neurons=1,
-            board_address=None):
+            self, led, protocol, spinnaker_link_id,
+            n_neurons=1, label=None, board_address=None,
+            start_active_time=0, start_total_period=0, start_frequency=0):
+        """
 
-        # munich protocol
-        protocol = MunichIoSpiNNakerLinkProtocol(
-            mode=MunichIoSpiNNakerLinkProtocol.MODES.PUSH_BOT)
-        PushBotLEDDevice.__init__(
-            self, uart_id, start_active_time,
-            start_total_period, start_frequency, front_led,
-            command_sender_protocol=protocol)
+        :param led: The PushBotLED parameter to control
+        :param protocol: The protocol instance to get commands from
+        :param spinnaker_link_id: The SpiNNakerLink connected to
+        :param n_neurons: The number of neurons in the device
+        :param label: The label of the device
+        :param board_address:\
+            The IP address of the board that the device is connected to
+        :param start_active_time: The "active time" to set at the start
+        :param start_total_period: The "total period" to set at the start
+        :param start_frequency: The "frequency" to set at the start
+        """
+        PushBotEthernetLEDDevice.__init__(
+            self, led, protocol, start_active_time,
+            start_total_period, start_frequency)
         ApplicationSpiNNakerLinkVertex.__init__(
             self, spinnaker_link_id=spinnaker_link_id, n_atoms=n_neurons,
             board_address=board_address, label=label)

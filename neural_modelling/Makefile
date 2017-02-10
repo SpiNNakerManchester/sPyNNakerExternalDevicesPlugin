@@ -1,4 +1,4 @@
-MODELS = robot_motor_control munich_protocol
+MODELS = robot_motor_control neuron
 BUILD_DIRS := $(addprefix src/, $(MODELS))
 
 all: $(BUILD_DIRS)

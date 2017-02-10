@@ -53,7 +53,7 @@ class PushBotSpiNNakerLinkGyroDevice(
 
         # add mode command if not done already
         if not self._protocol.sent_mode_command():
-            commands.append(self._protocol.get_set_mode_command())
+            commands.append(self._protocol.set_mode())
 
         # device specific commands
         commands.append(self._protocol.poll_individual_sensor_continuously(

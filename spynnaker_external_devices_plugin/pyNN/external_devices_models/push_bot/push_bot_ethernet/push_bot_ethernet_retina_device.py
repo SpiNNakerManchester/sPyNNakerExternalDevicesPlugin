@@ -12,7 +12,7 @@ from spynnaker_external_devices_plugin.pyNN.protocols.\
 from pacman.model.decorators.overrides import overrides
 
 
-class PushBotRetinaDevice(
+class PushBotEthernetRetinaDevice(
         AbstractSendMeMulticastCommandsVertex, ProvidesKeyToAtomMappingImpl):
     PushBotRetinaResolution = Enum(
         value="PushBotRetinaResolution",
@@ -45,7 +45,7 @@ class PushBotRetinaDevice(
     def start_resume_commands(self):
 
         # add to tracker for keys that need updating
-        new_key_command = self._protocol.set_retina_transmission_key(
+        new_key_command = self._protocol.set_retina_key(
             new_key=None, uart_id=self.UART_ID)
 
         self._commands_that_need_payload_updating_with_key.append(
@@ -55,10 +55,10 @@ class PushBotRetinaDevice(
 
         # add mode command if not done already
         if not self._protocol.sent_mode_command():
-            commands.append(self._protocol.get_set_mode_command())
+            commands.append(self._protocol.set_mode())
 
         # device specific commands
-        commands.append(self._protocol.disable_retina_event_streaming(
+        commands.append(self._protocol.disable_retina(
             uart_id=self.UART_ID))
         commands.append(new_key_command)
         commands.append(self._protocol.set_retina_transmission(
@@ -72,7 +72,7 @@ class PushBotRetinaDevice(
     @overrides(AbstractSendMeMulticastCommandsVertex.pause_stop_commands)
     def pause_stop_commands(self):
         commands = list()
-        commands.append(self._protocol.disable_retina_event_streaming(
+        commands.append(self._protocol.disable_retina(
             uart_id=self.UART_ID))
         return commands
 
@@ -83,7 +83,7 @@ class PushBotRetinaDevice(
 
     @property
     def disable_retina_command_key(self):
-        return self._protocol.disable_retina_event_streaming(
+        return self._protocol.disable_retina(
             uart_id=self.UART_ID).key
 
     @property

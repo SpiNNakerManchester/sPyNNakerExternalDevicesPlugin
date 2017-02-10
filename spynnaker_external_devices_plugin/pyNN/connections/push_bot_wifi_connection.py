@@ -10,16 +10,35 @@ import subprocess
 import socket
 import select
 
+# A set of connections that have already been made
+_existing_connections = dict()
+
+
+def get_pushbot_wifi_connection(remote_host, remote_port=56000):
+    """ Get an existing connection to a PushBot, or make a new one
+
+    :param remote_host: The IP address of the PushBot
+    :type remote_host: str
+    :param remote_port: The port number of the PushBot (default 56000)
+    :type remote_port: int
+    """
+    if (remote_host, remote_port) not in _existing_connections:
+        _existing_connections[(remote_host, remote_port)] = \
+            PushBotWIFIConnection(remote_host, remote_port)
+    return _existing_connections[(remote_host, remote_port)]
+
 
 class PushBotWIFIConnection(AbstractConnection, AbstractListenable):
+    """ A connection to a pushbot via WiFi
+    """
 
-    def __init__(self, local_host=None, local_port=56000):
+    def __init__(self, remote_host, remote_port=56000):
         """
-        :param local_host: The local host name or ip address to bind to.\
-                    If not specified defaults to bind to all interfaces,\
-                    unless remote_host is specified, in which case binding is\
-                    _done to the ip address that will be used to send packets
-        :type local_host: str or None
+
+        :param remote_host: The IP address of the PushBot
+        :type remote_host: str
+        :param remote_port: The port number of the PushBot (default 56000)
+        :type remote_port: int
         :raise spinnman.exceptions.SpinnmanIOException: If there is an error\
                     setting up the communication channel
         """
@@ -27,35 +46,27 @@ class PushBotWIFIConnection(AbstractConnection, AbstractListenable):
         self._socket = None
         try:
 
-            # Create a UDP Socket
+            # Create a TCP Socket
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         except Exception as exception:
             raise SpinnmanIOException(
                 "Error setting up socket: {}".format(exception))
 
-        # Get the port to bind to locally
-        local_bind_port = 0
-        if local_port is not None:
-            local_bind_port = int(local_port)
+        # Get the port to connect to
+        self._remote_port = int(remote_port)
 
-        # Get the host to bind to locally
-        local_bind_host = ""
-        if local_host is not None:
-            local_bind_host = str(local_host)
+        # Get the host to connect to
+        self._remote_ip_address = socket.gethostbyname(remote_host)
 
         try:
-            # Bind the socket
-            self._socket.connect((local_bind_host, local_bind_port))
+            # Connect the socket
+            self._socket.connect((self._remote_ip_address, self._remote_port))
 
         except Exception as exception:
             raise SpinnmanIOException(
                 "Error binding socket to {}:{}: {}".format(
-                    local_bind_host, local_bind_port, exception))
-
-        # Mark the socket as non-sending, unless the remote host is
-        # specified - send requests will then cause an exception
-        self._can_send = True
+                    self._remote_ip_address, self._remote_port, exception))
 
         # Get the details of where the socket is connected
         self._local_ip_address = None
@@ -79,10 +90,6 @@ class PushBotWIFIConnection(AbstractConnection, AbstractListenable):
         """ See\
             :py:meth:`spinnman.connections.AbstractConnection.abstract_connection.is_connected`
         """
-
-        # If this is not a sending socket, it is not connected
-        if not self._can_send:
-            return False
 
         # check if machine is active and on the network
         pingtimeout = 5
@@ -175,10 +182,6 @@ class PushBotWIFIConnection(AbstractConnection, AbstractListenable):
         :type data: bytestring
         :raise SpinnmanIOException: If there is an error sending the data
         """
-        if not self._can_send:
-            raise SpinnmanIOException(
-                "Remote host and/or port not set - data cannot be sent with"
-                " this connection")
         try:
             self._socket.send(data)
         except Exception as e:

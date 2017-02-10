@@ -6,20 +6,21 @@ from pacman.model.graphs.application.impl.\
     ApplicationSpiNNakerLinkVertex
 from spynnaker.pyNN import exceptions
 from spynnaker.pyNN.utilities import constants
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot.\
-    push_bot_ethernet.push_bot_retina_device import \
-    PushBotRetinaDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_ethernet.push_bot_ethernet_retina_device import \
+    PushBotEthernetRetinaDevice
 
 
 @supports_injection
 class PushBotSpiNNakerLinkRetinaDevice(
-        PushBotRetinaDevice, ApplicationSpiNNakerLinkVertex):
+        PushBotEthernetRetinaDevice, ApplicationSpiNNakerLinkVertex):
 
     def __init__(
             self, spinnaker_link_id, label=None,
-            polarity=PushBotRetinaDevice.PushBotRetinaPolarity.Merged,
+            polarity=PushBotEthernetRetinaDevice.PushBotRetinaPolarity.Merged,
             n_neurons=(
-                PushBotRetinaDevice.PushBotRetinaResolution.Native128.value),
+                PushBotEthernetRetinaDevice.PushBotRetinaResolution
+                .Native128.value),
             board_address=None):
 
         # Validate number of timestamp bytes
@@ -32,7 +33,7 @@ class PushBotSpiNNakerLinkRetinaDevice(
         if polarity == self.PushBotRetinaPolarity.Merged:
             n_neurons *= 2
 
-        PushBotRetinaDevice.__init__(self, n_neurons)
+        PushBotEthernetRetinaDevice.__init__(self, n_neurons)
         ApplicationSpiNNakerLinkVertex.__init__(
             self, spinnaker_link_id=spinnaker_link_id, n_atoms=n_neurons,
             board_address=board_address, label=label)

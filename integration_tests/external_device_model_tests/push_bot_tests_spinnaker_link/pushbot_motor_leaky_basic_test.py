@@ -11,7 +11,7 @@ p.setup(timestep=1.0)
 
 push_bot_control_module = p.Population(
     2,
-    q.PushBotSpinnakerLinkControlModuleNModel,
+    q.PushBotLifSpinnakerLink,
     {
         'spinnaker_link_id': 0, 'speaker_start_frequency': 0,
         'motor_0_leaky_velocity_neuron_id': 0,
