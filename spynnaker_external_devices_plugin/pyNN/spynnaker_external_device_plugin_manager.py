@@ -22,7 +22,7 @@ class SpynnakerExternalDevicePluginManager(object):
 
         :param socket_address: the socket address
         :type socket_address:
-        :return:
+        :rtype: None:
         """
         _spinnaker = get_spynnaker()
         _spinnaker._add_socket_address(socket_address)
@@ -38,23 +38,6 @@ class SpynnakerExternalDevicePluginManager(object):
         """
         adds a edge from a vertex to the LPG object, builds as needed and has
         all the parameters for the creation of the LPG if needed
-        :param vertex_to_record_from:
-        :param port:
-        :param hostname:
-        :param tag:
-        :param board_address:
-        :param strip_sdp:
-        :param use_prefix:
-        :param key_prefix:
-        :param prefix_type:
-        :param message_type:
-        :param right_shift:
-        :param payload_as_time_stamps:
-        :param use_payload_prefix:
-        :param payload_prefix:
-        :param payload_right_shift:
-        :param number_of_packets_sent_per_time_step:
-        :return:
         """
 
         _spinnaker = get_spynnaker()
@@ -82,10 +65,11 @@ class SpynnakerExternalDevicePluginManager(object):
         """
         adds a edge between two vertices (often a vertex and a external device)
         on a given partition
+
         :param vertex: the pre vertex to connect the edge from
         :param device_vertex: the post vertex to connect the edge to
         :param partition_id: the partition identifier for making nets
-        :return: None
+        :rtype: None
         """
         _spinnaker = get_spynnaker()
         edge = ApplicationEdge(vertex, device_vertex)
