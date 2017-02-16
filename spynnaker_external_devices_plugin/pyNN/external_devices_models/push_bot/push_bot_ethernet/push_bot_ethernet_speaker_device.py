@@ -18,8 +18,9 @@ class PushBotEthernetSpeakerDevice(
     """
 
     def __init__(
-            self, speaker, protocol, start_active_time=50,
-            start_total_period=100, start_frequency=0, start_melody=None):
+            self, speaker, protocol, start_active_time=0,
+            start_total_period=0, start_frequency=0, start_melody=None,
+            timesteps_between_send=None):
         """
 
         :param speaker: The PushBotSpeaker value to control
@@ -28,10 +29,14 @@ class PushBotEthernetSpeakerDevice(
         :param start_total_period: The "total period" to set at the start
         :param start_frequency: The "frequency" to set at the start
         :param start_melody: The "melody" to set at the start
+        :param timesteps_between_send:\
+            The number of timesteps between sending commands to the device,\
+            or None to use the default
         """
 
         ProvidesKeyToAtomMappingImpl.__init__(self)
-        PushBotEthernetDevice.__init__(self, protocol, speaker, True)
+        PushBotEthernetDevice.__init__(
+            self, protocol, speaker, True, timesteps_between_send)
 
         # protocol specific data items
         self._start_active_time = start_active_time

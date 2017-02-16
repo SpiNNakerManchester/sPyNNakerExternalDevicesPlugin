@@ -17,15 +17,19 @@ class PushBotEthernetMotorDevice(
     """ The motor of a PushBot
     """
 
-    def __init__(self, motor, protocol):
+    def __init__(self, motor, protocol, timesteps_between_send=None):
         """
 
         :param motor: a PushBotMotor value to indicate the motor to control
         :param protocol: The protocol used to control the device
+        :param timesteps_between_send:\
+            The number of timesteps between sending commands to the device,\
+            or None to use the default
         """
 
         ProvidesKeyToAtomMappingImpl.__init__(self)
-        PushBotEthernetDevice.__init__(self, protocol, motor, True)
+        PushBotEthernetDevice.__init__(
+            self, protocol, motor, True, timesteps_between_send)
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)

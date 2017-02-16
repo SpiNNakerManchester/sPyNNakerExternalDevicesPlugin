@@ -1,8 +1,8 @@
+from enum import Enum
 from spinn_front_end_common.utility_models.multi_cast_command \
     import MultiCastCommand
 from spinn_front_end_common.utilities import exceptions
 
-from enum import Enum
 import logging
 
 logger = logging.getLogger(__name__)
@@ -71,10 +71,23 @@ _SENSOR_OUTGOING_OFFSET_TO_D = 2
 _SENSOR_OUTGOING_OFFSET_TO_I = 7
 
 # Payload fields
-_PAYLOAD_OFFSET_FOR_TIMESTAMPS = 29
-_PAYLOAD_OFFSET_FOR_RETINA_SIZE = 26
+_PAYLOAD_RETINA_PAYLOAD_OFFSET = 29
+_PAYLOAD_RETINA_PAYLOAD_MASK = 0xE0000000
+_PAYLOAD_RETINA_KEY_OFFSET = 26
+_PAYLOAD_RETINA_KEY_MASK = 0x1C000000
 _PAYLOAD_SENSOR_ID_OFFSET = 27
 _PAYLOAD_OFFSET_FOR_SENSOR_TIME = 0
+
+
+def GET_RETINA_KEY_VALUE(payload):
+    return (payload & _PAYLOAD_RETINA_KEY_MASK) >> _PAYLOAD_RETINA_KEY_OFFSET
+
+
+def GET_RETINA_PAYLOAD_VALUE(payload):
+    return (
+        (payload & _PAYLOAD_RETINA_PAYLOAD_MASK) >>
+        _PAYLOAD_RETINA_PAYLOAD_OFFSET
+    )
 
 # command key for setting up the master key of the board
 CONFIGURE_MASTER_KEY = MUNICH_KEY_I_D(127, 0)
@@ -181,26 +194,55 @@ PUSH_BOT_MOTOR_1_PERMANENT_VELOCITY = MUNICH_KEY_I_D(32, 1)
 PUSH_BOT_MOTOR_0_LEAKY_VELOCITY = MUNICH_KEY_I_D(32, 2)
 PUSH_BOT_MOTOR_1_LEAKY_VELOCITY = MUNICH_KEY_I_D(32, 3)
 
-# payload for setting different time stamp sizes
-PAYLOAD_NO_TIMESTAMPS = (0 << _PAYLOAD_OFFSET_FOR_TIMESTAMPS)
-PAYLOAD_DELTA_TIMESTAMPS = (1 << _PAYLOAD_OFFSET_FOR_TIMESTAMPS)
-PAYLOAD_TWO_BYTE_TIME_STAMPS = (2 << _PAYLOAD_OFFSET_FOR_TIMESTAMPS)
-PAYLOAD_THREE_BYTE_TIME_STAMPS = (3 << _PAYLOAD_OFFSET_FOR_TIMESTAMPS)
-PAYLOAD_FOUR_BYTE_TIME_STAMPS = (4 << _PAYLOAD_OFFSET_FOR_TIMESTAMPS)
-
-# payload for retina size
-PAYLOAD_RETINA_NO_DOWN_SAMPLING_IN_PAYLOAD = (
-    0 << _PAYLOAD_OFFSET_FOR_RETINA_SIZE)
-PAYLOAD_RETINA_NO_DOWN_SAMPLING = (1 << _PAYLOAD_OFFSET_FOR_RETINA_SIZE)
-PAYLOAD_RETINA_64_DOWN_SAMPLING = (2 << _PAYLOAD_OFFSET_FOR_RETINA_SIZE)
-PAYLOAD_RETINA_32_DOWN_SAMPLING = (3 << _PAYLOAD_OFFSET_FOR_RETINA_SIZE)
-_PAYLOAD_RETINA_16_DOWN_SAMPLING = (4 << _PAYLOAD_OFFSET_FOR_RETINA_SIZE)
-
 # payload for master slave
 _PAYLOAD_MASTER_SLAVE_USE_INTERNAL_COUNTER = 0
 _PAYLOAD_MASTER_SLAVE_SET_SLAVE = 1
 _PAYLOAD_MASTER_SLAVE_SET_MASTER_CLOCK_NOT_STARTED = 2
 _PAYLOAD_MASTER_SLAVE_SET_MASTER_CLOCK_ACTIVE = 4
+
+
+class RetinaKey(Enum):
+
+    FIXED_KEY = (0, 128, 7)
+    NATIVE_128_X_128 = (1, 128, 7)
+    DOWNSAMPLE_64_X_64 = (2, 64, 6)
+    DOWNSAMPLE_32_X_32 = (3, 32, 5)
+    DOWNSAMPLE_16_X_16 = (4, 16, 4)
+
+    def __init__(self, value, pixels, bits_per_coordinate):
+        self._value_ = value << _PAYLOAD_RETINA_KEY_OFFSET
+        self._pixels = pixels
+        self._bits_per_coordinate = bits_per_coordinate
+
+    @property
+    def n_neurons(self):
+        return self._pixels ** 2
+
+    @property
+    def pixels(self):
+        return self._pixels
+
+    @property
+    def bits_per_coordinate(self):
+        return self._bits_per_coordinate
+
+
+class RetinaPayload(Enum):
+
+    NO_PAYLOAD = (0, 0)
+    EVENTS_IN_PAYLOAD = (0, 4)
+    DELTA_TIMESTAMPS = (1, 4)
+    ABSOLUTE_2_BYTE_TIMESTAMPS = (2, 2)
+    ABSOLUTE_3_BYTE_TIMESTAMPS = (3, 3)
+    ABSOLUTE_4_BYTE_TIMESTAMPS = (4, 4)
+
+    def __init__(self, value, n_payload_bytes):
+        self._value_ = value << _PAYLOAD_RETINA_PAYLOAD_OFFSET
+        self._n_payload_bytes = n_payload_bytes
+
+    @property
+    def n_payload_bytes(self):
+        return self._n_payload_bytes
 
 
 class MunichIoSpiNNakerLinkProtocol(object):
@@ -299,7 +341,7 @@ class MunichIoSpiNNakerLinkProtocol(object):
         return self._get_key(DISABLE_RETINA_EVENT_STREAMING, RETINA_UART_SHIFT)
 
     def disable_retina(self, time=None):
-        return MultiCastCommand(key=self._disable_retina_key, time=time)
+        return MultiCastCommand(key=self.disable_retina_key, time=time)
 
     @property
     def master_slave_key(self):
@@ -748,80 +790,22 @@ class MunichIoSpiNNakerLinkProtocol(object):
             RETINA_UART_SHIFT)
 
     def set_retina_transmission(
-            self, events_in_key=True, retina_pixels=128 * 128,
-            payload_holds_time_stamps=False, size_of_time_stamp_in_bytes=None,
-            time=None, repeat=0, delay=0):
+            self, retina_key=RetinaKey.NATIVE_128_X_128,
+            retina_payload=None, time=None):
 
-        # if events in the key.
-        if events_in_key:
-            if not payload_holds_time_stamps:
+        if retina_key == RetinaKey.FIXED_KEY and retina_payload is None:
+            retina_payload = RetinaPayload.EVENTS_IN_PAYLOAD
 
-                # not using payloads
-                return self._key_retina(
-                    retina_pixels, PAYLOAD_NO_TIMESTAMPS, time, repeat, delay)
-            else:
+        if retina_payload is None:
+            retina_payload = RetinaPayload.NO_PAYLOAD
 
-                # using payloads
-                if size_of_time_stamp_in_bytes == 0:
-                    return self._key_retina(
-                        retina_pixels, PAYLOAD_DELTA_TIMESTAMPS,
-                        time, repeat, delay)
-                if size_of_time_stamp_in_bytes == 2:
-                    return self._key_retina(
-                        retina_pixels, PAYLOAD_TWO_BYTE_TIME_STAMPS,
-                        time, repeat, delay)
-                if size_of_time_stamp_in_bytes == 3:
-                    return self._key_retina(
-                        retina_pixels, PAYLOAD_THREE_BYTE_TIME_STAMPS,
-                        time, repeat, delay)
-                if size_of_time_stamp_in_bytes == 4:
-                    return self._key_retina(
-                        retina_pixels, PAYLOAD_FOUR_BYTE_TIME_STAMPS,
-                        time, repeat, delay)
-        else:
-
-            # using payloads to hold all events
-
-            # warn users about models
-            logger.warning(
-                "The current SpyNNaker models do not support the reception of"
-                " packets with payloads, therefore you will need to add a "
-                "adaptor model between the device and spynnaker models.")
-
-            # verify that its what the end user wants.
-            if (payload_holds_time_stamps or
-                    size_of_time_stamp_in_bytes is not None):
-                raise exceptions.ConfigurationException(
-                    "If you are using payloads to store events, you cannot"
-                    " have time stamps at all.")
-            return MultiCastCommand(
-                key=self.set_retina_transmission_key,
-                payload=(PAYLOAD_NO_TIMESTAMPS |
-                         PAYLOAD_RETINA_NO_DOWN_SAMPLING_IN_PAYLOAD),
-                time=time, repeat=repeat, delay_between_repeats=delay)
-
-    def _key_retina(
-            self, retina_pixels, time_stamps, time, repeat, delay):
-        if retina_pixels == 128 * 128:
-            return MultiCastCommand(
-                key=self.set_retina_transmission_key,
-                payload=(time_stamps | PAYLOAD_RETINA_NO_DOWN_SAMPLING),
-                time=time, repeat=repeat, delay_between_repeats=delay)
-        if retina_pixels == 64 * 64:
-            return MultiCastCommand(
-                key=self.set_retina_transmission_key,
-                payload=(time_stamps | PAYLOAD_RETINA_64_DOWN_SAMPLING),
-                time=time, repeat=repeat, delay_between_repeats=delay)
-        if retina_pixels == 32 * 32:
-            return MultiCastCommand(
-                key=self.set_retina_transmission_key,
-                payload=(time_stamps | PAYLOAD_RETINA_32_DOWN_SAMPLING),
-                time=time, repeat=repeat, delay_between_repeats=delay)
-        if retina_pixels == 16 * 16:
-            return MultiCastCommand(
-                key=self.set_retina_transmission_key,
-                payload=(time_stamps | _PAYLOAD_RETINA_16_DOWN_SAMPLING),
-                time=time, repeat=repeat, delay_between_repeats=delay)
-        else:
+        if (retina_key == RetinaKey.FIXED_KEY and
+                retina_payload != RetinaPayload.EVENTS_IN_PAYLOAD):
             raise exceptions.ConfigurationException(
-                "The no of pixels is not supported in this protocol.")
+                "If the Retina Key is FIXED_KEY, the payload must be"
+                " EVENTS_IN_PAYLOAD")
+
+        return MultiCastCommand(
+            key=self.set_retina_transmission_key,
+            payload=retina_key.value | retina_payload.value,
+            time=time)

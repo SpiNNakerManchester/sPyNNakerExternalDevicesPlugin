@@ -18,22 +18,32 @@ class PushBotEthernetLEDDevice(
     """
 
     def __init__(
-            self, led, protocol, start_active_time=0,
-            start_total_period=0, start_frequency=0):
+            self, led, protocol, start_active_time_front=None,
+            start_active_time_back=None,
+            start_total_period=None, start_frequency=None,
+            timesteps_between_send=None):
         """
 
         :param led: The PushBotLED parameter to control
         :param protocol: The protocol instance to get commands from
-        :param start_active_time: The "active time" to set at the start
+        :param start_active_time_front:\
+            The "active time" to set for the front LED at the start
+        :param start_active_time_back:\
+            The "active time" to set for the back LED at the start
         :param start_total_period: The "total period" to set at the start
         :param start_frequency: The "frequency" to set at the start
+        :param timesteps_between_send:\
+            The number of timesteps between sending commands to the device,\
+            or None to use the default
         """
 
         ProvidesKeyToAtomMappingImpl.__init__(self)
-        PushBotEthernetDevice.__init__(self, protocol, led, True)
+        PushBotEthernetDevice.__init__(
+            self, protocol, led, True, timesteps_between_send)
 
         # protocol specific data items
-        self._start_active_time = start_active_time
+        self._start_active_time_front = start_active_time_front
+        self._start_active_time_back = start_active_time_back
         self._start_total_period = start_total_period
         self._start_frequency = start_frequency
 
@@ -47,14 +57,18 @@ class PushBotEthernetLEDDevice(
             commands.append(self.protocol.set_mode())
 
         # device specific commands
-        commands.append(self.protocol.push_bot_led_front_active_time(
-            active_time=self._start_active_time))
-        commands.append(self.protocol.push_bot_led_back_active_time(
-            active_time=self._start_active_time))
-        commands.append(self.protocol.push_bot_led_total_period(
-            total_period=self._start_total_period))
-        commands.append(self.protocol.push_bot_led_set_frequency(
-            frequency=self._start_frequency))
+        if self._start_active_time_front is not None:
+            commands.append(self.protocol.push_bot_led_front_active_time(
+                active_time=self._start_active_time_front))
+        if self._start_active_time_back is not None:
+            commands.append(self.protocol.push_bot_led_back_active_time(
+                active_time=self._start_active_time_back))
+        if self._start_total_period is not None:
+            commands.append(self.protocol.push_bot_led_total_period(
+                total_period=self._start_total_period))
+        if self._start_frequency is not None:
+            commands.append(self.protocol.push_bot_led_set_frequency(
+                frequency=self._start_frequency))
         return commands
 
     @property

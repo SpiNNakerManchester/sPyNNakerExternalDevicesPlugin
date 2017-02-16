@@ -1,3 +1,7 @@
+def _active_time_for_frequency(frequency):
+    if frequency > 0:
+        return int(1000000.0 / float(frequency))
+    return 0
 
 
 class MunichIoEthernetProtocol(object):
@@ -14,8 +18,8 @@ class MunichIoEthernetProtocol(object):
         return "E-\n"
 
     @staticmethod
-    def set_retina_transmission():
-        return "!E0\n"
+    def set_retina_transmission(event_format):
+        return "!E{}\n".format(event_format)
 
     @staticmethod
     def disable_motor():
@@ -62,16 +66,23 @@ class MunichIoEthernetProtocol(object):
         return "!PC={}\n".format(total_period)
 
     @staticmethod
-    def led_active_time(active_time):
+    def led_front_active_time(active_time):
         return "!PC0={}\n".format(active_time)
 
     @staticmethod
+    def led_back_active_time(active_time):
+        return "!PC1={}\n".format(active_time)
+
+    @staticmethod
     def led_frequency(frequency):
-        return "!PC1={}\n".format(frequency)
+        active_time = _active_time_for_frequency(frequency)
+        return "!PC={}\n!PC0={}\n!PC1={}\n".format(
+            active_time, active_time / 2, active_time / 2)
 
     @staticmethod
     def speaker_frequency(frequency):
-        return "!PB1={}\n".format(frequency)
+        active_time = _active_time_for_frequency(frequency)
+        return "!PB={}\n!PB0={}\n".format(active_time, active_time / 2)
 
     @staticmethod
     def speaker_total_period(total_period):
@@ -83,7 +94,8 @@ class MunichIoEthernetProtocol(object):
 
     @staticmethod
     def laser_frequency(frequency):
-        return "!PA1={}\n".format(frequency)
+        active_time = _active_time_for_frequency(frequency)
+        return "!PA={}\n!PA0={}\n".format(active_time, active_time / 2)
 
     @staticmethod
     def laser_total_period(total_period):

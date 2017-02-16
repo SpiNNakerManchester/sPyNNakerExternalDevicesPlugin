@@ -8,7 +8,8 @@ class PushBotEthernetDevice(AbstractMulticastControllableDevice):
     """ An arbitrary PushBot device
     """
 
-    def __init__(self, protocol, device, uses_payload):
+    def __init__(
+            self, protocol, device, uses_payload, time_between_send):
         """
 
         :param protocol: The protocol instance to get commands from
@@ -18,11 +19,14 @@ class PushBotEthernetDevice(AbstractMulticastControllableDevice):
         self._protocol = protocol
         self._device = device
         self._uses_payload = uses_payload
+        self._time_between_send = time_between_send
+        if time_between_send is None:
+            self._time_between_send = device.time_between_send
 
     @property
     @overrides(AbstractMulticastControllableDevice.device_control_key)
     def device_control_key(self):
-        return self._device.prop.fget(self._protocol)
+        return self._device.protocol_property.fget(self._protocol)
 
     @property
     @overrides(AbstractMulticastControllableDevice.device_control_partition_id)
@@ -33,6 +37,22 @@ class PushBotEthernetDevice(AbstractMulticastControllableDevice):
     @overrides(AbstractMulticastControllableDevice.device_control_uses_payload)
     def device_control_uses_payload(self):
         return self._uses_payload
+
+    @property
+    @overrides(AbstractMulticastControllableDevice.device_control_min_value)
+    def device_control_min_value(self):
+        return self._device.min_value
+
+    @property
+    @overrides(AbstractMulticastControllableDevice.device_control_max_value)
+    def device_control_max_value(self):
+        return self._device.max_value
+
+    @property
+    @overrides(AbstractMulticastControllableDevice
+               .device_control_timesteps_between_sending)
+    def device_control_timesteps_between_sending(self):
+        return self._time_between_send
 
     @property
     def protocol(self):

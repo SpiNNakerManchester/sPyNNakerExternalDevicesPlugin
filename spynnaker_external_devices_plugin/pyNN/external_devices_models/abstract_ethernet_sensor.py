@@ -17,6 +17,17 @@ class AbstractEthernetSensor(object):
         """
 
     @abstractmethod
+    def get_injector_label(self):
+        """ Get the label to give to the Spike Injector
+        """
+
+    @abstractmethod
     def get_translator(self):
         """ Get a translator of multicast commands to Ethernet commands
+        """
+
+    @abstractmethod
+    def get_database_connection(self):
+        """ Get a Database Connection instance that this device uses\
+            to inject packets
         """

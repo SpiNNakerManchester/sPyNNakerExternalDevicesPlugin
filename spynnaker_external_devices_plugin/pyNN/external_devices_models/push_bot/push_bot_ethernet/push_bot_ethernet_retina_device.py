@@ -1,55 +1,46 @@
-# pynn imports
-from enum import Enum
-
 from spinn_front_end_common.abstract_models.impl.\
     provides_key_to_atom_mapping_impl \
     import ProvidesKeyToAtomMappingImpl
 from spinn_front_end_common.abstract_models.\
     abstract_send_me_multicast_commands_vertex \
     import AbstractSendMeMulticastCommandsVertex
-from spynnaker_external_devices_plugin.pyNN.protocols.\
-    munich_io_spinnaker_link_protocol import MunichIoSpiNNakerLinkProtocol
+
 from pacman.model.decorators.overrides import overrides
+
+from spynnaker_external_devices_plugin.pyNN.external_devices_models\
+    .abstract_ethernet_sensor import AbstractEthernetSensor
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_ethernet.push_bot_translator import PushBotTranslator
+from spynnaker_external_devices_plugin.pyNN.connections\
+    .push_bot_wifi_connection import get_pushbot_wifi_connection
+from spynnaker_external_devices_plugin.pyNN.connections\
+    .push_bot_retina_connection import PushBotRetinaConnection
 
 
 class PushBotEthernetRetinaDevice(
-        AbstractSendMeMulticastCommandsVertex, ProvidesKeyToAtomMappingImpl):
-    PushBotRetinaResolution = Enum(
-        value="PushBotRetinaResolution",
-        names=[("Native128", 128 * 128),
-               ("Downsample64", 64 * 64),
-               ("Downsample32", 32 * 32),
-               ("Downsample16", 16 * 16)])
+        AbstractSendMeMulticastCommandsVertex, ProvidesKeyToAtomMappingImpl,
+        AbstractEthernetSensor):
 
-    PushBotRetinaPolarity = Enum(
-        value="PushBotRetinaPolarity",
-        names=["Up", "Down", "Merged"])
-
-    UART_ID = 0
-
-    def __init__(self, n_atoms):
-
-        # munich protocol
-        self._protocol = MunichIoSpiNNakerLinkProtocol(
-            mode=MunichIoSpiNNakerLinkProtocol.MODES.PUSH_BOT)
-
-        # holder for commands that need modifications from pacman
-        self._commands_that_need_payload_updating_with_key = list()
-
-        self._n_atoms = n_atoms
-
+    def __init__(
+            self, protocol, resolution, pushbot_ip_address, pushbot_port=56000,
+            injector_port=None, local_host=None, local_port=None,
+            retina_injector_label="PushBotRetinaInjector"):
         ProvidesKeyToAtomMappingImpl.__init__(self)
+        self._protocol = protocol
+        pushbot_wifi_connection = get_pushbot_wifi_connection(
+            pushbot_ip_address, pushbot_port)
+        self._translator = PushBotTranslator(protocol, pushbot_wifi_connection)
+        self._resolution = resolution
+        self._injector_port = injector_port
+        self._retina_injector_label = retina_injector_label
+
+        self._database_connection = PushBotRetinaConnection(
+            self._retina_injector_label, pushbot_wifi_connection,
+            local_host, local_port)
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)
     def start_resume_commands(self):
-
-        # add to tracker for keys that need updating
-        new_key_command = self._protocol.set_retina_key(
-            new_key=None, uart_id=self.UART_ID)
-
-        self._commands_that_need_payload_updating_with_key.append(
-            new_key_command)
 
         commands = list()
 
@@ -58,13 +49,9 @@ class PushBotEthernetRetinaDevice(
             commands.append(self._protocol.set_mode())
 
         # device specific commands
-        commands.append(self._protocol.disable_retina(
-            uart_id=self.UART_ID))
-        commands.append(new_key_command)
+        commands.append(self._protocol.disable_retina())
         commands.append(self._protocol.set_retina_transmission(
-            events_in_key=True, retina_pixels=self._n_atoms / 2,
-            payload_holds_time_stamps=False,
-            size_of_time_stamp_in_bytes=None, uart_id=self.UART_ID))
+            retina_key=self._resolution.value))
 
         return commands
 
@@ -72,8 +59,7 @@ class PushBotEthernetRetinaDevice(
     @overrides(AbstractSendMeMulticastCommandsVertex.pause_stop_commands)
     def pause_stop_commands(self):
         commands = list()
-        commands.append(self._protocol.disable_retina(
-            uart_id=self.UART_ID))
+        commands.append(self._protocol.disable_retina())
         return commands
 
     @property
@@ -81,22 +67,22 @@ class PushBotEthernetRetinaDevice(
     def timed_commands(self):
         return []
 
-    @property
-    def disable_retina_command_key(self):
-        return self._protocol.disable_retina(
-            uart_id=self.UART_ID).key
+    @overrides(AbstractEthernetSensor.get_n_neurons)
+    def get_n_neurons(self):
+        return self._resolution.value.n_neurons
 
-    @property
-    def set_retina_command_key(self):
-        return self._protocol.set_retina_transmission(
-            events_in_key=True, retina_pixels=self._n_atoms / 2,
-            payload_holds_time_stamps=False,
-            size_of_time_stamp_in_bytes=None, uart_id=self.UART_ID).key
+    @overrides(AbstractEthernetSensor.get_injector_parameters)
+    def get_injector_parameters(self):
+        return {"port": self._injector_port}
 
-    @staticmethod
-    def _get_timed_commands():
-        return []
+    @overrides(AbstractEthernetSensor.get_injector_label)
+    def get_injector_label(self):
+        return self._retina_injector_label
 
-    @property
-    def model_name(self):
-        return "push_bot_retina_device"
+    @overrides(AbstractEthernetSensor.get_translator)
+    def get_translator(self):
+        return self._translator
+
+    @overrides(AbstractEthernetSensor.get_database_connection)
+    def get_database_connection(self):
+        return self._database_connection

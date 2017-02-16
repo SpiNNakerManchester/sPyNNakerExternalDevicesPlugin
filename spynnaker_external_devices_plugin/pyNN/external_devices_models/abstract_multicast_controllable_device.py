@@ -28,4 +28,27 @@ class AbstractMulticastControllableDevice(object):
     def device_control_uses_payload(self):
         """ True if the control of the device accepts an arbitrary valued\
             payload, the value of which will change the devices behaviour
+
+        :rtype: bool
+        """
+
+    @abstractproperty
+    def device_control_min_value(self):
+        """ The minimum value to send to the device
+
+        :rtype: float
+        """
+
+    @abstractproperty
+    def device_control_max_value(self):
+        """ The maximum value to send to the device
+
+        :rtype: float
+        """
+
+    def device_control_timesteps_between_sending(self):
+        """ The number of timesteps between sending commands to the device.\
+            This defines the "sampling interval" for the device.
+
+        :rtype: int
         """

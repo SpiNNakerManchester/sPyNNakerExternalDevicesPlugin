@@ -4,7 +4,11 @@ from spynnaker_external_devices_plugin.pyNN.external_devices_models\
     .abstract_ethernet_translator import AbstractEthernetTranslator
 from spynnaker_external_devices_plugin.pyNN.protocols\
     .munich_io_ethernet_protocol import MunichIoEthernetProtocol
+from spynnaker_external_devices_plugin.pyNN.protocols \
+    import munich_io_spinnaker_link_protocol
 
+
+from time import sleep
 import logging
 logger = logging.getLogger(__name__)
 
@@ -28,15 +32,20 @@ class PushBotTranslator(AbstractEthernetTranslator):
 
         key = multicast_packet.key
 
-        print "Got key {}".format(hex(multicast_packet.key))
-
         # disable retina
         if key == self._protocol.disable_retina_key:
+            logger.info("Sending retina disable")
             self._pushbot_wifi_connection.send(
                 MunichIoEthernetProtocol.disable_retina())
+            sleep(0.1)
 
         # set retina key (which doesn't do much for Ethernet)
-        elif key == self._protocol.set_retina_key_key:
+        elif key == self._protocol.set_retina_transmission_key:
+            logger.info("Sending retina enable")
+            self._pushbot_wifi_connection.send(
+                MunichIoEthernetProtocol.set_retina_transmission(
+                    munich_io_spinnaker_link_protocol.GET_RETINA_PAYLOAD_VALUE(
+                        multicast_packet.payload)))
             self._pushbot_wifi_connection.send(
                 MunichIoEthernetProtocol.enable_retina())
 
@@ -104,13 +113,20 @@ class PushBotTranslator(AbstractEthernetTranslator):
                 MunichIoEthernetProtocol.led_total_period(
                     multicast_packet.payload))
 
-        # led active time
-        elif (key == self._protocol.push_bot_led_front_active_time_key or
-              key == self._protocol.push_bot_led_back_active_time_key):
-            logger.info("Sending LED Active Time = {}".format(
+        # front led active time
+        elif (key == self._protocol.push_bot_led_front_active_time_key):
+            logger.info("Sending Front LED Active Time = {}".format(
                 multicast_packet.payload))
             self._pushbot_wifi_connection.send(
-                MunichIoEthernetProtocol.led_active_time(
+                MunichIoEthernetProtocol.led_front_active_time(
+                    multicast_packet.payload))
+
+        # back led active time
+        elif (key == self._protocol.push_bot_led_back_active_time_key):
+            logger.info("Sending Back LED Active Time = {}".format(
+                multicast_packet.payload))
+            self._pushbot_wifi_connection.send(
+                MunichIoEthernetProtocol.led_back_active_time(
                     multicast_packet.payload))
 
         # led frequency

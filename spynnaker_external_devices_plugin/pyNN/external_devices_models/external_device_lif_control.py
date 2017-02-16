@@ -108,19 +108,13 @@ class ExternalDeviceLifControl(
             for (i, partition) in enumerate(self._partition_id_to_key.keys())
         }
 
-        # Work out which commands have a payload
-        with_payload = [
-            device.device_control_uses_payload for device in devices
-        ]
-
         neuron_model = NeuronModelLeakyIntegrateAndFire(
             n_neurons, v_init, v_rest, tau_m, cm, i_offset,
             v_reset, tau_refrac)
         synapse_type = SynapseTypeExponential(
             n_neurons, tau_syn_E, tau_syn_I)
         input_type = InputTypeCurrent()
-        threshold_type = ThresholdTypeMulticastDeviceControl(
-            self._partition_id_to_key.values(), with_payload)
+        threshold_type = ThresholdTypeMulticastDeviceControl(devices)
 
         self._devices = devices
         self._message_translator = translator
