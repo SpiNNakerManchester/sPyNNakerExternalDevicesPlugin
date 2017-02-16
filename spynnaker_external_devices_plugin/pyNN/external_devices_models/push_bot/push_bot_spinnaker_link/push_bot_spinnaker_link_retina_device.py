@@ -4,59 +4,60 @@ from pacman.executor.injection_decorator import inject, supports_injection
 from pacman.model.graphs.application.impl.\
     application_spinnaker_link_vertex import \
     ApplicationSpiNNakerLinkVertex
-from spynnaker.pyNN import exceptions
 from spynnaker.pyNN.utilities import constants
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_ethernet.push_bot_ethernet_retina_device import \
-    PushBotEthernetRetinaDevice
+    .abstract_push_bot_retina_device import AbstractPushBotRetinaDevice
+from pacman.model.decorators.overrides import overrides
 
 
 @supports_injection
 class PushBotSpiNNakerLinkRetinaDevice(
-        PushBotEthernetRetinaDevice, ApplicationSpiNNakerLinkVertex):
+        AbstractPushBotRetinaDevice, ApplicationSpiNNakerLinkVertex):
 
     def __init__(
-            self, spinnaker_link_id, label=None,
-            polarity=PushBotEthernetRetinaDevice.PushBotRetinaPolarity.Merged,
-            n_neurons=(
-                PushBotEthernetRetinaDevice.PushBotRetinaResolution
-                .Native128.value),
-            board_address=None):
-
-        # Validate number of timestamp bytes
-        if not isinstance(polarity, self.PushBotRetinaPolarity):
-            raise exceptions.SpynnakerException(
-                "Pushbot retina polarity should be one of those defined in"
-                " Polarity enumeration")
-
-        # if not using all spikes,
-        if polarity == self.PushBotRetinaPolarity.Merged:
-            n_neurons *= 2
-
-        PushBotEthernetRetinaDevice.__init__(self, n_neurons)
+            self, n_neurons, spinnaker_link_id, protocol, resolution,
+            board_address=None, label=None):
+        AbstractPushBotRetinaDevice(protocol, resolution)
         ApplicationSpiNNakerLinkVertex.__init__(
-            self, spinnaker_link_id=spinnaker_link_id, n_atoms=n_neurons,
+            self, spinnaker_link_id=spinnaker_link_id,
+            n_atoms=resolution.value.n_neurons,
             board_address=board_address, label=label)
 
         # stores for the injection aspects
         self._graph_mapper = None
         self._routing_infos = None
+        self._new_key_command = None
 
     @inject("MemoryGraphMapper")
     def graph_mapper(self, graph_mapper):
         self._graph_mapper = graph_mapper
         if self._routing_infos is not None:
-            self.update_commands_with_payload_with_key()
+            self._update_new_key_payload()
 
     @inject("MemoryRoutingInfos")
     def routing_info(self, routing_info):
         self._routing_infos = routing_info
         if self._graph_mapper is not None:
-            self.update_commands_with_payload_with_key()
+            self._update_new_key_payload()
 
-    def update_commands_with_payload_with_key(self):
-        for command in self._commands_that_need_payload_updating_with_key:
-            vert = list(self._graph_mapper.get_machine_vertices(self))[0]
-            key = self._routing_infos.get_first_key_from_pre_vertex(
-                vert, constants.SPIKE_PARTITION_ID)
-            command.payload = key
+    @property
+    @overrides(AbstractPushBotRetinaDevice.start_resume_commands)
+    def start_resume_commands(self):
+        commands = AbstractPushBotRetinaDevice.start_resume_commands(self)
+
+        # Update the commands with the additional one to set the key
+        new_commands = list()
+        for command in commands:
+            if command.key == self._protocol.disable_retina_key:
+
+                # This has to be stored so that the payload can be updated
+                self._new_key_command = self._protocol.set_retina_key(0)
+                new_commands.append(self._new_key_command)
+            new_commands.append(command)
+        return new_commands
+
+    def _update_new_key_payload(self):
+        vertex = list(self._graph_mapper.get_machine_vertices(self))[0]
+        key = self._routing_infos.get_first_key_from_pre_vertex(
+            vertex, constants.SPIKE_PARTITION_ID)
+        self._new_key_command.payload = key

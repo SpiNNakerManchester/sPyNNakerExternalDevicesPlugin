@@ -1,10 +1,3 @@
-from spinn_front_end_common.abstract_models.impl.\
-    provides_key_to_atom_mapping_impl \
-    import ProvidesKeyToAtomMappingImpl
-from spinn_front_end_common.abstract_models.\
-    abstract_send_me_multicast_commands_vertex \
-    import AbstractSendMeMulticastCommandsVertex
-
 from pacman.model.decorators.overrides import overrides
 
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
@@ -15,57 +8,35 @@ from spynnaker_external_devices_plugin.pyNN.connections\
     .push_bot_wifi_connection import get_pushbot_wifi_connection
 from spynnaker_external_devices_plugin.pyNN.connections\
     .push_bot_retina_connection import PushBotRetinaConnection
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .abstract_push_bot_retina_device import AbstractPushBotRetinaDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_retina_resolution import PushBotRetinaResolution
+from spinn_front_end_common.utilities import exceptions
 
 
 class PushBotEthernetRetinaDevice(
-        AbstractSendMeMulticastCommandsVertex, ProvidesKeyToAtomMappingImpl,
-        AbstractEthernetSensor):
+        AbstractPushBotRetinaDevice, AbstractEthernetSensor):
 
     def __init__(
             self, protocol, resolution, pushbot_ip_address, pushbot_port=56000,
             injector_port=None, local_host=None, local_port=None,
             retina_injector_label="PushBotRetinaInjector"):
-        ProvidesKeyToAtomMappingImpl.__init__(self)
-        self._protocol = protocol
+        if resolution != PushBotRetinaResolution.NATIVE_128_X_128:
+            raise exceptions.ConfigurationException(
+                "Only the native 128x128 resolution is supported over Ethernet"
+                " so far")
+
+        AbstractPushBotRetinaDevice.__init__(self, protocol, resolution)
         pushbot_wifi_connection = get_pushbot_wifi_connection(
             pushbot_ip_address, pushbot_port)
         self._translator = PushBotTranslator(protocol, pushbot_wifi_connection)
-        self._resolution = resolution
         self._injector_port = injector_port
         self._retina_injector_label = retina_injector_label
 
         self._database_connection = PushBotRetinaConnection(
             self._retina_injector_label, pushbot_wifi_connection,
             local_host, local_port)
-
-    @property
-    @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)
-    def start_resume_commands(self):
-
-        commands = list()
-
-        # add mode command if not done already
-        if not self._protocol.sent_mode_command():
-            commands.append(self._protocol.set_mode())
-
-        # device specific commands
-        commands.append(self._protocol.disable_retina())
-        commands.append(self._protocol.set_retina_transmission(
-            retina_key=self._resolution.value))
-
-        return commands
-
-    @property
-    @overrides(AbstractSendMeMulticastCommandsVertex.pause_stop_commands)
-    def pause_stop_commands(self):
-        commands = list()
-        commands.append(self._protocol.disable_retina())
-        return commands
-
-    @property
-    @overrides(AbstractSendMeMulticastCommandsVertex.timed_commands)
-    def timed_commands(self):
-        return []
 
     @overrides(AbstractEthernetSensor.get_n_neurons)
     def get_n_neurons(self):
