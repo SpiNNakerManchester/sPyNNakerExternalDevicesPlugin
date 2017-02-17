@@ -30,6 +30,10 @@ class PushBotEthernetMotorDevice(
         ProvidesKeyToAtomMappingImpl.__init__(self)
         PushBotEthernetDevice.__init__(
             self, protocol, motor, True, timesteps_between_send)
+        self._command_protocol = protocol
+
+    def set_command_protocol(self, command_protocol):
+        self._command_protocol = command_protocol
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)
@@ -41,13 +45,13 @@ class PushBotEthernetMotorDevice(
             commands.append(self.protocol.set_mode())
 
         # device specific commands
-        commands.append(self.protocol.generic_motor_enable())
+        commands.append(self._command_protocol.generic_motor_enable())
         return commands
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.pause_stop_commands)
     def pause_stop_commands(self):
-        return [self.protocol.generic_motor_disable()]
+        return [self._command_protocol.generic_motor_disable()]
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.timed_commands)

@@ -68,7 +68,24 @@ from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
     import PushBotEthernetRetinaDevice
 
 # PushBotSpiNNakerLink control
-
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_spinnaker_link.push_bot_lif_spinnaker_link \
+    import PushBotLifSpinnakerLink
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_spinnaker_link.push_bot_spinnaker_link_laser_device \
+    import PushBotSpiNNakerLinkLaserDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_spinnaker_link.push_bot_spinnaker_link_led_device \
+    import PushBotSpiNNakerLinkLEDDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_spinnaker_link.push_bot_spinnaker_link_motor_device \
+    import PushBotSpiNNakerLinkMotorDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_spinnaker_link.push_bot_spinnaker_link_speaker_device \
+    import PushBotSpiNNakerLinkSpeakerDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_spinnaker_link.push_bot_spinnaker_link_retina_device \
+    import PushBotSpiNNakerLinkRetinaDevice
 
 from spynnaker_external_devices_plugin.pyNN.\
     spynnaker_external_device_plugin_manager import \

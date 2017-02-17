@@ -265,7 +265,7 @@ class MunichIoSpiNNakerLinkProtocol(object):
     protocol_instance = 0
 
     # Keeps track of whether the mode has been configured already
-    sent_mode_command = False
+    _sent_mode_command = False
 
     def __init__(self, mode, instance_key=None, uart_id=0):
         """
@@ -289,11 +289,19 @@ class MunichIoSpiNNakerLinkProtocol(object):
 
         self._uart_id = uart_id
 
+    @property
+    def mode(self):
+        return self._mode
+
+    @property
+    def uart_id(self):
+        return self._uart_id
+
     @staticmethod
     def sent_mode_command():
         """ True if the mode command has ever been requested by any instance
         """
-        return MunichIoSpiNNakerLinkProtocol.sent_mode_command
+        return MunichIoSpiNNakerLinkProtocol._sent_mode_command
 
     @property
     def instance_key(self):
@@ -322,9 +330,9 @@ class MunichIoSpiNNakerLinkProtocol(object):
         return self._get_key(CHANGE_MODE)
 
     def set_mode(self, time=None):
-        MunichIoSpiNNakerLinkProtocol.sent_mode_command = True
+        MunichIoSpiNNakerLinkProtocol._sent_mode_command = True
         return MultiCastCommand(
-            key=self.set_mode_key, payload=self._mode.value(), time=time)
+            key=self.set_mode_key, payload=self._mode.value, time=time)
 
     @property
     def set_retina_key_key(self):

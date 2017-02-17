@@ -15,7 +15,8 @@ class PushBotSpiNNakerLinkLEDDevice(
     def __init__(
             self, led, protocol, spinnaker_link_id,
             n_neurons=1, label=None, board_address=None,
-            start_active_time=0, start_total_period=0, start_frequency=0):
+            start_active_time_front=0, start_active_time_back=0,
+            start_total_period=0, start_frequency=0):
         """
 
         :param led: The PushBotLED parameter to control
@@ -25,13 +26,16 @@ class PushBotSpiNNakerLinkLEDDevice(
         :param label: The label of the device
         :param board_address:\
             The IP address of the board that the device is connected to
-        :param start_active_time: The "active time" to set at the start
+        :param start_active_time_front:\
+            The "active time" to set for the front LED at the start
+        :param start_active_time_back:\
+            The "active time" to set for the back LED at the start
         :param start_total_period: The "total period" to set at the start
         :param start_frequency: The "frequency" to set at the start
         """
         PushBotEthernetLEDDevice.__init__(
-            self, led, protocol, start_active_time,
-            start_total_period, start_frequency)
+            self, led, protocol, start_active_time_front,
+            start_active_time_back, start_total_period, start_frequency)
         ApplicationSpiNNakerLinkVertex.__init__(
             self, spinnaker_link_id=spinnaker_link_id, n_atoms=n_neurons,
             board_address=board_address, label=label)

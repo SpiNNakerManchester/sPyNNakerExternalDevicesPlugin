@@ -18,8 +18,8 @@ class PushBotEthernetLEDDevice(
     """
 
     def __init__(
-            self, led, protocol, start_active_time_front=None,
-            start_active_time_back=None,
+            self, led, protocol,
+            start_active_time_front=None, start_active_time_back=None,
             start_total_period=None, start_frequency=None,
             timesteps_between_send=None):
         """
@@ -42,10 +42,14 @@ class PushBotEthernetLEDDevice(
             self, protocol, led, True, timesteps_between_send)
 
         # protocol specific data items
+        self._command_protocol = protocol
         self._start_active_time_front = start_active_time_front
         self._start_active_time_back = start_active_time_back
         self._start_total_period = start_total_period
         self._start_frequency = start_frequency
+
+    def set_command_protocol(self, command_protocol):
+        self._command_protocol = command_protocol
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)
@@ -58,16 +62,18 @@ class PushBotEthernetLEDDevice(
 
         # device specific commands
         if self._start_active_time_front is not None:
-            commands.append(self.protocol.push_bot_led_front_active_time(
-                active_time=self._start_active_time_front))
+            commands.append(
+                self._command_protocol.push_bot_led_front_active_time(
+                    active_time=self._start_active_time_front))
         if self._start_active_time_back is not None:
-            commands.append(self.protocol.push_bot_led_back_active_time(
-                active_time=self._start_active_time_back))
+            commands.append(
+                self._command_protocol.push_bot_led_back_active_time(
+                    active_time=self._start_active_time_back))
         if self._start_total_period is not None:
-            commands.append(self.protocol.push_bot_led_total_period(
+            commands.append(self._command_protocol.push_bot_led_total_period(
                 total_period=self._start_total_period))
         if self._start_frequency is not None:
-            commands.append(self.protocol.push_bot_led_set_frequency(
+            commands.append(self._command_protocol.push_bot_led_set_frequency(
                 frequency=self._start_frequency))
         return commands
 
@@ -75,13 +81,13 @@ class PushBotEthernetLEDDevice(
     @overrides(AbstractSendMeMulticastCommandsVertex.pause_stop_commands)
     def pause_stop_commands(self):
         commands = list()
-        commands.append(self.protocol.push_bot_led_front_active_time(
+        commands.append(self._command_protocol.push_bot_led_front_active_time(
             active_time=0))
-        commands.append(self.protocol.push_bot_led_back_active_time(
+        commands.append(self._command_protocol.push_bot_led_back_active_time(
             active_time=0))
-        commands.append(self.protocol.push_bot_led_total_period(
+        commands.append(self._command_protocol.push_bot_led_total_period(
             total_period=0))
-        commands.append(self.protocol.push_bot_led_set_frequency(
+        commands.append(self._command_protocol.push_bot_led_set_frequency(
             frequency=0))
         return commands
 

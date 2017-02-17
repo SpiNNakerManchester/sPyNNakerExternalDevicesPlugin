@@ -17,7 +17,7 @@ class PushBotSpiNNakerLinkRetinaDevice(
     def __init__(
             self, n_neurons, spinnaker_link_id, protocol, resolution,
             board_address=None, label=None):
-        AbstractPushBotRetinaDevice(protocol, resolution)
+        AbstractPushBotRetinaDevice.__init__(self, protocol, resolution)
         ApplicationSpiNNakerLinkVertex.__init__(
             self, spinnaker_link_id=spinnaker_link_id,
             n_atoms=resolution.value.n_neurons,
@@ -43,7 +43,11 @@ class PushBotSpiNNakerLinkRetinaDevice(
     @property
     @overrides(AbstractPushBotRetinaDevice.start_resume_commands)
     def start_resume_commands(self):
-        commands = AbstractPushBotRetinaDevice.start_resume_commands(self)
+
+        # Note this is not undefined, it is just a property so, it can't
+        # be statically analysed
+        commands = AbstractPushBotRetinaDevice\
+            .start_resume_commands.fget(self)  # @UndefinedVariable
 
         # Update the commands with the additional one to set the key
         new_commands = list()

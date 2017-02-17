@@ -1,12 +1,12 @@
-
-# pynn imports
 from spinn_front_end_common.abstract_models.impl.\
     provides_key_to_atom_mapping_impl import \
     ProvidesKeyToAtomMappingImpl
 from spinn_front_end_common.abstract_models.\
     abstract_send_me_multicast_commands_vertex \
     import AbstractSendMeMulticastCommandsVertex
+
 from pacman.model.decorators.overrides import overrides
+
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
     .push_bot_ethernet.push_bot_ethernet_device import PushBotEthernetDevice
 
@@ -39,10 +39,14 @@ class PushBotEthernetSpeakerDevice(
             self, protocol, speaker, True, timesteps_between_send)
 
         # protocol specific data items
+        self._command_protocol = protocol
         self._start_active_time = start_active_time
         self._start_total_period = start_total_period
         self._start_frequency = start_frequency
         self._start_melody = start_melody
+
+    def set_command_protocol(self, command_protocol):
+        self._command_protocol = command_protocol
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)
@@ -50,19 +54,21 @@ class PushBotEthernetSpeakerDevice(
         commands = list()
 
         # add mode command if not done already
-        if not self._protocol.sent_mode_command():
+        if not self.protocol.sent_mode_command():
             commands.append(self.protocol.set_mode())
 
         # device specific commands
-        commands.append(self.protocol.push_bot_speaker_config_total_period(
-            total_period=self._start_total_period))
-        commands.append(self.protocol.push_bot_speaker_config_active_time(
-            active_time=self._start_active_time))
+        commands.append(
+            self._command_protocol.push_bot_speaker_config_total_period(
+                total_period=self._start_total_period))
+        commands.append(
+            self._command_protocol.push_bot_speaker_config_active_time(
+                active_time=self._start_active_time))
         if self._start_frequency is not None:
-            commands.append(self.protocol.push_bot_speaker_set_tone(
+            commands.append(self._command_protocol.push_bot_speaker_set_tone(
                 frequency=self._start_frequency))
         if self._start_melody is not None:
-            commands.append(self.protocol.push_bot_speaker_set_melody(
+            commands.append(self._command_protocol.push_bot_speaker_set_melody(
                 melody=self._start_melody))
         return commands
 
@@ -70,11 +76,13 @@ class PushBotEthernetSpeakerDevice(
     @overrides(AbstractSendMeMulticastCommandsVertex.pause_stop_commands)
     def pause_stop_commands(self):
         commands = list()
-        commands.append(self.protocol.push_bot_speaker_config_total_period(
-            total_period=0))
-        commands.append(self.protocol.push_bot_speaker_config_active_time(
-            active_time=0))
-        commands.append(self.protocol.push_bot_speaker_set_tone(
+        commands.append(
+            self._command_protocol.push_bot_speaker_config_total_period(
+                total_period=0))
+        commands.append(
+            self._command_protocol.push_bot_speaker_config_active_time(
+                active_time=0))
+        commands.append(self._command_protocol.push_bot_speaker_set_tone(
             frequency=0))
         return commands
 

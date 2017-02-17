@@ -97,7 +97,7 @@ class ExternalDeviceLifControl(
 
         # Create a partition to key map
         self._partition_id_to_key = OrderedDict([
-            ("{}_PARTITION_ID".format(device.device_control_partition_id),
+            ("{}".format(device.device_control_partition_id),
              device.device_control_key)
             for device in devices
         ])
@@ -165,7 +165,7 @@ class ExternalDeviceLifControl(
     @overrides(AbstractVertexWithEdgeToDependentVertices
                .edge_partition_identifiers_for_dependent_vertex)
     def edge_partition_identifiers_for_dependent_vertex(self, vertex):
-        return vertex.device_control_partition_id
+        return [vertex.device_control_partition_id]
 
     @overrides(AbstractEthernetController.get_external_devices)
     def get_external_devices(self):

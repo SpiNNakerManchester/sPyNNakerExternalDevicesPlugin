@@ -44,11 +44,15 @@ static bool threshold_type_is_above_threshold(
                 value_to_send = threshold_type->min_value;
             }
 
+            log_debug("Sending key=0x%08x payload=0x%08x",
+                    threshold_type->key, value_to_send);
+
             while (!spin1_send_mc_packet(
                         threshold_type->key, value_to_send, WITH_PAYLOAD)) {
                 spin1_delay_us(1);
             }
         } else {
+            log_debug("Sending key=0x%08x", threshold_type->key);
             while (!spin1_send_mc_packet(
                         threshold_type->key, 0, NO_PAYLOAD)) {
                 spin1_delay_us(1);

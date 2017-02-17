@@ -2,8 +2,12 @@ from pacman.model.decorators.overrides import overrides
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
     .abstract_multicast_controllable_device \
     import AbstractMulticastControllableDevice
+from abc import abstractmethod
+from six import add_metaclass
+from abc import ABCMeta
 
 
+@add_metaclass(ABCMeta)
 class PushBotEthernetDevice(AbstractMulticastControllableDevice):
     """ An arbitrary PushBot device
     """
@@ -59,3 +63,9 @@ class PushBotEthernetDevice(AbstractMulticastControllableDevice):
         """ The protocol instance, for use in the subclass
         """
         return self._protocol
+
+    @abstractmethod
+    def set_command_protocol(self, command_protocol):
+        """ Set the protocol use to send setup and shutdown commands,\
+            separately from the protocol used to control the device
+        """
