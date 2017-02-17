@@ -36,10 +36,11 @@ class PushBotRetinaViewer(Thread):
 
         # Determine mask for coordinates
         self._coordinate_mask = (
-            1 << (2 * resolution.bits_per_coordinate)) - 1
+            (1 << (2 * resolution.bits_per_coordinate)) - 1
+        )
 
         # Set up the image
-        self._image_data = numpy.zeros(resolution.n_neurons)
+        self._image_data = numpy.zeros(resolution.pixels * resolution.pixels)
         self._image_data_view = self._image_data.view()
         self._image_data_view.shape = (
             resolution.pixels, resolution.pixels)

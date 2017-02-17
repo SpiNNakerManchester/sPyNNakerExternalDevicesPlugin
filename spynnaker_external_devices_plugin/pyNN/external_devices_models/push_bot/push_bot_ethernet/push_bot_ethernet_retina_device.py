@@ -10,9 +10,6 @@ from spynnaker_external_devices_plugin.pyNN.connections\
     .push_bot_retina_connection import PushBotRetinaConnection
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
     .abstract_push_bot_retina_device import AbstractPushBotRetinaDevice
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_retina_resolution import PushBotRetinaResolution
-from spinn_front_end_common.utilities import exceptions
 
 
 class PushBotEthernetRetinaDevice(
@@ -22,10 +19,6 @@ class PushBotEthernetRetinaDevice(
             self, protocol, resolution, pushbot_ip_address, pushbot_port=56000,
             injector_port=None, local_host=None, local_port=None,
             retina_injector_label="PushBotRetinaInjector"):
-        if resolution != PushBotRetinaResolution.NATIVE_128_X_128:
-            raise exceptions.ConfigurationException(
-                "Only the native 128x128 resolution is supported over Ethernet"
-                " so far")
 
         AbstractPushBotRetinaDevice.__init__(self, protocol, resolution)
         pushbot_wifi_connection = get_pushbot_wifi_connection(
@@ -35,7 +28,7 @@ class PushBotEthernetRetinaDevice(
         self._retina_injector_label = retina_injector_label
 
         self._database_connection = PushBotRetinaConnection(
-            self._retina_injector_label, pushbot_wifi_connection,
+            self._retina_injector_label, pushbot_wifi_connection, resolution,
             local_host, local_port)
 
     @overrides(AbstractEthernetSensor.get_n_neurons)

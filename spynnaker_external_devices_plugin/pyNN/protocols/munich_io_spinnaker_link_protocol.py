@@ -216,7 +216,7 @@ class RetinaKey(Enum):
 
     @property
     def n_neurons(self):
-        return self._pixels ** 2
+        return 2 * (self._pixels ** 2)
 
     @property
     def pixels(self):

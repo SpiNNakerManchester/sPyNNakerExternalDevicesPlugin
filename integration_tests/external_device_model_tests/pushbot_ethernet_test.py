@@ -52,17 +52,17 @@ pushbot_protocol = e.MunichIoSpiNNakerLinkProtocol(
 # ]
 # p.Projection(stimulation, pushbot, p.FromListConnector(connections))
 
+retina_resolution = e.PushBotRetinaResolution.DOWNSAMPLE_64_X_64
 pushbot_retina = e.EthernetSensorPopulation(
     e.PushBotEthernetRetinaDevice,
     {
         "protocol": pushbot_protocol,
-        "resolution": e.PushBotRetinaResolution.NATIVE_128_X_128,
-        # "pushbot_ip_address": "10.162.177.57"
-        "pushbot_ip_address": "127.0.0.1"
+        "resolution": retina_resolution,
+        "pushbot_ip_address": "10.162.177.57"
+        # "pushbot_ip_address": "127.0.0.1"
     })
 
-viewer = PushBotRetinaViewer(
-    e.PushBotRetinaResolution.NATIVE_128_X_128.value, port=17895)
+viewer = PushBotRetinaViewer(retina_resolution.value, port=17895)
 e.activate_live_output_for(pushbot_retina, port=viewer.local_port)
 
 viewer.start()

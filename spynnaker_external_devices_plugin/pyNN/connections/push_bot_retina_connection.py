@@ -1,5 +1,7 @@
 from spynnaker_external_devices_plugin.pyNN.connections\
     .spynnaker_live_spikes_connection import SpynnakerLiveSpikesConnection
+from spynnaker_external_devices_plugin.pyNN.external_devices_models\
+    .push_bot.push_bot_retina_resolution import PushBotRetinaResolution
 
 from spinnman.connections.connection_listener import ConnectionListener
 
@@ -20,6 +22,7 @@ class PushBotRetinaConnection(SpynnakerLiveSpikesConnection):
 
     def __init__(
             self, retina_injector_label, pushbot_wifi_connection,
+            resolution=PushBotRetinaResolution.NATIVE_128_X_128,
             local_host=None, local_port=None):
         SpynnakerLiveSpikesConnection.__init__(
             self, send_labels=[retina_injector_label], local_host=local_host,
@@ -27,6 +30,12 @@ class PushBotRetinaConnection(SpynnakerLiveSpikesConnection):
         self._retina_injector_label = retina_injector_label
         self._pushbot_listener = ConnectionListener(
             pushbot_wifi_connection, n_processes=1)
+
+        self._pixel_shift = 7 - resolution.value.bits_per_coordinate
+        self._x_shift = resolution.value.bits_per_coordinate
+        self._y_shift = 0
+        self._p_shift = resolution.value.bits_per_coordinate * 2
+
         self._pushbot_listener.add_callback(self._receive_retina_data)
         self._pushbot_listener.start()
         self._old_data = None
@@ -47,32 +56,39 @@ class PushBotRetinaConnection(SpynnakerLiveSpikesConnection):
 
         # Put the data in a numpy array
         data_all = numpy.fromstring(data, numpy.uint8).astype(numpy.uint32)
+        ascii_index = numpy.where(data_all[::_RETINA_PACKET_SIZE] < 0x80)[0]
+        offset = 0
+        while len(ascii_index) > 0:
+            index = ascii_index[0] * _RETINA_PACKET_SIZE
+            stop_index = numpy.where(data_all[index:] >= 0x80)[0]
+            if len(stop_index) > 0:
+                stop_index = index + stop_index[0]
+            else:
+                stop_index = len(data)
 
-        # Extract the start of each retina packet
-        retina_start_indices = numpy.where(data_all >= 0x80)[0]
+            data_all = numpy.hstack(
+                (data_all[:index], data_all[stop_index:]))
+            offset += stop_index - index
+            ascii_index = numpy.where(
+                data_all[::_RETINA_PACKET_SIZE] < 0x80)[0]
 
-        # Remove any partial retina data (can only be one extra index)
-        extra_index = retina_start_indices[
-            (retina_start_indices + _RETINA_PACKET_SIZE) > len(data_all)]
-        if len(extra_index) > 0:
-            self._old_data = data[-extra_index[0]:]
-            retina_start_indices = retina_start_indices[
-                (retina_start_indices + _RETINA_PACKET_SIZE) <= len(data_all)]
+        extra = len(data_all) % _RETINA_PACKET_SIZE
+        if extra != 0:
+            self._old_data = data[-extra:]
+            data_all = data_all[:-extra]
 
-        # Get the retina packets
-        retina_data = numpy.dstack([
-            data_all[retina_start_indices + i]
-            for i in range(_RETINA_PACKET_SIZE)
-        ]).reshape(-1)
-
-        if len(retina_data) > 0:
+        if len(data_all) > 0:
 
             # now process those retina events
-            ys = retina_data[::_RETINA_PACKET_SIZE] & 0x7f
-            xs = retina_data[1::_RETINA_PACKET_SIZE] & 0x7f
+            xs = (data_all[::_RETINA_PACKET_SIZE] & 0x7f) >> self._pixel_shift
+            ys = (data_all[1::_RETINA_PACKET_SIZE] & 0x7f) >> self._pixel_shift
             polarity = numpy.where(
-                retina_data[1::_RETINA_PACKET_SIZE] >= 0x80, 1, 0)
-            neuron_ids = xs | (ys << 7) | (polarity << 14)
+                data_all[1::_RETINA_PACKET_SIZE] >= 0x80, 1, 0)
+            neuron_ids = (
+                (xs << self._x_shift) |
+                (ys << self._y_shift) |
+                (polarity << self._p_shift)
+            )
             self.send_spikes(self._retina_injector_label, neuron_ids)
 
         self._lock.release()
