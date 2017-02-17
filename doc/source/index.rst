@@ -4,6 +4,7 @@ which is part of the SpiNNaker_ Project.
 This code depends on SpiNNMachine_, SpiNNStorageHandlers_, SpiNNMan_, PACMAN_, DataSpecification_,
 SpiNNFrontEndCommon_, sPyNNaker_.
 
+.. _SpiNNaker: http://apt.cs.manchester.ac.uk/projects/SpiNNaker
 .. _SpiNNMachine: http://spinnmachine.readthedocs.io
 .. _sPyNNakerExternalDevicesPlugin: https://github.com/SpiNNakerManchester/sPyNNakerExternalDevicesPlugin.git
 .. _SpiNNStorageHandlers: http://spinnstoragehandlers.readthedocs.io
@@ -15,7 +16,7 @@ SpiNNFrontEndCommon_, sPyNNaker_.
 
 
 sPyNNakerExternalDevicesPlugin
-=============================
+==============================
 
 .. automodule:: spynnaker_external_devices_plugin
 
