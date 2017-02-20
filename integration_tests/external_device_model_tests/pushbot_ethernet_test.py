@@ -8,15 +8,15 @@ p.setup(1.0)
 # Set up the PushBot devices
 pushbot_protocol = e.MunichIoSpiNNakerLinkProtocol(
     mode=e.MunichIoSpiNNakerLinkProtocol.MODES.PUSH_BOT, uart_id=0)
-# motor_0 = e.PushBotEthernetMotorDevice(
-#     e.PushBotMotor.MOTOR_0_PERMANENT, pushbot_protocol)
-# motor_1 = e.PushBotEthernetMotorDevice(
-#     e.PushBotMotor.MOTOR_1_PERMANENT, pushbot_protocol)
-# speaker = e.PushBotEthernetSpeakerDevice(
-#     e.PushBotSpeaker.SPEAKER_TONE, pushbot_protocol)
-# laser = e.PushBotEthernetLaserDevice(
-#     e.PushBotLaser.LASER_ACTIVE_TIME, pushbot_protocol,
-#     start_total_period=1000)
+motor_0 = e.PushBotEthernetMotorDevice(
+    e.PushBotMotor.MOTOR_0_PERMANENT, pushbot_protocol)
+motor_1 = e.PushBotEthernetMotorDevice(
+    e.PushBotMotor.MOTOR_1_PERMANENT, pushbot_protocol)
+speaker = e.PushBotEthernetSpeakerDevice(
+    e.PushBotSpeaker.SPEAKER_TONE, pushbot_protocol)
+laser = e.PushBotEthernetLaserDevice(
+    e.PushBotLaser.LASER_ACTIVE_TIME, pushbot_protocol,
+    start_total_period=1000)
 led_front = e.PushBotEthernetLEDDevice(
     e.PushBotLED.LED_FRONT_ACTIVE_TIME, pushbot_protocol,
     start_total_period=1000)
@@ -24,7 +24,16 @@ led_back = e.PushBotEthernetLEDDevice(
     e.PushBotLED.LED_BACK_ACTIVE_TIME, pushbot_protocol,
     start_total_period=1000)
 
-devices = [led_front, led_back]
+weights = {
+    motor_0: 10.0,
+    motor_1: 10.0,
+    speaker: 100.0,
+    laser: 100.0,
+    led_front: 100.0,
+    led_back: 100.0,
+}
+
+devices = [motor_0, motor_1, speaker, laser, led_front, led_back]
 
 # Set up the PushBot control
 pushbot = e.EthernetControlPopulation(
@@ -34,7 +43,7 @@ pushbot = e.EthernetControlPopulation(
         "devices": devices,
         "pushbot_ip_address": "10.162.177.57",
         # "pushbot_ip_address": "127.0.0.1",
-        "tau_syn_E": 1000.0
+        "tau_syn_E": 500.0
     },
     label="PushBot"
 )
@@ -42,13 +51,12 @@ pushbot = e.EthernetControlPopulation(
 # Send in some spikes
 stimulation = p.Population(
     len(devices), p.SpikeSourceArray,
-    {"spike_times": [[0], [5000]]},
+    {"spike_times": [[i * 1000] for i in range(len(devices))]},
     label="input"
 )
 
 connections = [
-    (0, 0, 100, 1),
-    (1, 1, 100, 1)
+    (i, i, weights[device], 1) for i, device in enumerate(devices)
 ]
 p.Projection(stimulation, pushbot, p.FromListConnector(connections))
 
@@ -66,5 +74,5 @@ viewer = PushBotRetinaViewer(retina_resolution.value, port=17895)
 e.activate_live_output_for(pushbot_retina, port=viewer.local_port)
 
 viewer.start()
-p.run(10000)
+p.run(len(devices) * 1000)
 p.end()
