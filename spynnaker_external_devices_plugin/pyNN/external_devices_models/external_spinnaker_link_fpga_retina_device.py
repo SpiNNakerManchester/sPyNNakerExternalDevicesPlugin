@@ -11,7 +11,7 @@ from spinn_front_end_common.abstract_models.\
     AbstractProvidesOutgoingPartitionConstraints
 from spinn_front_end_common.utility_models.multi_cast_command \
     import MultiCastCommand
-from spynnaker.pyNN import exceptions
+from spynnaker.pyNN.exceptions import SpynnakerException
 from spynnaker.pyNN.models.abstract_models\
     .abstract_send_me_multicast_commands_vertex \
     import AbstractSendMeMulticastCommandsVertex
@@ -121,7 +121,7 @@ class ExternalFPGARetinaDevice(
             else:
                 fixed_n_neurons = 16 * 16 * 2
         else:
-            raise exceptions.SpynnakerException(
+            raise SpynnakerException(
                 "the FPGA retina does not recognise this mode")
 
         if fixed_n_neurons != n_neurons and n_neurons is not None:
