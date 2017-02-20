@@ -1,8 +1,9 @@
 #!/usr/bin/python
-import spynnaker.pyNN as p
-import spynnaker_external_devices_plugin.pyNN as q
-import numpy
 import matplotlib.pyplot as p_plot
+import numpy
+import spynnaker7.pyNN as p
+
+import spynnaker_external_devices_plugin.pyNN as q
 
 p.setup(timestep=1.0)
 

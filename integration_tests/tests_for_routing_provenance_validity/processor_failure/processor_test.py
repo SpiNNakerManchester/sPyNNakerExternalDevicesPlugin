@@ -4,10 +4,12 @@ Synfirechain-like example
 try:
     import pyNN.spiNNaker as p
 except Exception as e:
-    import spynnaker.pyNN as p
+    import spynnaker7.pyNN as p
 import os
 import sys
-from spynnaker.pyNN.spinnaker import executable_finder
+
+from spynnaker7 import executable_finder
+
 file_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 executable_finder.add_path(file_dir)
 

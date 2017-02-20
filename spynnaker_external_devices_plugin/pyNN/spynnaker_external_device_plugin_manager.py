@@ -1,7 +1,7 @@
 from pacman.model.graphs.application.impl.application_edge \
     import ApplicationEdge
 from spinnman.messages.eieio.eieio_type import EIEIOType
-from spynnaker.pyNN import get_spynnaker
+from spynnaker.pyNN.utilities import globals_variables
 from spynnaker.pyNN.utilities import constants
 from spinn_front_end_common.utility_models.live_packet_gather \
     import LivePacketGather
@@ -24,7 +24,7 @@ class SpynnakerExternalDevicePluginManager(object):
         :type socket_address:
         :return:
         """
-        _spinnaker = get_spynnaker()
+        _spinnaker = globals_variables.get_simulator()
         _spinnaker._add_socket_address(socket_address)
 
     def add_edge_to_recorder_vertex(
@@ -57,7 +57,7 @@ class SpynnakerExternalDevicePluginManager(object):
         :return:
         """
 
-        _spinnaker = get_spynnaker()
+        _spinnaker = globals_variables.get_simulator()
 
         # locate the live spike recorder
         if (port, hostname) in self._live_spike_recorders:
@@ -87,14 +87,14 @@ class SpynnakerExternalDevicePluginManager(object):
         :param partition_id: the partition identifier for making nets
         :return: None
         """
-        _spinnaker = get_spynnaker()
+        _spinnaker = globals_variables.get_simulator()
         edge = ApplicationEdge(vertex, device_vertex)
         _spinnaker.add_application_edge(edge, partition_id)
 
     def machine_time_step(self):
-        _spinnaker = get_spynnaker()
+        _spinnaker = globals_variables.get_simulator()
         return _spinnaker.machine_time_step
 
     def time_scale_factor(self):
-        _spinnaker = get_spynnaker()
+        _spinnaker = globals_variables.get_simulator()
         return _spinnaker.timescale_factor

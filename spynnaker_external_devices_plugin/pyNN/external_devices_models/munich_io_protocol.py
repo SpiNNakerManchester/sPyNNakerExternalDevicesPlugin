@@ -147,8 +147,8 @@ class MunichIoProtocol(object):
 
     def bias_values(self, bias_id, bias_value):
         return MultiCastCommand(
-            key=,
-            payload=,
+            key="Junk",
+            payload="Junk",
             time=0, repeat=1, delay_between_repeats=100)
 
     def set_retina_transmission(

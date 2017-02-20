@@ -6,42 +6,40 @@ and implementation for the PyNN High-level API
 
 import os
 
+from spinn_front_end_common.utilities.notification_protocol.socket_address \
+    import SocketAddress
+
+from spynnaker.pyNN.utilities import globals_variables
+
 from spinnman.messages.eieio.eieio_type import EIEIOType
+
+from spynnaker.pyNN.spinnaker_common import executable_finder
 from spynnaker.pyNN.utilities import constants
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
+
+from spynnaker_external_devices_plugin.pyNN import model_binaries
+from spynnaker_external_devices_plugin.pyNN.connections \
+    .spynnaker_live_spikes_connection import SpynnakerLiveSpikesConnection
+from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
+    arbitrary_fpga_device import ArbitraryFPGADevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
     external_spinnaker_link_cochlea_device import ExternalCochleaDevice
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
     external_spinnaker_link_fpga_retina_device import ExternalFPGARetinaDevice
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
+from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
+    munich_spinnaker_link_motor_device import MunichMotorDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
     munich_spinnaker_link_retina_device import MunichRetinaDevice
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
     pushbot_spinnaker_link_retina_device import PushBotRetinaDevice
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
-    pushbot_spinnaker_link_retina_device import PushBotRetinaResolution
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
     pushbot_spinnaker_link_retina_device import PushBotRetinaPolarity
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
-    munich_spinnaker_link_motor_device import MunichMotorDevice
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
-    arbitrary_fpga_device import ArbitraryFPGADevice
-
-from spynnaker_external_devices_plugin.pyNN import model_binaries
-
+from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
+    pushbot_spinnaker_link_retina_device import PushBotRetinaResolution
 from spynnaker_external_devices_plugin.pyNN.\
     spynnaker_external_device_plugin_manager import \
     SpynnakerExternalDevicePluginManager
 from spynnaker_external_devices_plugin.pyNN.utility_models.spike_injector \
     import SpikeInjector as SpynnakerExternalDeviceSpikeInjector
-from spynnaker_external_devices_plugin.pyNN.connections\
-    .spynnaker_live_spikes_connection import SpynnakerLiveSpikesConnection
-
-
-from spynnaker.pyNN.utilities import conf
-from spynnaker.pyNN.spinnaker import executable_finder
-
-
-from spinn_front_end_common.utilities.notification_protocol.socket_address \
-    import SocketAddress
 
 executable_finder.add_path(os.path.dirname(model_binaries.__file__))
 spynnaker_external_devices = SpynnakerExternalDevicePluginManager()
@@ -105,20 +103,21 @@ def activate_live_output_for(
     :type use_prefix: bool
     """
 
+    config = globals_variables.get_simulator().config
     # get default params if none set
     if port is None:
-        port = conf.config.getint("Recording", "live_spike_port")
+        port = config.getint("Recording", "live_spike_port")
     if host is None:
-        host = conf.config.get("Recording", "live_spike_host")
+        host = config.get("Recording", "live_spike_host")
     # get default params for the database socket if required
 
     if database_notify_port_num is None:
-        database_notify_port_num = conf.config.getint("Database",
+        database_notify_port_num = config.getint("Database",
                                                       "notify_port")
     if database_notify_host is None:
-        database_notify_host = conf.config.get("Database", "notify_hostname")
+        database_notify_host = config.get("Database", "notify_hostname")
     if database_ack_port_num is None:
-        database_ack_port_num = conf.config.get("Database", "listen_port")
+        database_ack_port_num = config.get("Database", "listen_port")
         if database_ack_port_num == "None":
             database_ack_port_num = None
 
@@ -179,12 +178,12 @@ def SpikeInjector(
     :return:
     """
     if database_notify_port_num is None:
-        database_notify_port_num = conf.config.getint("Database",
+        database_notify_port_num = config.getint("Database",
                                                       "notify_port")
     if database_notify_host is None:
-        database_notify_host = conf.config.get("Database", "notify_hostname")
+        database_notify_host = config.get("Database", "notify_hostname")
     if database_ack_port_num is None:
-        database_ack_port_num = conf.config.get("Database", "listen_port")
+        database_ack_port_num = config.get("Database", "listen_port")
         if database_ack_port_num == "None":
             database_ack_port_num = None
 
