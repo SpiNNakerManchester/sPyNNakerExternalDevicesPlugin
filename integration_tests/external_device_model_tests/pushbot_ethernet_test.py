@@ -17,40 +17,40 @@ pushbot_protocol = e.MunichIoSpiNNakerLinkProtocol(
 # laser = e.PushBotEthernetLaserDevice(
 #     e.PushBotLaser.LASER_ACTIVE_TIME, pushbot_protocol,
 #     start_total_period=1000)
-# led_front = e.PushBotEthernetLEDDevice(
-#     e.PushBotLED.LED_FRONT_ACTIVE_TIME, pushbot_protocol,
-#     start_total_period=1000)
-# led_back = e.PushBotEthernetLEDDevice(
-#     e.PushBotLED.LED_BACK_ACTIVE_TIME, pushbot_protocol,
-#     start_total_period=1000)
-#
-# devices = [led_front, led_back]
+led_front = e.PushBotEthernetLEDDevice(
+    e.PushBotLED.LED_FRONT_ACTIVE_TIME, pushbot_protocol,
+    start_total_period=1000)
+led_back = e.PushBotEthernetLEDDevice(
+    e.PushBotLED.LED_BACK_ACTIVE_TIME, pushbot_protocol,
+    start_total_period=1000)
+
+devices = [led_front, led_back]
 
 # Set up the PushBot control
-# pushbot = e.EthernetControlPopulation(
-#     len(devices), e.PushBotLifEthernet,
-#     {
-#         "protocol": pushbot_protocol,
-#         "devices": devices,
-#         "pushbot_ip_address": "10.162.177.57",
-#         # "pushbot_ip_address": "127.0.0.1",
-#         "tau_syn_E": 1000.0
-#     },
-#     label="PushBot"
-# )
+pushbot = e.EthernetControlPopulation(
+    len(devices), e.PushBotLifEthernet,
+    {
+        "protocol": pushbot_protocol,
+        "devices": devices,
+        "pushbot_ip_address": "10.162.177.57",
+        # "pushbot_ip_address": "127.0.0.1",
+        "tau_syn_E": 1000.0
+    },
+    label="PushBot"
+)
 
-# # Send in some spikes
-# stimulation = p.Population(
-#     len(devices), p.SpikeSourceArray,
-#     {"spike_times": [[0], [5000]]},
-#     label="input"
-# )
-#
-# connections = [
-#     (0, 0, 100, 1),
-#     (1, 1, 100, 1)
-# ]
-# p.Projection(stimulation, pushbot, p.FromListConnector(connections))
+# Send in some spikes
+stimulation = p.Population(
+    len(devices), p.SpikeSourceArray,
+    {"spike_times": [[0], [5000]]},
+    label="input"
+)
+
+connections = [
+    (0, 0, 100, 1),
+    (1, 1, 100, 1)
+]
+p.Projection(stimulation, pushbot, p.FromListConnector(connections))
 
 retina_resolution = e.PushBotRetinaResolution.DOWNSAMPLE_64_X_64
 pushbot_retina = e.EthernetSensorPopulation(

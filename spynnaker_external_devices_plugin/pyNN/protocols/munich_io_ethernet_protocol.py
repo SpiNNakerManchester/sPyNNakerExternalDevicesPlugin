@@ -67,11 +67,11 @@ class MunichIoEthernetProtocol(object):
 
     @staticmethod
     def led_front_active_time(active_time):
-        return "!PC0={}\n".format(active_time)
+        return "!PC1={}\n".format(active_time)
 
     @staticmethod
     def led_back_active_time(active_time):
-        return "!PC1={}\n".format(active_time)
+        return "!PC0={}\n".format(active_time)
 
     @staticmethod
     def led_frequency(frequency):

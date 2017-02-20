@@ -3,8 +3,9 @@ from spynnaker_external_devices_plugin.pyNN.external_devices_models\
     .push_bot.push_bot_ethernet.push_bot_translator import PushBotTranslator
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
     .external_device_lif_control import ExternalDeviceLifControl
-from spynnaker_external_devices_plugin.pyNN.connections\
-    .push_bot_wifi_connection import get_pushbot_wifi_connection
+from spynnaker_external_devices_plugin.pyNN.external_devices_models\
+    .push_bot.push_bot_ethernet.push_bot_wifi_connection \
+    import get_pushbot_wifi_connection
 
 
 class PushBotLifEthernet(ExternalDeviceLifControl):

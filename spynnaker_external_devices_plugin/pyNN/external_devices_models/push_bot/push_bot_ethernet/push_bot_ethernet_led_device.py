@@ -61,6 +61,9 @@ class PushBotEthernetLEDDevice(
             commands.append(self.protocol.set_mode())
 
         # device specific commands
+        if self._start_total_period is not None:
+            commands.append(self._command_protocol.push_bot_led_total_period(
+                total_period=self._start_total_period))
         if self._start_active_time_front is not None:
             commands.append(
                 self._command_protocol.push_bot_led_front_active_time(
@@ -69,9 +72,6 @@ class PushBotEthernetLEDDevice(
             commands.append(
                 self._command_protocol.push_bot_led_back_active_time(
                     active_time=self._start_active_time_back))
-        if self._start_total_period is not None:
-            commands.append(self._command_protocol.push_bot_led_total_period(
-                total_period=self._start_total_period))
         if self._start_frequency is not None:
             commands.append(self._command_protocol.push_bot_led_set_frequency(
                 frequency=self._start_frequency))

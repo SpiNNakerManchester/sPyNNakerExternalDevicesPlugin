@@ -28,6 +28,17 @@ typedef struct threshold_type_t {
 
 } threshold_type_t;
 
+typedef union int_bits_union {
+    int int_value;
+    uint uint_value;
+} int_bits_union;
+
+static inline uint int_bits(int value) {
+    int_bits_union converter;
+    converter.int_value = value;
+    return converter.uint_value;
+}
+
 
 static bool threshold_type_is_above_threshold(
         state_t value, threshold_type_pointer_t threshold_type) {
@@ -44,11 +55,13 @@ static bool threshold_type_is_above_threshold(
                 value_to_send = threshold_type->min_value;
             }
 
+            uint payload = int_bits((int) value_to_send);
+
             log_debug("Sending key=0x%08x payload=0x%08x",
-                    threshold_type->key, value_to_send);
+                    threshold_type->key, payload);
 
             while (!spin1_send_mc_packet(
-                        threshold_type->key, value_to_send, WITH_PAYLOAD)) {
+                        threshold_type->key, payload, WITH_PAYLOAD)) {
                 spin1_delay_us(1);
             }
         } else {

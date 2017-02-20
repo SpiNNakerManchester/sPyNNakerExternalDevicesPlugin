@@ -15,8 +15,8 @@ class PushBotSpiNNakerLinkLEDDevice(
     def __init__(
             self, led, protocol, spinnaker_link_id,
             n_neurons=1, label=None, board_address=None,
-            start_active_time_front=0, start_active_time_back=0,
-            start_total_period=0, start_frequency=0):
+            start_active_time_front=None, start_active_time_back=None,
+            start_total_period=None, start_frequency=None):
         """
 
         :param led: The PushBotLED parameter to control

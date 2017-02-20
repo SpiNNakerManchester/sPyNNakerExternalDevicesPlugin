@@ -4,10 +4,12 @@ from spynnaker_external_devices_plugin.pyNN.external_devices_models\
     .abstract_ethernet_sensor import AbstractEthernetSensor
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
     .push_bot_ethernet.push_bot_translator import PushBotTranslator
-from spynnaker_external_devices_plugin.pyNN.connections\
-    .push_bot_wifi_connection import get_pushbot_wifi_connection
-from spynnaker_external_devices_plugin.pyNN.connections\
-    .push_bot_retina_connection import PushBotRetinaConnection
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_ethernet.push_bot_wifi_connection \
+    import get_pushbot_wifi_connection
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_ethernet.push_bot_retina_connection \
+    import PushBotRetinaConnection
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
     .abstract_push_bot_retina_device import AbstractPushBotRetinaDevice
 
