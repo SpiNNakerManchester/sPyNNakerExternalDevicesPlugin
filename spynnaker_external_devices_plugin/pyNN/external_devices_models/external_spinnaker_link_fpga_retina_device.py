@@ -79,10 +79,9 @@ class ExternalFPGARetinaDevice(
         :param spinnaker_link_id: The spinnaker link to which the retina is\
                 connected
         :param polarity: The "polarity" of the retina data
-        :param machine_time_step: The time step of the simulation
-        :param timescale_factor: The timescale factor of the simulation
-        :param label: The label for the population
+        :param label:
         :param n_neurons: The number of neurons in the population
+        :param board_address:
         """
         self._polarity = polarity
         self._fixed_key = (retina_key & 0xFFFF) << 16
