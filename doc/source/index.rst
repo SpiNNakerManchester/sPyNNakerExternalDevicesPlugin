@@ -2,7 +2,7 @@ These pages document the python code for the sPyNNakerExternalDevicesPlugin_ mod
 which is part of the SpiNNaker_ Project.
 
 This code depends on SpiNNMachine_, SpiNNStorageHandlers_, SpiNNMan_, PACMAN_, DataSpecification_,
-SpiNNFrontEndCommon_, sPyNNaker_.
+SpiNNFrontEndCommon_, sPyNNaker_ (Combined_documentation_).
 
 .. _SpiNNaker: http://apt.cs.manchester.ac.uk/projects/SpiNNaker
 .. _SpiNNMachine: http://spinnmachine.readthedocs.io
@@ -13,6 +13,7 @@ SpiNNFrontEndCommon_, sPyNNaker_.
 .. _DataSpecification: http://dataspecification.readthedocs.io
 .. _SpiNNFrontEndCommon: http://spinnfrontendcommon.readthedocs.io
 .. _sPyNNaker: http://spynnaker.readthedocs.io
+.. _Combined_documentation: http://spinnakermanchester.readthedocs.io
 
 
 sPyNNakerExternalDevicesPlugin
