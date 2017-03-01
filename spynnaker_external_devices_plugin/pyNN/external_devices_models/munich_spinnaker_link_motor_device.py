@@ -30,13 +30,12 @@ from spinn_front_end_common.abstract_models.impl\
     .application_data_specable_vertex import ApplicationDataSpecableVertex
 from spinn_front_end_common.abstract_models\
     .abstract_has_associated_binary import AbstractHasAssociatedBinary
-from spinn_front_end_common.abstract_models\
-    .abstract_binary_uses_simulation_run import AbstractBinaryUsesSimulationRun
 from spinn_front_end_common.interface.simulation import simulation_utilities
+from spinn_front_end_common.utilities.utility_objs.executable_start_type \
+    import ExecutableStartType
 
 # general imports
 import logging
-from spinnman.model.enums.executable_start_type import ExecutableStartType
 
 logger = logging.getLogger(__name__)
 
@@ -56,8 +55,7 @@ class _MunichMotorDevice(ApplicationSpiNNakerLinkVertex):
 class MunichMotorDevice(
         ApplicationDataSpecableVertex, AbstractHasAssociatedBinary,
         ApplicationVertex, AbstractVertexWithEdgeToDependentVertices,
-        AbstractProvidesOutgoingPartitionConstraints,
-        AbstractBinaryUsesSimulationRun):
+        AbstractProvidesOutgoingPartitionConstraints):
     """ An Omnibot motor control device - has a real vertex and an external\
         device vertex
     """
@@ -163,8 +161,8 @@ class MunichMotorDevice(
     def get_binary_file_name(self):
         return "robot_motor_control.aplx"
 
-    @overrides(AbstractHasAssociatedBinary.get_binary_start_mode_enum)
-    def get_binary_start_mode_enum(self):
+    @overrides(AbstractHasAssociatedBinary.get_binary_start_type)
+    def get_binary_start_type(self):
         return ExecutableStartType.USES_SIMULATION_INTERFACE
 
     def reserve_memory_regions(self, spec):
