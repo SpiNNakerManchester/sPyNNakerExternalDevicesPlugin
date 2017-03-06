@@ -24,18 +24,6 @@ class TestLiveSpikeRecorder(unittest.TestCase):
                 self.assertEqual(live_spike_recorder.constraints[index].x, 0)
                 self.assertEqual(live_spike_recorder.constraints[index].y, 0)
 
-    @unittest.skip("Not implemented")
-    def test_generate_data_spec(self):
-        self.assertEqual(True, "Test not implemented yet")
-
-    @unittest.skip("Not implemented")
-    def test_reserer_memory_regions(self):
-        self.assertEqual(True, "Test not implemented yet")
-
-    @unittest.skip("Not implemented")
-    def test_write_setup_info(self):
-        self.assertEqual(True, "Test not implemented yet")
-
 
 if __name__ == '__main__':
     unittest.main()
