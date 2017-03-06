@@ -119,7 +119,7 @@ __all__ = [
 
     # Pushbot Parameters
     "MunichIoSpiNNakerLinkProtocol",
-    "PushBotLaser", "PushBotLED", "PushBotMotor", "PushBotSpeaker"
+    "PushBotLaser", "PushBotLED", "PushBotMotor", "PushBotSpeaker",
     "PushBotRetinaResolution",
 
     # Pushbot Ethernet Parts
