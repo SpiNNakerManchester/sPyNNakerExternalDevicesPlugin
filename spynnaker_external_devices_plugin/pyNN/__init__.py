@@ -136,6 +136,25 @@ def add_database_socket_address(
     # update socket interface with new demands.
     spynnaker_external_devices.add_socket_address(database_socket)
 
+__all__ = [
+    "EIEIOType",
+
+    # Devices
+    "ExternalCochleaDevice", "ExternalFPGARetinaDevice",
+    "MunichRetinaDevice", "MunichMotorDevice",
+    "PushBotRetinaDevice", "PushBotRetinaResolution", "PushBotRetinaPolarity",
+    "ArbitraryFPGADevice",
+
+    # Connections
+    "SpynnakerLiveSpikesConnection",
+
+    # Provided functions
+    "activate_live_output_for",
+    "activate_live_output_to",
+    "SpikeInjector"
+
+]
+
 
 def activate_live_output_for(
         population, database_notify_host=None, database_notify_port_num=None,
