@@ -89,6 +89,7 @@ def GET_RETINA_PAYLOAD_VALUE(payload):
         _PAYLOAD_RETINA_PAYLOAD_OFFSET
     )
 
+
 # command key for setting up the master key of the board
 CONFIGURE_MASTER_KEY = MUNICH_KEY_I_D(127, 0)
 

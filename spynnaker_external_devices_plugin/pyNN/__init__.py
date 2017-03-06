@@ -94,8 +94,6 @@ from spynnaker_external_devices_plugin.pyNN.utility_models.spike_injector \
     import SpikeInjector as SpynnakerExternalDeviceSpikeInjector
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
     .abstract_ethernet_controller import AbstractEthernetController
-from spynnaker_external_devices_plugin.pyNN.connections \
-    import ethernet_control_connection
 from spynnaker_external_devices_plugin.pyNN.connections\
     .ethernet_control_connection import EthernetControlConnection
 from spynnaker_external_devices_plugin.pyNN.connections\
@@ -110,6 +108,39 @@ logger = logging.getLogger(__name__)
 
 executable_finder.add_path(os.path.dirname(model_binaries.__file__))
 spynnaker_external_devices = SpynnakerExternalDevicePluginManager()
+
+__all__ = [
+    "EIEIOType",
+
+    # General Devices
+    "ExternalCochleaDevice", "ExternalFPGARetinaDevice",
+    "MunichRetinaDevice", "MunichMotorDevice",
+    "ArbitraryFPGADevice",
+
+    # Pushbot Parameters
+    "MunichIoSpiNNakerLinkProtocol",
+    "PushBotLaser", "PushBotLED", "PushBotMotor", "PushBotSpeaker"
+    "PushBotRetinaResolution",
+
+    # Pushbot Ethernet Parts
+    "PushBotLifEthernet", "PushBotEthernetLaserDevice",
+    "PushBotEthernetLEDDevice", "PushBotEthernetMotorDevice",
+    "PushBotEthernetSpeakerDevice", "PushBotEthernetRetinaDevice",
+
+    # Pushbot SpiNNaker Link Parts
+    "PushBotLifSpinnakerLink", "PushBotSpiNNakerLinkLaserDevice",
+    "PushBotSpiNNakerLinkLEDDevice", "PushBotSpiNNakerLinkMotorDevice",
+    "PushBotSpiNNakerLinkSpeakerDevice", "PushBotSpiNNakerLinkRetinaDevice",
+
+    # Connections
+    "SpynnakerLiveSpikesConnection",
+
+    # Provided functions
+    "activate_live_output_for",
+    "activate_live_output_to",
+    "SpikeInjector"
+
+]
 
 
 def add_database_socket_address(
@@ -135,25 +166,6 @@ def add_database_socket_address(
 
     # update socket interface with new demands.
     spynnaker_external_devices.add_socket_address(database_socket)
-
-__all__ = [
-    "EIEIOType",
-
-    # Devices
-    "ExternalCochleaDevice", "ExternalFPGARetinaDevice",
-    "MunichRetinaDevice", "MunichMotorDevice",
-    "PushBotRetinaDevice", "PushBotRetinaResolution", "PushBotRetinaPolarity",
-    "ArbitraryFPGADevice",
-
-    # Connections
-    "SpynnakerLiveSpikesConnection",
-
-    # Provided functions
-    "activate_live_output_for",
-    "activate_live_output_to",
-    "SpikeInjector"
-
-]
 
 
 def activate_live_output_for(
