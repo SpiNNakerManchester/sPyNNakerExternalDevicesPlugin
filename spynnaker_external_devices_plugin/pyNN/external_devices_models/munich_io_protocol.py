@@ -79,7 +79,6 @@ PAYLOAD_MASTER_SLAVE_SET_MASTER_CLOCK_NOT_STARTED = 2
 PAYLOAD_MASTER_SLAVE_SET_MASTER_CLOCK_ACTIVE = 4
 
 
-
 class MunichIoProtocol(object):
 
     def __init__(self, mode=None):
@@ -153,7 +152,7 @@ class MunichIoProtocol(object):
             time=0, repeat=1, delay_between_repeats=100)
 
     def set_retina_transmission(
-            self, events_in_key=True, retina_pixels=128 * 128,
+            self, events_in_key=True, retina_pixels=128*128,
             payload_holds_time_stamps=False, size_of_time_stamp_in_bytes=None,
             retina_id=0):
 
@@ -232,6 +231,3 @@ class MunichIoProtocol(object):
         else:
             raise exceptions.SynapticConfigurationException(
                 "The no of pixels is not supported in this protocol.")
-
-
-
