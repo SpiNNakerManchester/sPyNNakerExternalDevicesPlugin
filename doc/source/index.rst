@@ -1,12 +1,13 @@
 These pages document the python code for the sPyNNakerExternalDevicesPlugin_ module
 which is part of the SpiNNaker_ Project.
 
-This code depends on SpiNNMachine_, SpiNNStorageHandlers_, SpiNNMan_, PACMAN_, DataSpecification_,
+This code depends on SpiNNUtils_, SpiNNMachine_, SpiNNStorageHandlers_, SpiNNMan_, PACMAN_, DataSpecification_,
 SpiNNFrontEndCommon_, sPyNNaker_ (Combined_documentation_).
 
 .. _SpiNNaker: http://apt.cs.manchester.ac.uk/projects/SpiNNaker
-.. _SpiNNMachine: http://spinnmachine.readthedocs.io
 .. _sPyNNakerExternalDevicesPlugin: https://github.com/SpiNNakerManchester/sPyNNakerExternalDevicesPlugin.git
+.. _SpiNNUtils: http://spinnutils.readthedocs.io
+.. _SpiNNMachine: http://spinnmachine.readthedocs.io
 .. _SpiNNStorageHandlers: http://spinnstoragehandlers.readthedocs.io
 .. _SpiNNMan: http://spinnman.readthedocs.io
 .. _PACMAN: http://pacman.readthedocs.io
