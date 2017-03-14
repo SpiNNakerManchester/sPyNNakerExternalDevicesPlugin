@@ -78,7 +78,7 @@ def activate_live_output_for(
         occur in the simulation
 
     :param population: The population to activate the live output for
-    :type population: Population
+    :type population: spynnaker.pyNN.models.pynn_population.Population
     :param database_notify_host: the hostname for the device which is\
             listening to the database notification.
     :type database_notify_host: str
@@ -103,7 +103,6 @@ def activate_live_output_for(
     :param payload_prefix:
     :param payload_right_shift:
     :param number_of_packets_sent_per_time_step:
-
     :param port: The UDP port to which the live spikes will be sent.  If not\
                 specified, the port will be taken from the "live_spike_port"\
                 parameter in the "Recording" section of the spynnaker cfg file.
@@ -194,8 +193,6 @@ def SpikeInjector(
     :param database_notify_port_num: The port number to which a external\
             device will receive the database is ready command
     :type database_notify_port_num: int
-
-    :return:
     """
     if database_notify_port_num is None:
         database_notify_port_num = conf.config.getint("Database",

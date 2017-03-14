@@ -25,7 +25,7 @@ class HostBasedInjector(object):
 
         :param packet: the DatabaseConfirmation message received
         :type packet: spinnman.messages.eieio.command_messages.database_confirmation
-        :return:
+        :rtype: None
         """
         self._received_hand_shake_condition.acquire()
         if not isinstance(packet, DatabaseConfirmation):
