@@ -152,7 +152,7 @@ class MunichIoProtocol(object):
             time=0, repeat=1, delay_between_repeats=100)
 
     def set_retina_transmission(
-            self, events_in_key=True, retina_pixels=128*128,
+            self, events_in_key=True, retina_pixels=128 * 128,
             payload_holds_time_stamps=False, size_of_time_stamp_in_bytes=None,
             retina_id=0):
 
