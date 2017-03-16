@@ -8,11 +8,11 @@ from spynnaker.pyNN.models.abstract_models\
 from pacman.model.constraints.key_allocator_constraints\
     .key_allocator_fixed_mask_constraint \
     import KeyAllocatorFixedMaskConstraint
-from pacman.model.graphs.machine.impl.simple_machine_vertex \
+from pacman.model.graphs.machine.simple_machine_vertex \
     import SimpleMachineVertex
-from pacman.model.graphs.application.impl.application_spinnaker_link_vertex \
+from pacman.model.graphs.application.application_spinnaker_link_vertex \
     import ApplicationSpiNNakerLinkVertex
-from pacman.model.graphs.application.impl.application_vertex \
+from pacman.model.graphs.application.application_vertex \
     import ApplicationVertex
 from pacman.model.decorators.overrides import overrides
 from pacman.model.resources.resource_container import ResourceContainer
