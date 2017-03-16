@@ -1,13 +1,12 @@
+# general imports
+from six import add_metaclass
+
 # pacman imports
 from pacman.model.graphs.application.application_fpga_vertex \
     import ApplicationFPGAVertex
+from spinn_utilities.abstract_base import AbstractBase, abstractmethod
 
-# general imports
-from abc import ABCMeta
-from six import add_metaclass
-
-
-@add_metaclass(ABCMeta)
+@add_metaclass(AbstractBase)
 class ArbitraryFPGADevice(ApplicationFPGAVertex):
 
     def __init__(
