@@ -9,7 +9,7 @@ from spinn_front_end_common.utility_models.multi_cast_command \
 from spynnaker.pyNN.models.abstract_models\
     .abstract_send_me_multicast_commands_vertex \
     import AbstractSendMeMulticastCommandsVertex
-from spynnaker.pyNN import exceptions
+from spynnaker.pyNN.exceptions import SpynnakerException
 
 # pacman imports
 from pacman.model.constraints.key_allocator_constraints\
@@ -90,7 +90,7 @@ class MunichRetinaDevice(
 
         if (self._position != self.RIGHT_RETINA and
            self._position != self.LEFT_RETINA):
-            raise exceptions.SpynnakerException(
+            raise SpynnakerException(
                 "The external Retina does not recognise this _position")
 
         if n_neurons != fixed_n_neurons and n_neurons is not None:

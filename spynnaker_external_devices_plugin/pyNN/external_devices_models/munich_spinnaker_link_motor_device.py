@@ -1,5 +1,5 @@
 # spynnaker imports
-from spynnaker.pyNN import exceptions
+from spynnaker.pyNN.exceptions import SpynnakerException
 from spynnaker.pyNN.models.abstract_models\
     .abstract_vertex_with_dependent_vertices import \
     AbstractVertexWithEdgeToDependentVertices
@@ -138,7 +138,7 @@ class MunichMotorDevice(
         edge_key = routing_info.get_first_key_from_pre_vertex(
             placement.vertex, MOTOR_PARTITION_ID)
         if edge_key is None:
-            raise exceptions.SpynnakerException(
+            raise SpynnakerException(
                 "This motor should have one outgoing edge to the robot")
 
         # write params to memory

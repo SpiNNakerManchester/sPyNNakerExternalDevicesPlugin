@@ -1,5 +1,5 @@
 from enum import Enum
-from spynnaker.pyNN import exceptions
+from spynnaker.pyNN.exceptions import SynapticConfigurationException
 import logging
 from spinn_front_end_common.utility_models.multi_cast_command import \
     MultiCastCommand
@@ -112,7 +112,7 @@ class MunichIoProtocol(object):
                 key=CHANGE_MODE,
                 payload=PAYLOAD_SET_TO_FREE_MODE,
                 time=0, repeat=1, delay_between_repeats=100)
-        raise exceptions.SynapticConfigurationException(
+        raise SynapticConfigurationException(
             "The mode given is not recognised within this protocol.")
 
     def set_retina_transmission_key(self, new_key):
@@ -145,9 +145,10 @@ class MunichIoProtocol(object):
             time=0, repeat=1, delay_between_repeats=100)
 
     def bias_values(self, bias_id, bias_value):
+        # CYB ADDED "JUNK" to get file past sphink
         return MultiCastCommand(
-            key=0,
-            payload=0,
+            key="JUNK",
+            payload="JUNK",
             time=0, repeat=1, delay_between_repeats=100)
 
     def set_retina_transmission(
@@ -191,7 +192,7 @@ class MunichIoProtocol(object):
             # verify that its what the end user wants.
             if (payload_holds_time_stamps or
                     size_of_time_stamp_in_bytes is not None):
-                raise exceptions.SynapticConfigurationException(
+                raise SynapticConfigurationException(
                     "If you are using payloads to store events, you cannot"
                     " have time stamps at all.")
             return MultiCastCommand(
@@ -228,5 +229,5 @@ class MunichIoProtocol(object):
                 payload=(time_stamps | PAYLOAD_RETINA_16_DOWN_SAMPLING),
                 time=0, repeat=1, delay_between_repeats=100)
         else:
-            raise exceptions.SynapticConfigurationException(
+            raise SynapticConfigurationException(
                 "The no of pixels is not supported in this protocol.")
