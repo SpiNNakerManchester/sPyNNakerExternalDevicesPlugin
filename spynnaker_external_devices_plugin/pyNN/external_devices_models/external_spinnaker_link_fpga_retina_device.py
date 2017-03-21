@@ -3,6 +3,7 @@ import logging
 from pacman.model.constraints.key_allocator_constraints\
     .key_allocator_fixed_key_and_mask_constraint \
     import KeyAllocatorFixedKeyAndMaskConstraint
+from pacman.model.decorators.overrides import overrides
 from pacman.model.routing_info.base_key_and_mask import BaseKeyAndMask
 from pacman.model.graphs.application.application_spinnaker_link_vertex \
     import ApplicationSpiNNakerLinkVertex
@@ -131,11 +132,13 @@ class ExternalFPGARetinaDevice(
             self, n_atoms=fixed_n_neurons, spinnaker_link_id=spinnaker_link_id,
             label=label, max_atoms_per_core=fixed_n_neurons,
             board_address=board_address)
-        AbstractSendMeMulticastCommandsVertex.__init__(self, commands=[
-            MultiCastCommand(0, 0x0000FFFF, 1, 5, 100),
-            MultiCastCommand(-1, 0x0000FFFE, 0, 5, 100)])
         AbstractProvidesOutgoingPartitionConstraints.__init__(self)
 
     def get_outgoing_partition_constraints(self, partition):
         return [KeyAllocatorFixedKeyAndMaskConstraint(
             [BaseKeyAndMask(self._fixed_key, self._fixed_mask)])]
+
+    @overrides(AbstractSendMeMulticastCommandsVertex.commands)
+    def commands(self):
+        return [MultiCastCommand(0, 0x0000FFFF, 1, 5, 100),
+            MultiCastCommand(-1, 0x0000FFFE, 0, 5, 100)]
