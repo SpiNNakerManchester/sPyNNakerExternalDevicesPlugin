@@ -15,6 +15,7 @@ from spynnaker.pyNN import exceptions
 from pacman.model.constraints.key_allocator_constraints\
     .key_allocator_fixed_key_and_mask_constraint \
     import KeyAllocatorFixedKeyAndMaskConstraint
+from pacman.model.decorators.overrides import overrides
 from pacman.model.routing_info.base_key_and_mask import BaseKeyAndMask
 from pacman.model.graphs.application.application_spinnaker_link_vertex \
     import ApplicationSpiNNakerLinkVertex
@@ -110,8 +111,7 @@ class PushBotRetinaDevice(ApplicationSpiNNakerLinkVertex,
             self, n_atoms=fixed_n_neurons, spinnaker_link_id=spinnaker_link_id,
             max_atoms_per_core=fixed_n_neurons, label=label,
             board_address=board_address)
-        AbstractSendMeMulticastCommandsVertex.__init__(
-            self, self._get_commands(command_sender_top_bits_key))
+        self._commands = self._get_commands(command_sender_top_bits_key)
         AbstractProvidesOutgoingPartitionConstraints.__init__(self)
 
         if n_neurons != fixed_n_neurons and n_neurons is not None:
@@ -161,6 +161,11 @@ class PushBotRetinaDevice(ApplicationSpiNNakerLinkVertex,
             0, 1, 100))
 
         return commands
+
+    @property
+    @overrides(AbstractSendMeMulticastCommandsVertex.commands)
+    def commands(self):
+        return self._commands
 
     @property
     def model_name(self):
