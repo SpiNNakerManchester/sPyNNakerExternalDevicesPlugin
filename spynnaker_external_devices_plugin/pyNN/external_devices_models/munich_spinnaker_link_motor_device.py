@@ -16,7 +16,6 @@ from pacman.model.graphs.application.application_spinnaker_link_vertex \
     import ApplicationSpiNNakerLinkVertex
 from pacman.model.graphs.application.application_vertex \
     import ApplicationVertex
-from pacman.model.decorators.overrides import overrides
 from pacman.model.resources.resource_container import ResourceContainer
 from pacman.model.resources.sdram_resource import SDRAMResource
 from pacman.model.resources.dtcm_resource import DTCMResource
@@ -118,7 +117,6 @@ class MunichMotorDevice(
         # and the management bit anyway
         return list([KeyAllocatorFixedMaskConstraint(0xFFFFF800)])
 
-
     @inject_items({
         "graph_mapper": "MemoryGraphMapper",
         "machine_graph": "MemoryMachineGraph",
@@ -217,10 +215,9 @@ class MunichMotorDevice(
         return self._dependent_vertices
 
     @property
-    @overrides(AbstractVertexWithEdgeToDependentVertices.\
+    @overrides(AbstractVertexWithEdgeToDependentVertices.
                edge_partition_identifier_for_dependent_edge)
     def edge_partition_identifier_for_dependent_edge(self):
         """ Return the dependent edge identifier
         """
         return MOTOR_PARTITION_ID
-

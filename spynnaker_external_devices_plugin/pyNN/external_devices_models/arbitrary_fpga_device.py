@@ -4,7 +4,8 @@ from six import add_metaclass
 # pacman imports
 from pacman.model.graphs.application.application_fpga_vertex \
     import ApplicationFPGAVertex
-from spinn_utilities.abstract_base import AbstractBase, abstractmethod
+from spinn_utilities.abstract_base import AbstractBase
+
 
 @add_metaclass(AbstractBase)
 class ArbitraryFPGADevice(ApplicationFPGAVertex):

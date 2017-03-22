@@ -141,4 +141,4 @@ class ExternalFPGARetinaDevice(
     @overrides(AbstractSendMeMulticastCommandsVertex.commands)
     def commands(self):
         return [MultiCastCommand(0, 0x0000FFFF, 1, 5, 100),
-            MultiCastCommand(-1, 0x0000FFFE, 0, 5, 100)]
+                MultiCastCommand(-1, 0x0000FFFE, 0, 5, 100)]
