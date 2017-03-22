@@ -8,6 +8,7 @@ from spynnaker.pyNN.models.abstract_models\
 from pacman.model.constraints.key_allocator_constraints\
     .key_allocator_fixed_mask_constraint \
     import KeyAllocatorFixedMaskConstraint
+from pacman.model.decorators.overrides import overrides
 from pacman.model.graphs.machine.simple_machine_vertex \
     import SimpleMachineVertex
 from pacman.model.graphs.application.application_spinnaker_link_vertex \
@@ -78,8 +79,6 @@ class MunichMotorDevice(
                         " device has been ignored; 6 will be used instead")
 
         ApplicationVertex.__init__(self, label)
-        AbstractVertexWithEdgeToDependentVertices.__init__(
-            self, [_MunichMotorDevice(spinnaker_link_id)], MOTOR_PARTITION_ID)
         AbstractProvidesOutgoingPartitionConstraints.__init__(self)
 
         self._speed = speed
@@ -88,6 +87,7 @@ class MunichMotorDevice(
         self._delay_time = delay_time
         self._delta_threshold = delta_threshold
         self._continue_if_not_different = continue_if_not_different
+        self._dependent_vertices = [_MunichMotorDevice(spinnaker_link_id)]
 
     @property
     @overrides(ApplicationVertex.n_atoms)
@@ -180,3 +180,19 @@ class MunichMotorDevice(
         spec.reserve_memory_region(region=self.PARAMS_REGION,
                                    size=self.PARAMS_SIZE,
                                    label='params')
+
+    @overrides(AbstractVertexWithEdgeToDependentVertices.dependent_vertices)
+    @property
+    def dependent_vertices(self):
+        """ Return the vertices which this vertex depends upon
+        """
+        return self._dependent_vertices
+
+    @overrides(AbstractVertexWithEdgeToDependentVertices.\
+               edge_partition_identifier_for_dependent_edge)
+    @property
+    def edge_partition_identifier_for_dependent_edge(self):
+        """ Return the dependent edge identifier
+        """
+        return MOTOR_PARTITION_ID
+
