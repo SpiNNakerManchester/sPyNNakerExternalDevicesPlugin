@@ -32,8 +32,6 @@ from spinn_front_end_common.abstract_models\
 from spinn_front_end_common.utilities import constants
 from spinn_front_end_common.abstract_models\
     .abstract_has_associated_binary import AbstractHasAssociatedBinary
-from spinn_front_end_common.abstract_models\
-    .abstract_binary_uses_simulation_run import AbstractBinaryUsesSimulationRun
 from spinn_front_end_common.interface.simulation import simulation_utilities
 
 # general imports
@@ -57,8 +55,7 @@ class _MunichMotorDevice(ApplicationSpiNNakerLinkVertex):
 class MunichMotorDevice(
         AbstractGeneratesDataSpecification, AbstractHasAssociatedBinary,
         ApplicationVertex, AbstractVertexWithEdgeToDependentVertices,
-        AbstractProvidesOutgoingPartitionConstraints,
-        AbstractBinaryUsesSimulationRun):
+        AbstractProvidesOutgoingPartitionConstraints):
     """ An Omnibot motor control device - has a real vertex and an external\
         device vertex
     """
