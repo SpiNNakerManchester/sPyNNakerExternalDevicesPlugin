@@ -44,6 +44,25 @@ from spynnaker_external_devices_plugin.pyNN.utility_models.spike_injector \
 executable_finder.add_path(os.path.dirname(model_binaries.__file__))
 spynnaker_external_devices = SpynnakerExternalDevicePluginManager()
 
+__all__ = [
+    "EIEIOType",
+
+    # Devices
+    "ExternalCochleaDevice", "ExternalFPGARetinaDevice",
+    "MunichRetinaDevice", "MunichMotorDevice",
+    "PushBotRetinaDevice", "PushBotRetinaResolution", "PushBotRetinaPolarity",
+    "ArbitraryFPGADevice",
+
+    # Connections
+    "SpynnakerLiveSpikesConnection",
+
+    # Provided functions
+    "activate_live_output_for",
+    "activate_live_output_to",
+    "SpikeInjector"
+
+]
+
 
 def activate_live_output_for(
         population, database_notify_host=None, database_notify_port_num=None,
@@ -57,7 +76,7 @@ def activate_live_output_for(
         occur in the simulation
 
     :param population: The population to activate the live output for
-    :type population: Population
+    :type population: spynnaker.pyNN.models.pynn_population.Population
     :param database_notify_host: the hostname for the device which is\
             listening to the database notification.
     :type database_notify_host: str
@@ -82,7 +101,6 @@ def activate_live_output_for(
     :param payload_prefix:
     :param payload_right_shift:
     :param number_of_packets_sent_per_time_step:
-
     :param port: The UDP port to which the live spikes will be sent.  If not\
                 specified, the port will be taken from the "live_spike_port"\
                 parameter in the "Recording" section of the spynnaker cfg file.
@@ -174,8 +192,6 @@ def SpikeInjector(
     :param database_notify_port_num: The port number to which a external\
             device will receive the database is ready command
     :type database_notify_port_num: int
-
-    :return:
     """
     if database_notify_port_num is None:
         database_notify_port_num = config.getint("Database",
