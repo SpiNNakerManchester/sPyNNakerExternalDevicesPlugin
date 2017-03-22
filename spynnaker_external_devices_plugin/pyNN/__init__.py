@@ -130,8 +130,7 @@ def activate_live_output_for(
     # get default params for the database socket if required
 
     if database_notify_port_num is None:
-        database_notify_port_num = config.getint("Database",
-                                                      "notify_port")
+        database_notify_port_num = config.getint("Database", "notify_port")
     if database_notify_host is None:
         database_notify_host = config.get("Database", "notify_hostname")
     if database_ack_port_num is None:
@@ -193,9 +192,9 @@ def SpikeInjector(
             device will receive the database is ready command
     :type database_notify_port_num: int
     """
+    config = globals_variables.get_simulator().config
     if database_notify_port_num is None:
-        database_notify_port_num = config.getint("Database",
-                                                      "notify_port")
+        database_notify_port_num = config.getint("Database", "notify_port")
     if database_notify_host is None:
         database_notify_host = config.get("Database", "notify_hostname")
     if database_ack_port_num is None:
