@@ -1,23 +1,30 @@
+from pacman.model.graphs.application.impl.application_edge \
+    import ApplicationEdge
 from spinnman.messages.eieio.eieio_type import EIEIOType
 from spynnaker.pyNN import get_spynnaker
 from spynnaker_external_devices_plugin.pyNN.utility_models.\
     live_spike_gather import LiveSpikeGather
-
-PARTITION_ID = "SPIKE"
+from spynnaker.pyNN.utilities import constants
+from spinn_front_end_common.utility_models.live_packet_gather \
+    import LivePacketGather
 
 
 class SpynnakerExternalDevicePluginManager(object):
+    """
+    main entrance for the external device plugin manager
+    """
 
     def __init__(self):
         self._live_spike_recorders = dict()
 
-    def add_socket_address(self, socket_address):
+    @staticmethod
+    def add_socket_address(socket_address):
         """ Add a socket address to the list to be checked by the\
             notification protocol
 
         :param socket_address: the socket address
         :type socket_address:
-        :return:
+        :rtype: None:
         """
         _spinnaker = get_spynnaker()
         _spinnaker._add_socket_address(socket_address)
@@ -32,7 +39,9 @@ class SpynnakerExternalDevicePluginManager(object):
             use_payload_prefix=True, payload_prefix=None,
             payload_right_shift=0, number_of_packets_sent_per_time_step=0):
         """
-        creates / adds a edge to a LiveSpikeInjector to provide live output
+        adds a edge from a vertex to the LPG object, builds as needed and has
+        all the parameters for the creation of the LPG if needed
+
         :param population_to_get_live_output_from:
         the source pop for live output
         :param port: the port number used for live output
@@ -75,12 +84,12 @@ class SpynnakerExternalDevicePluginManager(object):
 
             # build cell params for the population
             cellparams = {
-                'machine_time_step': _spinnaker.machine_time_step,
-                'time_scale_factor': _spinnaker.timescale_factor,
+                #'machine_time_step': _spinnaker.machine_time_step,
+                #'time_scale_factor': _spinnaker.timescale_factor,
+                #'database_notification_port_number': database_notify_port_num,
+                #'database_notify_host': database_notify_host,
+                #'database_ack_port_number': database_ack_port_num,
                 'ip_address': hostname, 'port': port,
-                'database_notification_port_number': database_notify_port_num,
-                'database_notify_host': database_notify_host,
-                'database_ack_port_number': database_ack_port_num,
                 'board_address': board_address, 'tag': tag,
                 'strip_sdp': strip_sdp, 'use_prefix': use_prefix,
                 'key_prefix': key_prefix, 'prefix_type': prefix_type,
@@ -93,27 +102,41 @@ class SpynnakerExternalDevicePluginManager(object):
                     number_of_packets_sent_per_time_step}
 
             # create population
-            live_spike_recorder = _spinnaker.create_population(
-                size=1, cellclass=LiveSpikeGather, cellparams=cellparams,
-                structure=None, label="LiveSpikeReceiver")
+            # live_spike_recorder = _spinnaker.create_population(
+            #     size=1, cellclass=LiveSpikeGather, cellparams=cellparams,
+            #     structure=None, label="LiveSpikeReceiver")
 
             # record pop for later usage
+            live_spike_recorder = LivePacketGather(
+                label="LiveSpikeReceiver", **cellparams)
             self._live_spike_recorders[(port, hostname)] = live_spike_recorder
+            _spinnaker.add_application_vertex(live_spike_recorder)
 
-        # add edge to list of ones to add once grouping has occurred.
-        self.add_edge(population_to_get_live_output_from, live_spike_recorder)
+        # create the edge and add
+        edge = ApplicationEdge(
+            population_to_get_live_output_from, live_spike_recorder,
+            label="recorder_edge")
+        _spinnaker.add_application_edge(edge, constants.SPIKE_PARTITION_ID)
 
-    def add_edge(self, pre_population, post_population):
+    def add_edge(self, vertex, device_vertex, partition_id):
         """
-        helper method for adding extra edges for the partitionable graph due to
-        bag of atom approach.
-        :param pre_population: the source population of the edge
-        :param post_population:  the destination population of the edge
-        :return: None
+        adds a edge between two vertices (often a vertex and a external device)
+        on a given partition
+
+        :param vertex: the pre vertex to connect the edge from
+        :param device_vertex: the post vertex to connect the edge to
+        :param partition_id: the partition identifier for making nets
+        :rtype: None
         """
-        # get spinnaker
         _spinnaker = get_spynnaker()
 
-        # add a extra edge to be put in after grouping
-        _spinnaker.add_extra_edge(
-            pre_population, post_population, PARTITION_ID)
+        edge = ApplicationEdge(vertex, device_vertex)
+        _spinnaker.add_application_edge(edge, partition_id)
+
+    def machine_time_step(self):
+        _spinnaker = get_spynnaker()
+        return _spinnaker.machine_time_step
+
+    def time_scale_factor(self):
+        _spinnaker = get_spynnaker()
+        return _spinnaker.timescale_factor

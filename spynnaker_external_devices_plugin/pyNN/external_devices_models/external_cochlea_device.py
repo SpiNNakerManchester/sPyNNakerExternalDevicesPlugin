@@ -1,5 +1,4 @@
-from pacman.model.abstract_classes.abstract_virtual_vertex \
-    import AbstractVirtualVertex
+from pacman.model.graphs.abstract_virtual_vertex import AbstractVirtualVertex
 
 
 class ExternalCochleaDevice(AbstractVirtualVertex):
@@ -29,7 +28,6 @@ class ExternalCochleaDevice(AbstractVirtualVertex):
         return {}
 
     def __init__(self, bag_of_neurons, label, constraints=None):
-
         # can assume spinnaker link is consistent between atoms, as its a
         # population parameter
         spinnaker_link = \

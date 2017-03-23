@@ -11,10 +11,10 @@ from pacman.model.constraints.key_allocator_constraints\
     .key_allocator_fixed_key_and_mask_constraint \
     import KeyAllocatorFixedKeyAndMaskConstraint
 from spynnaker.pyNN import exceptions
-from pacman.model.abstract_classes.abstract_virtual_vertex import \
-    AbstractVirtualVertex
 from pacman.model.routing_info.base_key_and_mask import BaseKeyAndMask
-from spynnaker.pyNN.utilities.multi_cast_command import MultiCastCommand
+from spinn_front_end_common.utility_models.multi_cast_command \
+    import MultiCastCommand
+from pacman.model.graphs.abstract_virtual_vertex import AbstractVirtualVertex
 
 
 # Named tuple bundling together configuration elements of a pushbot resolution

@@ -1,4 +1,5 @@
 # spinn front end common imports
+from pacman.model.decorators.overrides import overrides
 from spinn_front_end_common.abstract_models.\
     abstract_provides_outgoing_partition_constraints import \
     AbstractProvidesOutgoingPartitionConstraints
@@ -49,7 +50,8 @@ class SpikeInjector(ReverseIpTagMultiCastSource,
     model_name = "SpikeInjector"
 
     def __init__(
-            self, bag_of_neurons, label="SpikeSourceArray", constraints=None):
+            self, bag_of_neurons, label="SpikeSourceArray", constraints=None,
+            port=None, virtual_key=None):
 
         # get database notification protocol data items.
         database_notify_port_num = bag_of_neurons[0].\
@@ -98,13 +100,14 @@ class SpikeInjector(ReverseIpTagMultiCastSource,
 
         # push to RITMCS interface
         ReverseIpTagMultiCastSource.__init__(
-            self, n_keys=len(bag_of_neurons),
-            machine_time_step=machine_time_step,
-            timescale_factor=time_scale_factor, label=label, receive_port=port,
-            virtual_key=virtual_key, constraints=constraints,
+            self, n_keys=len(bag_of_neurons), label=label, receive_port=port,
+            timescale_factor=time_scale_factor, virtual_key=virtual_key,
+            machine_time_step=machine_time_step, constraints=constraints,
             send_buffer_notification_port=database_notify_port_num,
             send_buffer_notification_ip_address=database_notify_host,
-            send_buffer_notification_ack_port=database_ack_port_num)
+            send_buffer_notification_ack_port=database_ack_port_num,
+            reserve_reverse_ip_tag=True)
+
         AbstractProvidesOutgoingPartitionConstraints.__init__(self)
 
     @staticmethod
@@ -123,7 +126,9 @@ class SpikeInjector(ReverseIpTagMultiCastSource,
         vertex = SpikeInjector(**params)
         return vertex
 
-    def get_outgoing_partition_constraints(self, partition, graph_mapper):
+    @overrides(AbstractProvidesOutgoingPartitionConstraints.
+               get_outgoing_partition_constraints)
+    def get_outgoing_partition_constraints(self, partition):
         """
         get any constraints for edges coming out of this vertex
         :param partition: the partition id to consider
@@ -131,6 +136,6 @@ class SpikeInjector(ReverseIpTagMultiCastSource,
         :return: list of constraints.
         """
         constraints = ReverseIpTagMultiCastSource\
-            .get_outgoing_partition_constraints(self, partition, graph_mapper)
+            .get_outgoing_partition_constraints(self, partition)
         constraints.append(KeyAllocatorContiguousRangeContraint())
         return constraints

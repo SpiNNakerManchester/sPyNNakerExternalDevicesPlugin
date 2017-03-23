@@ -1,21 +1,27 @@
+# front end common imports
 from spinn_front_end_common.abstract_models.\
     abstract_provides_outgoing_partition_constraints import \
     AbstractProvidesOutgoingPartitionConstraints
-from spynnaker.pyNN.models.abstract_models\
-    .abstract_send_me_multicast_commands_vertex \
-    import AbstractSendMeMulticastCommandsVertex
-from pacman.model.constraints.key_allocator_constraints\
-    .key_allocator_fixed_key_and_mask_constraint \
-    import KeyAllocatorFixedKeyAndMaskConstraint
-from spynnaker.pyNN import exceptions
-
-from pacman.model.routing_info.base_key_and_mask import BaseKeyAndMask
-from pacman.model.graphs.abstract_virtual_vertex import AbstractVirtualVertex
 from spinn_front_end_common.utility_models.multi_cast_command \
     import MultiCastCommand
 
+# pynn imports
+from spynnaker.pyNN.models.abstract_models\
+    .abstract_send_me_multicast_commands_vertex \
+    import AbstractSendMeMulticastCommandsVertex
+from spynnaker.pyNN.exceptions import SpynnakerException
+
+# pacman imports
+from pacman.model.constraints.key_allocator_constraints\
+    .key_allocator_fixed_key_and_mask_constraint \
+    import KeyAllocatorFixedKeyAndMaskConstraint
+from pacman.model.routing_info.base_key_and_mask import BaseKeyAndMask
+from pacman.model.graphs.application.impl.application_spinnaker_link_vertex \
+    import ApplicationSpiNNakerLinkVertex
 
 # robot with 7 7 1
+
+
 def get_x_from_robot_retina(key):
     return (key >> 7) & 0x7f
 
@@ -29,11 +35,8 @@ def get_spike_value_from_robot_retina(key):
 
 
 class MunichRetinaDevice(
-        AbstractVirtualVertex, AbstractSendMeMulticastCommandsVertex,
+        ApplicationSpiNNakerLinkVertex, AbstractSendMeMulticastCommandsVertex,
         AbstractProvidesOutgoingPartitionConstraints):
-    """
-    the munich retina thats connected to the ombibot
-    """
 
     # key codes for the robot retina
     MANAGEMENT_BIT = 0x400
@@ -52,66 +55,18 @@ class MunichRetinaDevice(
     LEFT_RETINA = "LEFT"
     RIGHT_RETINA = "RIGHT"
 
-    DEFAULT_FIXED_MASK = 0xFFFF8000
-
-    population_parameters = {
-        'spinnaker_link', 'polarity', 'retina_key', 'position'}
-
-    model_name = "external retina device"
-
-    @staticmethod
-    def default_parameters(_):
-        return {}
-
-    @staticmethod
-    def fixed_parameters(_):
-        return {}
-
-    @staticmethod
-    def state_variables():
-        return list()
-
-    @staticmethod
-    def is_array_parameters(_):
-        return {}
-
     def __init__(
-            self, bag_of_neurons, label=None, constraints=None):
-
-        label = "external retina device at _position {} and _polarity {}"\
-            .format(self._position, self._polarity)
-
-        # assume polarity is same for all atoms (as pop scoped)
-        polarity = bag_of_neurons[0].get_population_parameter('polarity')
-
-        # assume retina key is same for all atoms (as pop scoped)
-        retina_key = bag_of_neurons[0].get_population_parameter('retina_key')
-
-        # assume polarity is same for all atoms (as pop scoped)
-        position = bag_of_neurons[0].get_population_parameter('position')
-
-        # check position is valid
-        if position != self.RIGHT_RETINA and position != self.LEFT_RETINA:
-            raise exceptions.SpynnakerException(
-                "The external Retina does not recognise this _position")
-
-        # assume retina key is same for all atoms (as pop scoped)
-        spinnaker_link_id = bag_of_neurons[0].get_population_parameter(
-            'spinnaker_link_id')
+            self, retina_key, spinnaker_link_id, position,
+            label=None, n_neurons=None, polarity=None, board_address=None):
 
         if polarity is None:
             polarity = MunichRetinaDevice.MERGED_POLARITY
 
-        # update retina key
-        retina_key = (retina_key & 0xFFFF) << 16
+        self._fixed_key = (retina_key & 0xFFFF) << 16
+        self._fixed_mask = 0xFFFF8000
         if polarity == MunichRetinaDevice.UP_POLARITY:
-            retina_key |= 0x4000
+            self._fixed_key |= 0x4000
 
-        # update all atoms with new fixed_key
-        for atom in bag_of_neurons:
-            atom.set_population_parameter('retina_key', retina_key)
-
-        self._fixed_mask = MunichRetinaDevice.DEFAULT_FIXED_MASK
         if polarity == MunichRetinaDevice.MERGED_POLARITY:
 
             # There are 128 x 128 retina "pixels" x 2 polarities
@@ -122,18 +77,27 @@ class MunichRetinaDevice(
             fixed_n_neurons = 128 * 128
             self._fixed_mask = 0xFFFFC000
 
-        if len(bag_of_neurons) != fixed_n_neurons:
-            print "Warning, the retina will have {} neurons"\
-                .format(len(bag_of_neurons))
-
-        AbstractVirtualVertex.__init__(
-            self, fixed_n_neurons, spinnaker_link_id,
-            max_atoms_per_core=fixed_n_neurons, label=label)
+        ApplicationSpiNNakerLinkVertex.__init__(
+            self, n_atoms=fixed_n_neurons, spinnaker_link_id=spinnaker_link_id,
+            max_atoms_per_core=fixed_n_neurons, label=label,
+            board_address=board_address)
         AbstractSendMeMulticastCommandsVertex.__init__(
             self, self._get_commands(position))
         AbstractProvidesOutgoingPartitionConstraints.__init__(self)
 
-    def get_outgoing_partition_constraints(self, partition, graph_mapper):
+        self._polarity = polarity
+        self._position = position
+
+        if (self._position != self.RIGHT_RETINA and
+           self._position != self.LEFT_RETINA):
+            raise SpynnakerException(
+                "The external Retina does not recognise this _position")
+
+        if n_neurons != fixed_n_neurons and n_neurons is not None:
+            print "Warning, the retina will have {} neurons".format(
+                fixed_n_neurons)
+
+    def get_outgoing_partition_constraints(self, partition):
         return [KeyAllocatorFixedKeyAndMaskConstraint(
             [BaseKeyAndMask(self._fixed_key, self._fixed_mask)])]
 
@@ -155,16 +119,14 @@ class MunichRetinaDevice(
                            self._virtual_chip_y << 16)
 
         commands.append(MultiCastCommand(
-            0, key_set_command, self.MANAGEMENT_MASK, key_set_payload,
-            5, 1000))
+            0, key_set_command, key_set_payload, 5, 1000))
 
-        # make retina enabled (dependant on if its a left or right retina
+        # make retina enabled (dependent on if its a left or right retina
         if position == self.RIGHT_RETINA:
             enable_command = self.MANAGEMENT_BIT | self.RIGHT_RETINA_ENABLE
         else:
             enable_command = self.MANAGEMENT_BIT | self.LEFT_RETINA_ENABLE
-        commands.append(MultiCastCommand(
-            0, enable_command, self.MANAGEMENT_MASK, 1, 5, 1000))
+        commands.append(MultiCastCommand(0, enable_command, 1, 5, 1000))
 
         # disable retina
         if position == self.RIGHT_RETINA:
@@ -172,13 +134,6 @@ class MunichRetinaDevice(
         else:
             disable_command = self.MANAGEMENT_BIT | self.LEFT_RETINA_DISABLE
 
-        commands.append(MultiCastCommand(
-            -1, disable_command, self.MANAGEMENT_MASK, 0, 5, 1000))
+        commands.append(MultiCastCommand(-1, disable_command, 0, 5, 1000))
 
         return commands
-
-    def recieves_multicast_commands(self):
-        return True
-
-    def is_virtual_vertex(self):
-        return True

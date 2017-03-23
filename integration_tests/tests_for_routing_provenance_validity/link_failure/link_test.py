@@ -2,16 +2,13 @@
 retina example that just feeds data from a retina to live output via an
 intermediate population
 """
+
 import spynnaker.pyNN as p
 import spynnaker_external_devices_plugin.pyNN as q
 import retina_lib as retina_lib
 
 connected_chip_details = {
-    "virtual_chip_x": 0,
-    "virtual_chip_y": 6,
-    "connected_to_real_chip_x": 0,
-    "connected_to_real_chip_y": 0,
-    "connected_to_real_chip_link_id": 4
+    "spinnaker_link_id": 0,
 }
 
 
@@ -25,8 +22,7 @@ p.setup(timestep=1.0)
 # # Munich Right Retina - Down Polarity
 # retina_pop = p.Population(
 #     None, q.MunichRetinaDevice, get_updated_params({
-#         'virtual_chip_x': 5,
-#         'virtual_chip_y': 0,
+#         'retina_key': 0x5,
 #         'polarity': q.MunichRetinaDevice.DOWN_POLARITY,
 #         'position': q.MunichRetinaDevice.RIGHT_RETINA}),
 #     label='External retina')
@@ -34,8 +30,7 @@ p.setup(timestep=1.0)
 # # Munich Right Retina - Up Polarity
 # retina_pop = p.Population(
 #     None, q.MunichRetinaDevice, get_updated_params({
-#         'virtual_chip_x': 6,
-#         'virtual_chip_y': 0,
+#         'retina_key': 0x5,
 #         'polarity': q.MunichRetinaDevice.UP_POLARITY,
 #         'position': q.MunichRetinaDevice.RIGHT_RETINA}),
 #     label='External retina')
@@ -43,8 +38,7 @@ p.setup(timestep=1.0)
 # # Munich Left Retina - Merged Polarity
 # retina_pop = p.Population(
 #     None, q.MunichRetinaDevice, get_updated_params({
-#         'virtual_chip_x': 7,
-#         'virtual_chip_y': 0,
+#         'retina_key': 0x5,
 #         'polarity': q.MunichRetinaDevice.MERGED_POLARITY,
 #         'position': q.MunichRetinaDevice.LEFT_RETINA}),
 #     label='External retina')
@@ -52,6 +46,7 @@ p.setup(timestep=1.0)
 # # FPGA Retina - Merged Polarity
 # retina_pop = p.Population(
 #     None, q.ExternalFPGARetinaDevice, get_updated_params({
+#         'retina_key': 0x5,
 #         'mode': q.ExternalFPGARetinaDevice.MODE_128,
 #         'polarity': q.ExternalFPGARetinaDevice.MERGED_POLARITY}),
 #     label='External retina')
@@ -59,6 +54,7 @@ p.setup(timestep=1.0)
 # # FPGA Retina - Up Polarity
 # retina_pop = p.Population(
 #     None, q.ExternalFPGARetinaDevice, get_updated_params({
+#         'retina_key': 0x5,
 #         'mode': q.ExternalFPGARetinaDevice.MODE_128,
 #         'polarity': q.ExternalFPGARetinaDevice.UP_POLARITY}),
 #     label='External retina')
@@ -66,6 +62,7 @@ p.setup(timestep=1.0)
 # FPGA Retina - Down Polarity
 retina_pop = p.Population(
     None, q.ExternalFPGARetinaDevice, get_updated_params({
+        'retina_key': 0x5,
         'mode': q.ExternalFPGARetinaDevice.MODE_128,
         'polarity': q.ExternalFPGARetinaDevice.DOWN_POLARITY}),
     label='External retina')
@@ -75,5 +72,6 @@ p.Projection(retina_pop, population,
              p.FromListConnector(retina_lib.subSamplerConnector2D(
                  128, 32, 2.0, 1)))
 
-q.activate_live_output_for(population)
-p.run(1000)
+# q.activate_live_output_for(population)
+p.run(100)
+p.end()
