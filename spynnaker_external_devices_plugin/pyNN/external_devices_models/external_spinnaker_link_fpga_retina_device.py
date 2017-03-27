@@ -17,7 +17,7 @@ from spinn_front_end_common.abstract_models\
     import AbstractSendMeMulticastCommandsVertex
 from spinn_front_end_common.utility_models.multi_cast_command import \
     MultiCastCommand
-from spynnaker.pyNN import exceptions
+from spynnaker.pyNN.exceptions import SpynnakerException
 
 logger = logging.getLogger(__name__)
 
@@ -83,10 +83,9 @@ class ExternalFPGARetinaDevice(
         :param spinnaker_link_id: The spinnaker link to which the retina is\
                 connected
         :param polarity: The "polarity" of the retina data
-        :param machine_time_step: The time step of the simulation
-        :param timescale_factor: The timescale factor of the simulation
-        :param label: The label for the population
+        :param label:
         :param n_neurons: The number of neurons in the population
+        :param board_address:
         """
         self._polarity = polarity
         self._fixed_key = (retina_key & 0xFFFF) << 16
@@ -125,7 +124,7 @@ class ExternalFPGARetinaDevice(
             else:
                 fixed_n_neurons = 16 * 16 * 2
         else:
-            raise exceptions.SpynnakerException(
+            raise SpynnakerException(
                 "the FPGA retina does not recognise this mode")
 
         if fixed_n_neurons != n_neurons and n_neurons is not None:

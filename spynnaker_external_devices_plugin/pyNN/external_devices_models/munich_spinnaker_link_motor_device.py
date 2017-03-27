@@ -17,8 +17,6 @@ from pacman.model.resources.dtcm_resource import DTCMResource
 from pacman.model.resources.resource_container import ResourceContainer
 from pacman.model.resources.sdram_resource import SDRAMResource
 from spinn_front_end_common.abstract_models\
-    .abstract_binary_uses_simulation_run import AbstractBinaryUsesSimulationRun
-from spinn_front_end_common.abstract_models\
     .abstract_has_associated_binary import AbstractHasAssociatedBinary
 from spinn_front_end_common.abstract_models\
     .abstract_provides_outgoing_partition_constraints\
@@ -28,12 +26,14 @@ from spinn_front_end_common.abstract_models.impl\
 from spinn_front_end_common.abstract_models.impl.\
     provides_key_to_atom_mapping_impl import \
     ProvidesKeyToAtomMappingImpl
+from spinn_front_end_common.utilities.utility_objs.executable_start_type \
+    import ExecutableStartType
 from spinn_front_end_common.abstract_models.impl.\
     vertex_with_dependent_vertices import \
     VertexWithEdgeToDependentVertices
 from spinn_front_end_common.interface.simulation import simulation_utilities
 from spinn_front_end_common.utilities import constants
-from spynnaker.pyNN import exceptions
+from spynnaker.pyNN.exceptions import SpynnakerException
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ class MunichMotorDevice(
         ApplicationDataSpecableVertex, AbstractHasAssociatedBinary,
         ApplicationVertex, VertexWithEdgeToDependentVertices,
         AbstractProvidesOutgoingPartitionConstraints,
-        AbstractBinaryUsesSimulationRun, ProvidesKeyToAtomMappingImpl):
+        ProvidesKeyToAtomMappingImpl):
     """ An Omnibot motor control device - has a real vertex and an external\
         device vertex
     """
@@ -139,7 +139,7 @@ class MunichMotorDevice(
         edge_key = routing_info.get_first_key_from_pre_vertex(
             placement.vertex, MOTOR_PARTITION_ID)
         if edge_key is None:
-            raise exceptions.SpynnakerException(
+            raise SpynnakerException(
                 "This motor should have one outgoing edge to the robot")
 
         # write params to memory
@@ -161,6 +161,10 @@ class MunichMotorDevice(
     @overrides(AbstractHasAssociatedBinary.get_binary_file_name)
     def get_binary_file_name(self):
         return "robot_motor_control.aplx"
+
+    @overrides(AbstractHasAssociatedBinary.get_binary_start_type)
+    def get_binary_start_type(self):
+        return ExecutableStartType.USES_SIMULATION_INTERFACE
 
     def reserve_memory_regions(self, spec):
         """

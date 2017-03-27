@@ -61,7 +61,7 @@ class SpynnakerLiveSpikesConnection(LiveEventConnection):
                     originate
         :type label: str
         :param neuron_ids: array-like of neuron ids sending spikes
-        :type: [int]
+        :type neuron_ids: [int]
         :param send_full_keys: Determines whether to send full 32-bit keys,\
                     getting the key for each neuron from the database, or\
                     whether to send 16-bit neuron ids directly
