@@ -7,6 +7,9 @@ matrix:
 virtualenv:
   system_site_packages: true
 
+env:
+  - READTHEDOCS=True
+
 cache: pip
 
 before_install:
@@ -21,6 +24,7 @@ before_install:
   - pip install --upgrade git+git://github.com/SpiNNakerManchester/DataSpecification.git@$TRAVIS_BRANCH || pip install --upgrade git+git://github.com/SpiNNakerManchester/DataSpecification.git@master
   - pip install --upgrade git+git://github.com/SpiNNakerManchester/SpiNNFrontEndCommon.git@$TRAVIS_BRANCH || pip install --upgrade git+git://github.com/SpiNNakerManchester/SpiNNFrontEndCommon.git@master
   - pip install --upgrade git+git://github.com/SpiNNakerManchester/sPyNNaker.git@$TRAVIS_BRANCH || pip install --upgrade git+git://github.com/SpiNNakerManchester/sPyNNaker.git@master
+
 
 install:
   - pip install -r requirements-test.txt
