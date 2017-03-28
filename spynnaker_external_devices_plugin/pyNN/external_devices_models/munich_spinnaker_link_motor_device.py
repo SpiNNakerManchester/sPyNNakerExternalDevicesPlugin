@@ -65,10 +65,22 @@ class MunichMotorDevice(
 
     PARAMS_SIZE = 7 * 4
 
+    default_parameters = {
+        'speed': 30, 'sample_time': 4096, 'update_time': 512, 'delay_time': 5,
+        'delta_threshold': 23, 'continue_if_not_different': True,
+        'label': "RobotMotorControl", 'board_address': None}
+
     def __init__(
-            self, n_neurons, spinnaker_link_id, speed=30, sample_time=4096,
-            update_time=512, delay_time=5, delta_threshold=23,
-            continue_if_not_different=True, label="RobotMotorControl"):
+            self, n_neurons, spinnaker_link_id,
+            board_address=default_parameters['board_address'],
+            speed=default_parameters['speed'],
+            sample_time=default_parameters['sample_time'],
+            update_time=default_parameters['update_time'],
+            delay_time=default_parameters['delay_time'],
+            delta_threshold=default_parameters['delta_threshold'],
+            continue_if_not_different=default_parameters[
+                'continue_if_not_different'],
+            label=default_parameters['label']):
         """
         """
 
@@ -78,7 +90,8 @@ class MunichMotorDevice(
 
         ApplicationVertex.__init__(self, label)
         AbstractVertexWithEdgeToDependentVertices.__init__(
-            self, [_MunichMotorDevice(spinnaker_link_id)], MOTOR_PARTITION_ID)
+            self, [_MunichMotorDevice(spinnaker_link_id, board_address)],
+            MOTOR_PARTITION_ID)
         AbstractProvidesOutgoingPartitionConstraints.__init__(self)
 
         self._speed = speed

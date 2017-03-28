@@ -1,24 +1,31 @@
-"""
-The :py:mod:`spynnaker.pynn` package contains the front end specifications
-and implementation for the PyNN High-level API
-(http://neuralensemble.org/trac/PyNN)
-"""
-
 import os
 
+# fec imports
 from spinn_front_end_common.utilities.notification_protocol.socket_address \
     import SocketAddress
 
-from spynnaker.pyNN.utilities import globals_variables
-
+# spinnman imports
 from spinnman.messages.eieio.eieio_type import EIEIOType
 
-from spynnaker.pyNN.spinnaker_common import executable_finder
+#spynnaker imports
 from spynnaker.pyNN.utilities import constants
+from spynnaker.pyNN.utilities import globals_variables
 
+# common imports
 from spynnaker_external_devices_plugin.pyNN import model_binaries
 from spynnaker_external_devices_plugin.pyNN.connections \
     .spynnaker_live_spikes_connection import SpynnakerLiveSpikesConnection
+from spynnaker_external_devices_plugin.pyNN.\
+    spynnaker_external_device_plugin_manager import \
+    SpynnakerExternalDevicePluginManager
+
+# pushbot enums
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
+    pushbot_spinnaker_link_retina_device import PushBotRetinaPolarity
+from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
+    pushbot_spinnaker_link_retina_device import PushBotRetinaResolution
+
+# models spynnaker 7
 from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
     arbitrary_fpga_device import ArbitraryFPGADevice
 from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
@@ -35,23 +42,59 @@ from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
     pushbot_spinnaker_link_retina_device import PushBotRetinaPolarity
 from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
     pushbot_spinnaker_link_retina_device import PushBotRetinaResolution
-from spynnaker_external_devices_plugin.pyNN.\
-    spynnaker_external_device_plugin_manager import \
-    SpynnakerExternalDevicePluginManager
+
+# spynnaker 8 models
+from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
+    spynnaker8_arbitrary_fpga_device import ArbitraryFPGADeviceDataHolder as\
+    Spynnaker8ArbitraryFPGADevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
+    spynnaker8_external_spinnaker_link_cochlea_device import \
+    ExternalCochleaDeviceDataHolder as Spynnaker8ExternalCochleaDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
+    spynnaker8_external_spinnaker_link_fpga_retina_device import \
+    ExternalFPGARetinaDeviceDataHolder as Spynnaker8ExternalFPGARetinaDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
+    spynnaker8_munich_spinnaker_link_motor_device import \
+    MunichMotorDeviceDataHolder as Spynnaker8MunichMotorDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models. \
+    spynnaker8_munich_spinnaker_link_retina_device import \
+    MunichRetinaDeviceDataHolder as Spynnaker8MunichRetinaDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
+    spynnaker8_pushbot_spinnaker_link_retina_device import \
+    PushBotRetinaDeviceDataHolder as Spynnaker8PushBotRetinaDevice
+
+# injector for spynnaker 7
 from spynnaker_external_devices_plugin.pyNN.utility_models.spike_injector \
     import SpikeInjector as SpynnakerExternalDeviceSpikeInjector
+# injector for spynnaker 8
+from spynnaker_external_devices_plugin.pyNN.utility_models\
+    .spynnaker_8_spike_injector_data_holder import SpikeInjectorDataHolder \
+    as Spynnaker8ExternalDeviceSpikeInjector
 
-executable_finder.add_path(os.path.dirname(model_binaries.__file__))
+
+from spynnaker.pyNN.spinnaker_common import SpiNNakerCommon
+
+SpiNNakerCommon.register_binary_search_path(
+    os.path.dirname(model_binaries.__file__))
 spynnaker_external_devices = SpynnakerExternalDevicePluginManager()
 
 __all__ = [
+    # protocol things
     "EIEIOType",
 
-    # Devices
+    # Devices pynn 7
     "ExternalCochleaDevice", "ExternalFPGARetinaDevice",
     "MunichRetinaDevice", "MunichMotorDevice",
-    "PushBotRetinaDevice", "PushBotRetinaResolution", "PushBotRetinaPolarity",
-    "ArbitraryFPGADevice",
+    "PushBotRetinaDevice", "ArbitraryFPGADevice",
+
+    # devices pynn 8
+    "Spynnaker8ExternalCochleaDevice", "Spynnaker8ExternalFPGARetinaDevice",
+    "Spynnaker8MunichRetinaDevice", "Spynnaker8MunichMotorDevice",
+    "Spynnaker8PushBotRetinaDevice", "Spynnaker8ArbitraryFPGADevice",
+
+    # enums
+    "PushBotRetinaResolution",
+    "PushBotRetinaPolarity",
 
     # Connections
     "SpynnakerLiveSpikesConnection",
@@ -192,6 +235,43 @@ def SpikeInjector(
             device will receive the database is ready command
     :type database_notify_port_num: int
     """
+    _process_database_socket(
+        database_notify_port_num, database_notify_host, database_ack_port_num)
+    return SpynnakerExternalDeviceSpikeInjector(
+        n_neurons=n_neurons, label=label, port=port, virtual_key=virtual_key)
+
+def Spynnaker8SpikeInjector(
+        label=None, port=None, virtual_key=None, database_notify_host=None,
+        database_notify_port_num=None, database_ack_port_num=None):
+    """ Supports adding a spike injector to the application graph.
+
+    :param n_neurons: the number of neurons the spike injector will emulate
+    :type n_neurons: int
+    :param label: the label given to the population
+    :type label: str
+    :param port: the port number used to listen for injections of spikes
+    :type port: int
+    :param virtual_key: the virtual key used in the routing system
+    :type virtual_key: int
+    :param database_notify_host: the hostname for the device which is\
+            listening to the database notification.
+    :type database_notify_host: str
+    :param database_ack_port_num: the port number to which a external device\
+            will acknowledge that they have finished reading the database and\
+            are ready for it to start execution
+    :type database_ack_port_num: int
+    :param database_notify_port_num: The port number to which a external\
+            device will receive the database is ready command
+    :type database_notify_port_num: int
+    """
+    _process_database_socket(
+        database_notify_port_num, database_notify_host, database_ack_port_num)
+    return Spynnaker8ExternalDeviceSpikeInjector(
+        label=label, port=port, virtual_key=virtual_key)
+
+
+def _process_database_socket(
+        database_notify_port_num, database_notify_host, database_ack_port_num):
     config = globals_variables.get_simulator().config
     if database_notify_port_num is None:
         database_notify_port_num = config.getint("Database", "notify_port")
@@ -210,5 +290,3 @@ def SpikeInjector(
 
     # update socket interface with new demands.
     spynnaker_external_devices.add_socket_address(database_socket)
-    return SpynnakerExternalDeviceSpikeInjector(
-        n_neurons=n_neurons, label=label, port=port, virtual_key=virtual_key)

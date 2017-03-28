@@ -60,11 +60,20 @@ class PushBotRetinaDevice(ApplicationSpiNNakerLinkVertex,
     SENSOR_SET_KEY = 0x0
     SENSOR_SET_PUSHBOT = 0x1
 
+    default_parameters = {
+        'label': "PushBotRetinaDevice",
+        'polarity': PushBotRetinaPolarity.Merged,
+        'resolution': PushBotRetinaResolution.Downsample64,
+        'board_address': None, 'command_sender_top_bits_key': 0x00000000}
+
     def __init__(
-            self, fixed_key, spinnaker_link_id, label=None, n_neurons=None,
-            polarity=PushBotRetinaPolarity.Merged,
-            resolution=PushBotRetinaResolution.Downsample64,
-            board_address=None, command_sender_top_bits_key=0x00000000):
+            self, fixed_key, spinnaker_link_id, n_neurons=None,
+            label=default_parameters['label'],
+            polarity=default_parameters['polarity'],
+            resolution=default_parameters['resolution'],
+            board_address=default_parameters['board_address'],
+            command_sender_top_bits_key=default_parameters[
+                'command_sender_top_bits_key']):
 
         # Validate number of timestamp bytes
         if not isinstance(polarity, PushBotRetinaPolarity):

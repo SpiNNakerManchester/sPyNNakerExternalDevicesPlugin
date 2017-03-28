@@ -16,7 +16,13 @@ class SpikeInjector(ReverseIpTagMultiCastSource,
         to specify the virtual_key of the population to identify the population
     """
 
-    def __init__(self, n_neurons, label, port=None, virtual_key=None):
+    default_parameters = {
+        'label': "spikeInjector", 'port': None, 'virtual_key': None}
+
+    def __init__(
+            self, n_neurons, label=default_parameters['label'],
+            port=default_parameters['port'],
+            virtual_key=default_parameters['virtual_key']):
 
         ReverseIpTagMultiCastSource.__init__(
             self, n_keys=n_neurons, label=label, receive_port=port,

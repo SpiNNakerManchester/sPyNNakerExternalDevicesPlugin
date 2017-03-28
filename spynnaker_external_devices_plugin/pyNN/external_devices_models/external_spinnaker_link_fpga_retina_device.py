@@ -70,9 +70,13 @@ class ExternalFPGARetinaDevice(
     DOWN_POLARITY = "DOWN"
     MERGED_POLARITY = "MERGED"
 
+    default_parameters = {
+        'board_address': None, 'label': "ExternalFPGARetinaDevice"}
+
     def __init__(
             self, mode, retina_key, spinnaker_link_id, polarity,
-            label=None, n_neurons=None, board_address=None):
+            label=default_parameters['label'], n_neurons=None,
+            board_address=default_parameters['board_address']):
         """
         :param mode: The retina "mode"
         :param retina_key: The value of the top 16-bits of the key
