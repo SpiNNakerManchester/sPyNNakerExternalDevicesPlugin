@@ -7,9 +7,6 @@ matrix:
 virtualenv:
   system_site_packages: true
 
-env:
-  - READTHEDOCS=True
-
 cache: pip
 
 before_install:
