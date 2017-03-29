@@ -9,7 +9,7 @@ from spinn_front_end_common.utility_models.multi_cast_command \
 from spynnaker.pyNN.models.abstract_models\
     .abstract_send_me_multicast_commands_vertex \
     import AbstractSendMeMulticastCommandsVertex
-from spynnaker.pyNN import exceptions
+from spynnaker.pyNN.exceptions import SpynnakerException
 
 # pacman imports
 from pacman.model.constraints.key_allocator_constraints\
@@ -69,11 +69,11 @@ class PushBotRetinaDevice(ApplicationSpiNNakerLinkVertex,
 
         # Validate number of timestamp bytes
         if not isinstance(polarity, PushBotRetinaPolarity):
-            raise exceptions.SpynnakerException(
+            raise SpynnakerException(
                 "Pushbot retina polarity should be one of those defined in"
                 " Polarity enumeration")
         if not isinstance(resolution, PushBotRetinaResolution):
-            raise exceptions.SpynnakerException(
+            raise SpynnakerException(
                 "Pushbot retina resolution should be one of those defined in"
                 " Resolution enumeration")
 

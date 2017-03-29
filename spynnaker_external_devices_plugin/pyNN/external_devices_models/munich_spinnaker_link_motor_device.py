@@ -1,5 +1,5 @@
 # spynnaker imports
-from spynnaker.pyNN import exceptions
+from spynnaker.pyNN.exceptions import SpynnakerException
 from spynnaker.pyNN.models.abstract_models\
     .abstract_vertex_with_dependent_vertices import \
     AbstractVertexWithEdgeToDependentVertices
@@ -33,6 +33,8 @@ from spinn_front_end_common.utilities import constants
 from spinn_front_end_common.abstract_models\
     .abstract_has_associated_binary import AbstractHasAssociatedBinary
 from spinn_front_end_common.interface.simulation import simulation_utilities
+from spinn_front_end_common.utilities.utility_objs.executable_start_type \
+    import ExecutableStartType
 
 # general imports
 import logging
@@ -162,7 +164,7 @@ class MunichMotorDevice(
         edge_key = routing_info.get_first_key_from_pre_vertex(
             placement.vertex, MOTOR_PARTITION_ID)
         if edge_key is None:
-            raise exceptions.SpynnakerException(
+            raise SpynnakerException(
                 "This motor should have one outgoing edge to the robot")
 
         # write params to memory
@@ -184,6 +186,10 @@ class MunichMotorDevice(
     @overrides(AbstractHasAssociatedBinary.get_binary_file_name)
     def get_binary_file_name(self):
         return "robot_motor_control.aplx"
+
+    @overrides(AbstractHasAssociatedBinary.get_binary_start_type)
+    def get_binary_start_type(self):
+        return ExecutableStartType.USES_SIMULATION_INTERFACE
 
     def reserve_memory_regions(self, spec):
         """
