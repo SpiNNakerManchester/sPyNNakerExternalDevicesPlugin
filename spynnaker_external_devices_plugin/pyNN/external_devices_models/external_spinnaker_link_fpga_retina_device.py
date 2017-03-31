@@ -138,6 +138,7 @@ class ExternalFPGARetinaDevice(
         return [KeyAllocatorFixedKeyAndMaskConstraint(
             [BaseKeyAndMask(self._fixed_key, self._fixed_mask)])]
 
+    @property
     @overrides(AbstractSendMeMulticastCommandsVertex.commands)
     def commands(self):
         return [MultiCastCommand(0, 0x0000FFFF, 1, 5, 100),

@@ -138,6 +138,7 @@ class MunichRetinaDevice(
 
         return commands
 
+    @property
     @overrides(AbstractSendMeMulticastCommandsVertex.commands)
     def commands(self):
         return self._commands
