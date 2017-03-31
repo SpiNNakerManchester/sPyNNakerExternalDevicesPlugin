@@ -5,16 +5,17 @@ from spynnaker.pyNN.models.abstract_models\
     AbstractVertexWithEdgeToDependentVertices
 
 # pacman imports
+from pacman.executor.injection_decorator import inject_items
 from pacman.model.constraints.key_allocator_constraints\
     .key_allocator_fixed_mask_constraint \
     import KeyAllocatorFixedMaskConstraint
-from pacman.model.graphs.machine.impl.simple_machine_vertex \
-    import SimpleMachineVertex
-from pacman.model.graphs.application.impl.application_spinnaker_link_vertex \
-    import ApplicationSpiNNakerLinkVertex
-from pacman.model.graphs.application.impl.application_vertex \
-    import ApplicationVertex
 from pacman.model.decorators.overrides import overrides
+from pacman.model.graphs.machine.simple_machine_vertex \
+    import SimpleMachineVertex
+from pacman.model.graphs.application.application_spinnaker_link_vertex \
+    import ApplicationSpiNNakerLinkVertex
+from pacman.model.graphs.application.application_vertex \
+    import ApplicationVertex
 from pacman.model.resources.resource_container import ResourceContainer
 from pacman.model.resources.sdram_resource import SDRAMResource
 from pacman.model.resources.dtcm_resource import DTCMResource
@@ -22,12 +23,13 @@ from pacman.model.resources.cpu_cycles_per_tick_resource \
     import CPUCyclesPerTickResource
 
 # front end common imports
+from spinn_front_end_common.abstract_models.\
+    abstract_generates_data_specification import\
+    AbstractGeneratesDataSpecification
 from spinn_front_end_common.abstract_models\
     .abstract_provides_outgoing_partition_constraints\
     import AbstractProvidesOutgoingPartitionConstraints
 from spinn_front_end_common.utilities import constants
-from spinn_front_end_common.abstract_models.impl\
-    .application_data_specable_vertex import ApplicationDataSpecableVertex
 from spinn_front_end_common.abstract_models\
     .abstract_has_associated_binary import AbstractHasAssociatedBinary
 from spinn_front_end_common.interface.simulation import simulation_utilities
@@ -53,7 +55,7 @@ class _MunichMotorDevice(ApplicationSpiNNakerLinkVertex):
 
 
 class MunichMotorDevice(
-        ApplicationDataSpecableVertex, AbstractHasAssociatedBinary,
+        AbstractGeneratesDataSpecification, AbstractHasAssociatedBinary,
         ApplicationVertex, AbstractVertexWithEdgeToDependentVertices,
         AbstractProvidesOutgoingPartitionConstraints):
     """ An Omnibot motor control device - has a real vertex and an external\
@@ -77,8 +79,6 @@ class MunichMotorDevice(
                         " device has been ignored; 6 will be used instead")
 
         ApplicationVertex.__init__(self, label)
-        AbstractVertexWithEdgeToDependentVertices.__init__(
-            self, [_MunichMotorDevice(spinnaker_link_id)], MOTOR_PARTITION_ID)
         AbstractProvidesOutgoingPartitionConstraints.__init__(self)
 
         self._speed = speed
@@ -87,6 +87,7 @@ class MunichMotorDevice(
         self._delay_time = delay_time
         self._delta_threshold = delta_threshold
         self._continue_if_not_different = continue_if_not_different
+        self._dependent_vertices = [_MunichMotorDevice(spinnaker_link_id)]
 
     @property
     @overrides(ApplicationVertex.n_atoms)
@@ -115,8 +116,33 @@ class MunichMotorDevice(
         # and the management bit anyway
         return list([KeyAllocatorFixedMaskConstraint(0xFFFFF800)])
 
-    @overrides(ApplicationDataSpecableVertex.
-               generate_application_data_specification)
+    @inject_items({
+        "graph_mapper": "MemoryGraphMapper",
+        "machine_graph": "MemoryMachineGraph",
+        "routing_info": "MemoryRoutingInfos",
+        "application_graph": "MemoryApplicationGraph",
+        "tags": "MemoryTags",
+        "machine_time_step": "MachineTimeStep",
+        "time_scale_factor": "TimeScaleFactor"
+    })
+    @overrides(
+        AbstractGeneratesDataSpecification.generate_data_specification,
+        additional_arguments={
+            "graph_mapper", "application_graph", "machine_graph",
+            "routing_info", "tags", "machine_time_step",
+            "time_scale_factor"
+        })
+    def generate_data_specification(
+            self, spec, placement, graph_mapper, application_graph,
+            machine_graph, routing_info, tags,
+            machine_time_step, time_scale_factor):
+        iptags = tags.get_ip_tags_for_vertex(placement.vertex)
+        reverse_iptags = tags.get_reverse_ip_tags_for_vertex(placement.vertex)
+        self.generate_application_data_specification(
+            spec, placement, graph_mapper, application_graph, machine_graph,
+            routing_info, iptags, reverse_iptags, machine_time_step,
+            time_scale_factor)
+
     def generate_application_data_specification(
             self, spec, placement, graph_mapper, application_graph,
             machine_graph, routing_info, iptags, reverse_iptags,
@@ -183,3 +209,18 @@ class MunichMotorDevice(
         spec.reserve_memory_region(region=self.PARAMS_REGION,
                                    size=self.PARAMS_SIZE,
                                    label='params')
+
+    @property
+    @overrides(AbstractVertexWithEdgeToDependentVertices.dependent_vertices)
+    def dependent_vertices(self):
+        """ Return the vertices which this vertex depends upon
+        """
+        return self._dependent_vertices
+
+    @property
+    @overrides(AbstractVertexWithEdgeToDependentVertices.
+               edge_partition_identifier_for_dependent_edge)
+    def edge_partition_identifier_for_dependent_edge(self):
+        """ Return the dependent edge identifier
+        """
+        return MOTOR_PARTITION_ID

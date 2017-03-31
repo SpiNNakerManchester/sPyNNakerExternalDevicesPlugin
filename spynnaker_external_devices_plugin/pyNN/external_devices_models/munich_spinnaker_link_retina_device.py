@@ -15,8 +15,9 @@ from spynnaker.pyNN.exceptions import SpynnakerException
 from pacman.model.constraints.key_allocator_constraints\
     .key_allocator_fixed_key_and_mask_constraint \
     import KeyAllocatorFixedKeyAndMaskConstraint
+from pacman.model.decorators.overrides import overrides
 from pacman.model.routing_info.base_key_and_mask import BaseKeyAndMask
-from pacman.model.graphs.application.impl.application_spinnaker_link_vertex \
+from pacman.model.graphs.application.application_spinnaker_link_vertex \
     import ApplicationSpiNNakerLinkVertex
 
 # robot with 7 7 1
@@ -81,8 +82,7 @@ class MunichRetinaDevice(
             self, n_atoms=fixed_n_neurons, spinnaker_link_id=spinnaker_link_id,
             max_atoms_per_core=fixed_n_neurons, label=label,
             board_address=board_address)
-        AbstractSendMeMulticastCommandsVertex.__init__(
-            self, self._get_commands(position))
+        self._commands = self._get_commands(position)
         AbstractProvidesOutgoingPartitionConstraints.__init__(self)
 
         self._polarity = polarity
@@ -137,3 +137,8 @@ class MunichRetinaDevice(
         commands.append(MultiCastCommand(-1, disable_command, 0, 5, 1000))
 
         return commands
+
+    @property
+    @overrides(AbstractSendMeMulticastCommandsVertex.commands)
+    def commands(self):
+        return self._commands
