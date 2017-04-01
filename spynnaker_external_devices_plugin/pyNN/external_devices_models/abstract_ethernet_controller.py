@@ -1,9 +1,10 @@
 from six import add_metaclass
-from abc import ABCMeta
-from abc import abstractmethod
+
+from spinn_utilities.abstract_base import AbstractBase
+from spinn_utilities.abstract_base import abstractmethod
 
 
-@add_metaclass(ABCMeta)
+@add_metaclass(AbstractBase)
 class AbstractEthernetController(object):
     """ A controller that can send multicast packets which can be received\
         over Ethernet and translated to control an external device
