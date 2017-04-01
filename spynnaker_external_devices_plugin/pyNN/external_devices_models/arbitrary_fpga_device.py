@@ -1,14 +1,15 @@
-# pacman imports
-from abc import ABCMeta
+# general imports
 from six import add_metaclass
+from spinn_utilities.abstract_base import AbstractBase
 
-from pacman.model.graphs.application.impl.application_fpga_vertex \
+# pacman imports
+from pacman.model.graphs.application.application_fpga_vertex \
     import ApplicationFPGAVertex
 from spinn_front_end_common.abstract_models.impl\
     .provides_key_to_atom_mapping_impl import ProvidesKeyToAtomMappingImpl
 
 
-@add_metaclass(ABCMeta)
+@add_metaclass(AbstractBase)
 class ArbitraryFPGADevice(
         ApplicationFPGAVertex, ProvidesKeyToAtomMappingImpl):
 
