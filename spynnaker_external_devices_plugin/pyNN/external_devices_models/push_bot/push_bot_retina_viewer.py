@@ -21,7 +21,7 @@ class PushBotRetinaViewer(Thread):
             decay_time_constant_ms=_DECAY_TIME_CONSTANT_MS):
 
         try:
-            import matplotlib  # @UnusedImport
+            import matplotlib  # @UnusedImport # NOQA
         except:
             raise Exception("matplotlib must be installed to use this viewer")
 
