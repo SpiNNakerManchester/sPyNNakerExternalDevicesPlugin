@@ -1,6 +1,3 @@
-from matplotlib import pyplot
-from matplotlib import animation
-
 from threading import Thread
 import numpy
 import socket
@@ -22,6 +19,11 @@ class PushBotRetinaViewer(Thread):
             self, resolution, port=0, display_max=_DISPLAY_MAX,
             frame_time_ms=_FRAME_TIME_MS,
             decay_time_constant_ms=_DECAY_TIME_CONSTANT_MS):
+
+        try:
+            import matplotlib  # @UnusedImport
+        except:
+            raise Exception("matplotlib must be installed to use this viewer")
 
         Thread.__init__(self, name="PushBotRetinaViewer")
         self._display_max = display_max
@@ -86,6 +88,8 @@ class PushBotRetinaViewer(Thread):
         return [self._image]
 
     def run(self):
+        from matplotlib import pyplot
+        from matplotlib import animation
 
         # Create image plot of retina output
         fig = pyplot.figure()
