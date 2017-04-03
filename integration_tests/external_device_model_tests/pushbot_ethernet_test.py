@@ -1,4 +1,4 @@
-import pyNN.spiNNaker as p
+import spynnaker.pyNN as p
 import spynnaker_external_devices_plugin.pyNN as e
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
     .push_bot_retina_viewer import PushBotRetinaViewer
