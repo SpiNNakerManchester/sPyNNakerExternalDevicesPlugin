@@ -28,15 +28,12 @@ from spynnaker.pyNN.models.neuron.neuron_models\
 from spynnaker.pyNN.models.neuron.synapse_types.synapse_type_exponential \
     import SynapseTypeExponential
 
-from six import add_metaclass
-from abc import ABCMeta
 import logging
 from collections import OrderedDict
 
 logger = logging.getLogger(__name__)
 
 
-@add_metaclass(ABCMeta)
 class ExternalDeviceLifControl(
         AbstractPopulationVertex,
         AbstractProvidesOutgoingPartitionConstraints,

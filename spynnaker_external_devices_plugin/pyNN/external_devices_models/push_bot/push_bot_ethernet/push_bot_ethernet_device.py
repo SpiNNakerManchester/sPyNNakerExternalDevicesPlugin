@@ -1,13 +1,16 @@
 from pacman.model.decorators.overrides import overrides
+
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
     .abstract_multicast_controllable_device \
     import AbstractMulticastControllableDevice
-from abc import abstractmethod
+
 from six import add_metaclass
-from abc import ABCMeta
+
+from spinn_utilities.abstract_base import AbstractBase
+from spinn_utilities.abstract_base import abstractmethod
 
 
-@add_metaclass(ABCMeta)
+@add_metaclass(AbstractBase)
 class PushBotEthernetDevice(AbstractMulticastControllableDevice):
     """ An arbitrary PushBot device
     """

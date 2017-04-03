@@ -1,9 +1,10 @@
 from six import add_metaclass
-from abc import ABCMeta
-from abc import abstractmethod
+
+from spinn_utilities.abstract_base import AbstractBase
+from spinn_utilities.abstract_base import abstractmethod
 
 
-@add_metaclass(ABCMeta)
+@add_metaclass(AbstractBase)
 class AbstractEthernetTranslator(object):
     """ A module that can translate packets received over Ethernet into\
         control of an external device

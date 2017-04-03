@@ -1,9 +1,8 @@
 # pynn imports
 
 from pacman.executor.injection_decorator import inject, supports_injection
-from pacman.model.graphs.application.impl.\
-    application_spinnaker_link_vertex import \
-    ApplicationSpiNNakerLinkVertex
+from pacman.model.graphs.application.application_spinnaker_link_vertex \
+    import ApplicationSpiNNakerLinkVertex
 from spynnaker.pyNN.utilities import constants
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
     .abstract_push_bot_retina_device import AbstractPushBotRetinaDevice
