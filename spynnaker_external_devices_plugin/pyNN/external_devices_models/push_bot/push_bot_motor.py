@@ -8,26 +8,26 @@ class PushBotMotor(Enum):
 
     MOTOR_0_PERMANENT = (
         0, MunichIoSpiNNakerLinkProtocol.push_bot_motor_0_permanent_key,
-        -100, 100, 20
+        -100, 100, 40
     )
 
     MOTOR_0_LEAKY = (
         1,
         (MunichIoSpiNNakerLinkProtocol
          .push_bot_motor_0_leaking_towards_zero_key),
-        -100, 100, 20
+        -100, 100, 40
     )
 
     MOTOR_1_PERMANENT = (
         2, MunichIoSpiNNakerLinkProtocol.push_bot_motor_1_permanent_key,
-        -100, 100, 20
+        -100, 100, 40
     )
 
     MOTOR_1_LEAKY = (
         3,
         (MunichIoSpiNNakerLinkProtocol
          .push_bot_motor_1_leaking_towards_zero_key),
-        -100, 100, 20
+        -100, 100, 40
     )
 
     def __new__(

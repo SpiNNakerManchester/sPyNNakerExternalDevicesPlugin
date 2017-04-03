@@ -10,23 +10,23 @@ class PushBotSpeaker(Enum):
     SPEAKER_TOTAL_PERIOD = (
         0,
         MunichIoSpiNNakerLinkProtocol.push_bot_speaker_config_total_period_key,
-        0, DataType.S1615.max, 20
+        0, DataType.S1615.max, 40
     )
 
     SPEAKER_ACTIVE_TIME = (
         1,
         MunichIoSpiNNakerLinkProtocol.push_bot_speaker_config_active_time_key,
-        0, DataType.S1615.max, 20
+        0, DataType.S1615.max, 40
     )
 
     SPEAKER_TONE = (
         2, MunichIoSpiNNakerLinkProtocol.push_bot_speaker_set_tone_key,
-        0, DataType.S1615.max, 20
+        0, DataType.S1615.max, 40
     )
 
     SPEAKER_MELODY = (
         3, MunichIoSpiNNakerLinkProtocol.push_bot_speaker_set_melody_key,
-        0, DataType.S1615.max, 20
+        0, DataType.S1615.max, 40
     )
 
     def __new__(
