@@ -5,6 +5,7 @@ from spynnaker.pyNN.models.neuron.threshold_types.abstract_threshold_type \
     import AbstractThresholdType
 from enum import Enum
 
+
 class _THRESHOLD_TYPE_MULTICAST(Enum):
     DEVICE_CONTROL_KEY = (1, DataType.UINT32)
     DEVICE_CONTROLS_USES_PAYLOAD = (2, DataType.UINT32)
@@ -63,8 +64,10 @@ class ThresholdTypeMulticastDeviceControl(AbstractThresholdType):
 
             # This is the "state" variable that keeps track of how many
             # timesteps to go before a send is done
+            # Initially set this to a different number for each device, to
+            # avoid them being in step with each other
             NeuronParameter(
-                [0 for _ in self._devices],
+                [i for i, _ in enumerate(self._devices)],
                 _THRESHOLD_TYPE_MULTICAST.DEVICE_STATE.data_type)
         ]
 
