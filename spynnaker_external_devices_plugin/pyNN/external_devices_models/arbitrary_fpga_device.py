@@ -1,5 +1,5 @@
 # pacman imports
-from pacman.model.graphs.application.impl.application_fpga_vertex \
+from pacman.model.graphs.application.application_fpga_vertex \
     import ApplicationFPGAVertex
 
 
