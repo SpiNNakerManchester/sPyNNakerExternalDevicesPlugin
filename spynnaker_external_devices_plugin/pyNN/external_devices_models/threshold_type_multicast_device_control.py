@@ -41,6 +41,12 @@ class ThresholdTypeMulticastDeviceControl(AbstractThresholdType):
         return [item.data_type for item in _THRESHOLD_TYPE_MULTICAST]
 
     def get_threshold_parameters(self):
+
+        timings = [device.device_control_timesteps_between_sending
+                   for device in self._devices]
+        max_time = max(timings)
+        time_between_send = int(max_time) / len(self._devices)
+
         return [
             NeuronParameter(
                 [device.device_control_key for device in self._devices],
@@ -57,8 +63,7 @@ class ThresholdTypeMulticastDeviceControl(AbstractThresholdType):
                 [device.device_control_max_value for device in self._devices],
                 _THRESHOLD_TYPE_MULTICAST.DEVICE_CONTROL_MAX_VALUE.data_type),
             NeuronParameter(
-                [device.device_control_timesteps_between_sending
-                 for device in self._devices],
+                timings,
                 _THRESHOLD_TYPE_MULTICAST
                 .DEVICE_CONTROL_TIMESTEPS_BETWEEN_SENDING.data_type),
 
@@ -67,7 +72,7 @@ class ThresholdTypeMulticastDeviceControl(AbstractThresholdType):
             # Initially set this to a different number for each device, to
             # avoid them being in step with each other
             NeuronParameter(
-                [i for i, _ in enumerate(self._devices)],
+                [i * time_between_send for i, _ in enumerate(self._devices)],
                 _THRESHOLD_TYPE_MULTICAST.DEVICE_STATE.data_type)
         ]
 
