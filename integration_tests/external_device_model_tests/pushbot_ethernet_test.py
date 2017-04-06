@@ -67,11 +67,11 @@ pushbot_retina = e.EthernetSensorPopulation(
         "protocol": pushbot_protocol,
         "resolution": retina_resolution,
         "pushbot_ip_address": "10.162.177.57"
-        # "pushbot_ip_address": "127.0.0.1"
     })
 
 viewer = PushBotRetinaViewer(retina_resolution.value, port=17895)
-e.activate_live_output_for(pushbot_retina, port=viewer.local_port)
+e.activate_live_output_for(pushbot_retina, port=viewer.local_port,
+                           notify=False)
 
 viewer.start()
 p.run(len(devices) * 1000)
