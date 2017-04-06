@@ -76,8 +76,10 @@ pushbot_retina = p.Population(
         "resolution": retina_resolution
     })
 
-viewer = PushBotRetinaViewer(retina_resolution.value, port=17895)
-e.activate_live_output_for(pushbot_retina, port=viewer.local_port)
+viewer = PushBotRetinaViewer(
+    retina_resolution.value, port=17895)
+e.activate_live_output_for(pushbot_retina, port=viewer.local_port,
+                           notify=False)
 
 viewer.start()
 p.run(len(devices) * 1000)
