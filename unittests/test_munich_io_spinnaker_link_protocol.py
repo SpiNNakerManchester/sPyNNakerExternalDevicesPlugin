@@ -112,5 +112,6 @@ class TestMunichIOSpinnakerLinkProtocol(unittest.TestCase):
         protocol.turn_off_sensor_reporting_key
         protocol.uart_id
 
+
 if __name__ == "__main__":
     unittest.main()
