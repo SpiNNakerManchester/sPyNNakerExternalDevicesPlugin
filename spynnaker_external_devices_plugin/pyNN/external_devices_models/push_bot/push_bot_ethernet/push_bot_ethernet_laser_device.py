@@ -4,11 +4,14 @@ from spinn_front_end_common.abstract_models.impl.\
 from spinn_front_end_common.abstract_models.\
     abstract_send_me_multicast_commands_vertex \
     import AbstractSendMeMulticastCommandsVertex
+from spinn_front_end_common.utilities.exceptions import ConfigurationException
 
 from pacman.model.decorators.overrides import overrides
 
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
     .push_bot_ethernet.push_bot_ethernet_device import PushBotEthernetDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+    .push_bot_laser import PushBotLaser
 
 
 class PushBotEthernetLaserDevice(
@@ -33,6 +36,9 @@ class PushBotEthernetLaserDevice(
             The number of timesteps between sending commands to the device,\
             or None to use the default
         """
+        if not isinstance(laser, PushBotLaser):
+            raise ConfigurationException(
+                "laser parameter must be a PushBotLaser value")
 
         ProvidesKeyToAtomMappingImpl.__init__(self)
         PushBotEthernetDevice.__init__(

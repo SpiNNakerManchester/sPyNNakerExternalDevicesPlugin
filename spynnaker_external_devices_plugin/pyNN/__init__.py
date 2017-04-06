@@ -343,7 +343,7 @@ def EthernetControlPopulation(
 
 
 def EthernetSensorPopulation(
-        model, params, local_host=None, local_port=None,
+        model, params, local_host=None,
         database_notify_port_num=None, database_ack_port_num=None):
     """ Create a pyNN population which can be included in a network to\
         receive spikes from a device connected to the host
@@ -351,8 +351,8 @@ def EthernetSensorPopulation(
     :param model: Class of a model that implements AbstractEthernetController
     :param params: The parameters of the model
     :param local_host:\
-            The optional local host IP address to listen on for commands
-    :param lost_port: The optional local port to listen on for commands
+            The optional local host IP address to listen on for database\
+            notification
     :param database_ack_port_num:\
             The optional port to which responses to the database notification\
             protocol are to be sent

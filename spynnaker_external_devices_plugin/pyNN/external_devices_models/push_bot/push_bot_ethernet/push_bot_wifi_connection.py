@@ -92,8 +92,8 @@ class PushBotWIFIConnection(AbstractConnection, AbstractListenable):
         """
 
         # check if machine is active and on the network
-        pingtimeout = 5
-        while pingtimeout > 0:
+        ping_timeout = 5
+        while ping_timeout > 0:
 
             # Start a ping process
             process = None
@@ -112,7 +112,7 @@ class PushBotWIFIConnection(AbstractConnection, AbstractListenable):
                 # ping worked
                 return True
             else:
-                pingtimeout -= 1
+                ping_timeout -= 1
 
         # If the ping fails this number of times, the host cannot be contacted
         return False

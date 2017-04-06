@@ -112,14 +112,14 @@ class PushBotTranslator(AbstractEthernetTranslator):
                 MunichIoEthernetProtocol.led_total_period(period))
 
         # front led active time
-        elif (key == self._protocol.push_bot_led_front_active_time_key):
+        elif key == self._protocol.push_bot_led_front_active_time_key:
             time = _signed_int(multicast_packet.payload)
             logger.debug("Sending Front LED Active Time = {}".format(time))
             self._pushbot_wifi_connection.send(
                 MunichIoEthernetProtocol.led_front_active_time(time))
 
         # back led active time
-        elif (key == self._protocol.push_bot_led_back_active_time_key):
+        elif key == self._protocol.push_bot_led_back_active_time_key:
             time = _signed_int(multicast_packet.payload)
             logger.debug("Sending Back LED Active Time = {}".format(time))
             self._pushbot_wifi_connection.send(
