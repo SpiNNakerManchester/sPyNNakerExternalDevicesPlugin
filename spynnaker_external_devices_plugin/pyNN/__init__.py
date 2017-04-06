@@ -117,7 +117,7 @@ __all__ = [
     # General Devices
     "ExternalCochleaDevice", "ExternalFPGARetinaDevice",
     "MunichRetinaDevice", "MunichMotorDevice",
-    "ArbitraryFPGADevice", "PushBotRetinaViewer"
+    "ArbitraryFPGADevice", "PushBotRetinaViewer",
 
     # Pushbot Parameters
     "MunichIoSpiNNakerLinkProtocol",
