@@ -33,6 +33,8 @@ from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
     munich_spinnaker_link_motor_device import MunichMotorDevice
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
     munich_spinnaker_link_retina_device import MunichRetinaDevice
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.\
+    push_bot.push_bot_retina_viewer import PushBotRetinaViewer
 
 # PushBot Parameters
 from spynnaker_external_devices_plugin.pyNN.protocols\
@@ -115,7 +117,7 @@ __all__ = [
     # General Devices
     "ExternalCochleaDevice", "ExternalFPGARetinaDevice",
     "MunichRetinaDevice", "MunichMotorDevice",
-    "ArbitraryFPGADevice",
+    "ArbitraryFPGADevice", "PushBotRetinaViewer"
 
     # Pushbot Parameters
     "MunichIoSpiNNakerLinkProtocol",
