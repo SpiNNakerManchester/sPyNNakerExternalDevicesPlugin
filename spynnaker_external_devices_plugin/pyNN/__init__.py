@@ -173,7 +173,7 @@ def activate_live_output_for(
         database_ack_port_num=None, board_address=None, port=None,
         host=None, tag=None, strip_sdp=True, use_prefix=False, key_prefix=None,
         prefix_type=None, message_type=EIEIOType.KEY_32_BIT,
-        right_shift=0, payload_as_time_stamps=True,
+        right_shift=0, payload_as_time_stamps=True, notify=True,
         use_payload_prefix=True, payload_prefix=None,
         payload_right_shift=0, number_of_packets_sent_per_time_step=0):
     """ Output the spikes from a given population from SpiNNaker as they
@@ -202,6 +202,7 @@ def activate_live_output_for(
     :param payload_as_time_stamps:
     :param right_shift:
     :param use_payload_prefix:
+    :param notify:
     :param payload_prefix:
     :param payload_right_shift:
     :param number_of_packets_sent_per_time_step:
@@ -238,8 +239,10 @@ def activate_live_output_for(
         payload_as_time_stamps, use_payload_prefix, payload_prefix,
         payload_right_shift, number_of_packets_sent_per_time_step)
 
-    add_database_socket_address(
-        database_notify_host, database_notify_port_num, database_ack_port_num)
+    if notify:
+        add_database_socket_address(
+            database_notify_host, database_notify_port_num,
+            database_ack_port_num)
 
 
 def activate_live_output_to(population, device):
