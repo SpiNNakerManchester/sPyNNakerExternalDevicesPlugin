@@ -1,0 +1,3 @@
+include ../../../Makefile.paths
+include $(NEURAL_MODELLING_DIRS)/src/Makefile.paths
+include $(NEURAL_MODELLING_DIRS)/src/neuron/builds/Makefile.neural_build
