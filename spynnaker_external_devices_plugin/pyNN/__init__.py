@@ -262,13 +262,15 @@ def activate_live_output_to(population, device):
 
 
 def SpikeInjector(
-        n_neurons, label, port=None,
+        n_neurons, label, port=None, notify=True,
         virtual_key=None, database_notify_host=None,
         database_notify_port_num=None, database_ack_port_num=None):
     """ Supports adding a spike injector to the application graph.
 
     :param n_neurons: the number of neurons the spike injector will emulate
     :type n_neurons: int
+    :param notify: allows us to not bother with the database system
+    :type notify: bool
     :param label: the label given to the population
     :type label: str
     :param port: the port number used to listen for injections of spikes
@@ -286,8 +288,10 @@ def SpikeInjector(
             device will receive the database is ready command
     :type database_notify_port_num: int
     """
-    add_database_socket_address(
-        database_notify_host, database_notify_port_num, database_ack_port_num)
+    if notify:
+        add_database_socket_address(
+            database_notify_host, database_notify_port_num,
+            database_ack_port_num)
     return SpynnakerExternalDeviceSpikeInjector(
         n_neurons=n_neurons, label=label, port=port, virtual_key=virtual_key)
 
@@ -372,9 +376,12 @@ def EthernetSensorPopulation(
     if not issubclass(model, AbstractEthernetSensor):
         raise Exception("Model must be a subclass of AbstractEthernetSensor")
     device = model(**params)
+    injector_params = dict(device.get_injector_parameters())
+    injector_params['notify'] = False
+
     population = p.Population(
-        device.get_n_neurons(), SpikeInjector,
-        device.get_injector_parameters(), label=device.get_injector_label())
+        device.get_n_neurons(), SpikeInjector, injector_params,
+        label=device.get_injector_label())
     if isinstance(device, AbstractSendMeMulticastCommandsVertex):
         ethernet_command_connection = EthernetCommandConnection(
             device.get_translator(), [device], local_host,

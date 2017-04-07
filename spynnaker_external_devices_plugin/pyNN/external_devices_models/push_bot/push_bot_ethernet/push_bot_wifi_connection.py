@@ -9,6 +9,9 @@ import platform
 import subprocess
 import socket
 import select
+import logging
+
+logger = logging.getLogger(__name__)
 
 # A set of connections that have already been made
 _existing_connections = dict()
@@ -60,8 +63,10 @@ class PushBotWIFIConnection(AbstractConnection, AbstractListenable):
         self._remote_ip_address = socket.gethostbyname(remote_host)
 
         try:
+            logger.info("Trying to connect to the push bot via WIFI")
             # Connect the socket
             self._socket.connect((self._remote_ip_address, self._remote_port))
+            logger.info("Succeeded in connecting to push bot via WIFI")
 
         except Exception as exception:
             raise SpinnmanIOException(
