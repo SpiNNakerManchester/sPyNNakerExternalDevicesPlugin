@@ -167,5 +167,10 @@ class PushBotTranslator(AbstractEthernetTranslator):
             self._pushbot_wifi_connection.send(
                 MunichIoEthernetProtocol.disable_motor())
 
+        # detecting set mode (which has no context in ethernet protocol
+        elif key == self._protocol.set_mode().key:
+            logger.debug("Ignoring set mode command")
+
+        # otherwise no idea what command is, so raise warning and ignore
         else:
             logger.warn("Unknown Pushbot command: {}".format(multicast_packet))
