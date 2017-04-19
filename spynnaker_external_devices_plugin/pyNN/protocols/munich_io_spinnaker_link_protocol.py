@@ -802,13 +802,14 @@ class MunichIoSpiNNakerLinkProtocol(object):
             self, retina_key=RetinaKey.NATIVE_128_X_128,
             retina_payload=None, time=None):
         """ set the retina transmission key
-        
+
         :param retina_key: the new key for the retina
-        :param retina_payload: the new payload for the set retina key 
-        command packet
+        :param retina_payload: the new payload for the set retina key\
+            command packet
         :type retina_payload: enum or None
         :param time: when to transmit this packet
-        :return: a MultiCastCommand 
+        :return: the command to send
+        :rtype: MultiCastCommand
         """
 
         if retina_key == RetinaKey.FIXED_KEY and retina_payload is None:
