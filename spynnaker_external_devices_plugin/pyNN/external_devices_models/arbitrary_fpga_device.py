@@ -1,9 +1,17 @@
+# general imports
+from six import add_metaclass
+from spinn_utilities.abstract_base import AbstractBase
+
 # pacman imports
 from pacman.model.graphs.application.application_fpga_vertex \
     import ApplicationFPGAVertex
+from spinn_front_end_common.abstract_models.impl\
+    .provides_key_to_atom_mapping_impl import ProvidesKeyToAtomMappingImpl
 
 
-class ArbitraryFPGADevice(ApplicationFPGAVertex):
+@add_metaclass(AbstractBase)
+class ArbitraryFPGADevice(
+        ApplicationFPGAVertex, ProvidesKeyToAtomMappingImpl):
 
     default_parameters = {
         'board_address': None, 'label': "ArbitraryFPGADevice"}
@@ -14,3 +22,4 @@ class ArbitraryFPGADevice(ApplicationFPGAVertex):
             label=default_parameters['label']):
         ApplicationFPGAVertex.__init__(
             self, n_neurons, fpga_id, fpga_link_id, board_address, label)
+        ProvidesKeyToAtomMappingImpl.__init__(self)

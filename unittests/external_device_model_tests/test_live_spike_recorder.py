@@ -1,3 +1,4 @@
+
 import unittest
 
 from spinn_front_end_common.utility_models.live_packet_gather import \

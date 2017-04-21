@@ -1,5 +1,5 @@
-MODELS = robot_motor_control neuron
-BUILD_DIRS := $(addprefix src/, $(MODELS))
+MODELS = external_device_lif_control
+BUILD_DIRS := $(addprefix builds/, $(MODELS))
 
 all: $(BUILD_DIRS)
 	for d in $(BUILD_DIRS); do (cd $$d; "$(MAKE)") || exit $$?; done
