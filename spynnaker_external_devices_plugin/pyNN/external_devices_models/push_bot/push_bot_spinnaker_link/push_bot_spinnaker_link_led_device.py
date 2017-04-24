@@ -11,11 +11,22 @@ class PushBotSpiNNakerLinkLEDDevice(
     """ The LED of a PushBot
     """
 
+    default_parameters = {
+        'n_neurons': 1, 'label': None, 'board_address': None,
+        'start_active_time_front': None, 'start_active_time_back': None,
+        'start_total_period': None, 'start_frequency': None}
+
     def __init__(
             self, led, protocol, spinnaker_link_id,
-            n_neurons=1, label=None, board_address=None,
-            start_active_time_front=None, start_active_time_back=None,
-            start_total_period=None, start_frequency=None):
+            n_neurons=default_parameters['n_neurons'],
+            label=default_parameters['label'],
+            board_address=default_parameters['board_address'],
+            start_active_time_front=default_parameters[
+                'start_active_time_front'],
+            start_active_time_back=default_parameters[
+                'start_active_time_back'],
+            start_total_period=default_parameters['start_total_period'],
+            start_frequency=default_parameters['start_frequency']):
         """
 
         :param led: The PushBotLED parameter to control

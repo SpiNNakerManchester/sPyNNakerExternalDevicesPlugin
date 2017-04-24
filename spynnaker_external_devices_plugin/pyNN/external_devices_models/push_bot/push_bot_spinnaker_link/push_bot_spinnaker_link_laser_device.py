@@ -12,10 +12,18 @@ class PushBotSpiNNakerLinkLaserDevice(
     """ The Laser of a PushBot
     """
 
+    default_parameters = {
+        'n_neurons': 1, 'label': None, 'board_address': None,
+        'start_active_time': 0, 'start_total_period': 0, 'start_frequency': 0}
+
     def __init__(
             self, laser, protocol, spinnaker_link_id,
-            n_neurons=1, label=None, board_address=None,
-            start_active_time=0, start_total_period=0, start_frequency=0):
+            n_neurons=default_parameters['n_neurons'],
+            label=default_parameters['label'],
+            board_address=default_parameters['board_address'],
+            start_active_time=default_parameters['start_active_time'],
+            start_total_period=default_parameters['start_total_period'],
+            start_frequency=default_parameters['start_frequency']):
         """
 
         :param laser: The PushBotLaser value to control

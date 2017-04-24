@@ -1,17 +1,15 @@
-from spinn_front_end_common.abstract_models.impl.\
-    provides_key_to_atom_mapping_impl import \
-    ProvidesKeyToAtomMappingImpl
-from spinn_front_end_common.abstract_models.\
+from pacman.model.decorators.overrides import overrides
+from spinn_front_end_common.abstract_models. \
     abstract_send_me_multicast_commands_vertex \
     import AbstractSendMeMulticastCommandsVertex
+from spinn_front_end_common.abstract_models.impl. \
+    provides_key_to_atom_mapping_impl import \
+    ProvidesKeyToAtomMappingImpl
 from spinn_front_end_common.utilities.exceptions import ConfigurationException
-
-from pacman.model.decorators.overrides import overrides
-
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot \
     .push_bot_ethernet.push_bot_ethernet_device import PushBotEthernetDevice
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_laser import PushBotLaser
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot.push_bot_parameters.push_bot_laser import \
+    PushBotLaser
 
 
 class PushBotEthernetLaserDevice(

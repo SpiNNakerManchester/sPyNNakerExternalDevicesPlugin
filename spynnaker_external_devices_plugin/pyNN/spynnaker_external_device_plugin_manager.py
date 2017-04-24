@@ -61,7 +61,8 @@ class SpynnakerExternalDevicePluginManager(object):
             vertex_to_record_from, live_spike_recorder, label="recorder_edge")
         _spinnaker.add_application_edge(edge, constants.SPIKE_PARTITION_ID)
 
-    def add_edge(self, vertex, device_vertex, partition_id):
+    @staticmethod
+    def add_edge(vertex, device_vertex, partition_id):
         """
         adds a edge between two vertices (often a vertex and a external device)
         on a given partition
@@ -75,14 +76,17 @@ class SpynnakerExternalDevicePluginManager(object):
         edge = ApplicationEdge(vertex, device_vertex)
         _spinnaker.add_application_edge(edge, partition_id)
 
-    def add_application_vertex(self, vertex):
-        _spinnaker = get_spynnaker()
+    @staticmethod
+    def add_application_vertex(vertex):
+        _spinnaker = globals_variables.get_simulator()
         _spinnaker.add_application_vertex(vertex)
 
-    def machine_time_step(self):
+    @staticmethod
+    def machine_time_step():
         _spinnaker = globals_variables.get_simulator()
         return _spinnaker.machine_time_step
 
-    def time_scale_factor(self):
+    @staticmethod
+    def time_scale_factor():
         _spinnaker = globals_variables.get_simulator()
         return _spinnaker.timescale_factor

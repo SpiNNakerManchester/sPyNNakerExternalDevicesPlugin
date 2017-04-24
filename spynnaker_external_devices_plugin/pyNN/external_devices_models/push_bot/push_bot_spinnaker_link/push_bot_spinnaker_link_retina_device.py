@@ -13,9 +13,13 @@ from pacman.model.decorators.overrides import overrides
 class PushBotSpiNNakerLinkRetinaDevice(
         AbstractPushBotRetinaDevice, ApplicationSpiNNakerLinkVertex):
 
+    default_parameters = {'label': None, 'board_address': None}
+
     def __init__(
             self, n_neurons, spinnaker_link_id, protocol, resolution,
-            board_address=None, label=None):
+            board_address=default_parameters['board_address'],
+            label=default_parameters['label']):
+
         AbstractPushBotRetinaDevice.__init__(self, protocol, resolution)
         ApplicationSpiNNakerLinkVertex.__init__(
             self, spinnaker_link_id=spinnaker_link_id,

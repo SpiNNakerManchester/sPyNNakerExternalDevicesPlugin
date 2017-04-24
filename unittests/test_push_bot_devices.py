@@ -1,12 +1,14 @@
 import unittest
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot \
     .push_bot_laser import PushBotLaser
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_led import PushBotLED
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot \
     .push_bot_motor import PushBotMotor
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot \
     .push_bot_speaker import PushBotSpeaker
+
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot.push_bot_parameters.push_bot_led import \
+    PushBotLED
 
 
 class Test(unittest.TestCase):

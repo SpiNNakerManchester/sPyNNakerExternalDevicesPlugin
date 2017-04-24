@@ -97,39 +97,8 @@ class ExternalFPGARetinaDevice(
         if polarity == ExternalFPGARetinaDevice.UP_POLARITY:
             self._fixed_key |= 0x4000
 
-        fixed_n_neurons = n_neurons
-
-        if mode == ExternalFPGARetinaDevice.MODE_128:
-            if (polarity == ExternalFPGARetinaDevice.UP_POLARITY or
-                    polarity == ExternalFPGARetinaDevice.DOWN_POLARITY):
-                fixed_n_neurons = 128 * 128
-                self._fixed_mask = 0xFFFFC000
-            else:
-                fixed_n_neurons = 128 * 128 * 2
-        elif mode == ExternalFPGARetinaDevice.MODE_64:
-            if (polarity == ExternalFPGARetinaDevice.UP_POLARITY or
-                    polarity == ExternalFPGARetinaDevice.DOWN_POLARITY):
-                fixed_n_neurons = 64 * 64
-                self._fixed_mask = 0xFFFFF000
-            else:
-                fixed_n_neurons = 64 * 64 * 2
-        elif mode == ExternalFPGARetinaDevice.MODE_32:
-            if (polarity == ExternalFPGARetinaDevice.UP_POLARITY or
-                    polarity == ExternalFPGARetinaDevice.DOWN_POLARITY):
-                fixed_n_neurons = 32 * 32
-                self._fixed_mask = 0xFFFFFC00
-            else:
-                fixed_n_neurons = 32 * 32 * 2
-        elif mode == ExternalFPGARetinaDevice.MODE_16:
-            if (polarity == ExternalFPGARetinaDevice.UP_POLARITY or
-                    polarity == ExternalFPGARetinaDevice.DOWN_POLARITY):
-                fixed_n_neurons = 16 * 16
-                self._fixed_mask = 0xFFFFFF00
-            else:
-                fixed_n_neurons = 16 * 16 * 2
-        else:
-            raise SpynnakerException(
-                "the FPGA retina does not recognise this mode")
+        fixed_n_neurons = self.get_n_neurons(mode, polarity)
+        self._fixed_mask = self._get_mask(mode)
 
         if fixed_n_neurons != n_neurons and n_neurons is not None:
             logger.warn("The specified number of neurons for the FPGA retina"
@@ -142,12 +111,55 @@ class ExternalFPGARetinaDevice(
         AbstractProvidesOutgoingPartitionConstraints.__init__(self)
         ProvidesKeyToAtomMappingImpl.__init__(self)
 
+    def _get_mask(self, mode):
+        if mode == ExternalFPGARetinaDevice.MODE_128:
+            return 0xFFFFC000
+        elif mode == ExternalFPGARetinaDevice.MODE_64:
+            return 0xFFFFF000
+        elif mode == ExternalFPGARetinaDevice.MODE_32:
+            return 0xFFFFFC00
+        elif mode == ExternalFPGARetinaDevice.MODE_16:
+            return 0xFFFFFF00
+        else:
+            raise SpynnakerException(
+                "the FPGA retina does not recognise this mode")
+
+    @staticmethod
+    def get_n_neurons(mode, polarity):
+        if mode == ExternalFPGARetinaDevice.MODE_128:
+            if (polarity == ExternalFPGARetinaDevice.UP_POLARITY or
+                    polarity == ExternalFPGARetinaDevice.DOWN_POLARITY):
+                return 128 * 128
+            else:
+                return 128 * 128 * 2
+        elif mode == ExternalFPGARetinaDevice.MODE_64:
+            if (polarity == ExternalFPGARetinaDevice.UP_POLARITY or
+                    polarity == ExternalFPGARetinaDevice.DOWN_POLARITY):
+                return 64 * 64
+            else:
+                return 64 * 64 * 2
+        elif mode == ExternalFPGARetinaDevice.MODE_32:
+            if (polarity == ExternalFPGARetinaDevice.UP_POLARITY or
+                    polarity == ExternalFPGARetinaDevice.DOWN_POLARITY):
+                return 32 * 32
+            else:
+                return 32 * 32 * 2
+        elif mode == ExternalFPGARetinaDevice.MODE_16:
+            if (polarity == ExternalFPGARetinaDevice.UP_POLARITY or
+                    polarity == ExternalFPGARetinaDevice.DOWN_POLARITY):
+                return 16 * 16
+            else:
+                return 16 * 16 * 2
+        else:
+            raise SpynnakerException(
+                "the FPGA retina does not recognise this mode")
+
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)
     def start_resume_commands(self):
         return [
             MultiCastCommand(
-                key=0x0000FFFF, payload=1, repeats=5,
+                key=0x0000FFFF, payload=1, repeat=5,
                 delay_between_repeats=100)
         ]
 
@@ -156,7 +168,7 @@ class ExternalFPGARetinaDevice(
     def pause_stop_commands(self):
         return [
             MultiCastCommand(
-                key=0x0000FFFE, payload=0, repeats=5,
+                key=0x0000FFFE, payload=0, repeat=5,
                 delay_between_repeats=100)
         ]
 

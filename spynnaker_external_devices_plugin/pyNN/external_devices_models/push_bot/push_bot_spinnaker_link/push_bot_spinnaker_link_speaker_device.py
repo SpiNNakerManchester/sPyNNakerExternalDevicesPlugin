@@ -10,11 +10,20 @@ class PushBotSpiNNakerLinkSpeakerDevice(
     """ The speaker of a PushBot
     """
 
+    default_parameters = {
+        'n_neurons': 1, 'label': None, 'board_address': None,
+        'start_active_time': 50, 'start_total_period': 100,
+        'start_frequency': None, 'start_melody': None}
+
     def __init__(
             self, speaker, protocol, spinnaker_link_id,
-            n_neurons=1, label=None, board_address=None,
-            start_active_time=50, start_total_period=100, start_frequency=None,
-            start_melody=None):
+            n_neurons=default_parameters['n_neurons'],
+            label=default_parameters['label'],
+            board_address=default_parameters['board_address'],
+            start_active_time=default_parameters['start_active_time'],
+            start_total_period=default_parameters['start_total_period'],
+            start_frequency=default_parameters['start_frequency'],
+            start_melody=default_parameters['start_melody']):
         """
 
         :param speaker: The PushBotSpeaker value to control

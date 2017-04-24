@@ -223,17 +223,15 @@ class MunichMotorDevice(
                                    size=self.PARAMS_SIZE,
                                    label='params')
 
-    @property
     @overrides(AbstractVertexWithEdgeToDependentVertices.dependent_vertices)
     def dependent_vertices(self):
         """ Return the vertices which this vertex depends upon
         """
         return self._dependent_vertices
 
-    @property
     @overrides(AbstractVertexWithEdgeToDependentVertices.
                edge_partition_identifiers_for_dependent_vertex)
     def edge_partition_identifiers_for_dependent_vertex(self, vertex):
         """ Return the dependent edge identifier
         """
-        return MOTOR_PARTITION_ID
+        return [MOTOR_PARTITION_ID]
