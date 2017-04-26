@@ -27,7 +27,7 @@ setup(
     name="sPyNNakerExternalDevicesPlugin",
     version="3.0.0",
     description="Spinnaker External Devices Plugin",
-    url="https://github.com/SpiNNakerManchester/SpyNNaker",
+    url="https://github.com/SpiNNakerManchester/sPyNNakerExternalDevicesPlugin",
     packages=packages,
     package_data=package_data,
     install_requires=['sPyNNaker >= 3.0.0, < 4.0.0']
