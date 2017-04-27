@@ -19,16 +19,16 @@ for dirname, dirnames, filenames in os.walk(main_package_dir):
         if ext in data_extensions:
             package = "{}{}".format(
                 main_package, dirname[start:].replace(os.sep, '.'))
-            package_data[package].append("*.{}".format(ext))
+            package_data[package].append("*{}".format(ext))
             break
 
 
 setup(
     name="sPyNNakerExternalDevicesPlugin",
-    version="1!4.0.0a1",
+    version="1!4.0.0a2",
     description="Spinnaker External Devices Plugin",
     url="https://github.com/SpiNNakerManchester/SpyNNaker",
     packages=packages,
     package_data=package_data,
-    install_requires=['sPyNNaker >= 1!4.0.0a2, < 1!5.0.0']
+    install_requires=['sPyNNaker >= 1!4.0.0a4, < 1!5.0.0']
 )
