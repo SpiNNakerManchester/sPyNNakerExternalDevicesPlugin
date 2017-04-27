@@ -8,8 +8,8 @@ from spinn_front_end_common.abstract_models.impl. \
 from spinn_front_end_common.utilities.exceptions import ConfigurationException
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot \
     .push_bot_ethernet.push_bot_ethernet_device import PushBotEthernetDevice
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot.push_bot_parameters.push_bot_motor import \
-    PushBotMotor
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot.\
+    push_bot_parameters.push_bot_motor import PushBotMotor
 
 
 class PushBotEthernetMotorDevice(
