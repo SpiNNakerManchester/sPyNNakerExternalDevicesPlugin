@@ -18,8 +18,9 @@ from spinn_front_end_common.abstract_models\
 from spinn_front_end_common.utilities.notification_protocol.socket_address \
     import SocketAddress
 
-from spynnaker.pyNN.spinnaker import executable_finder
-from spynnaker.pyNN.utilities import conf
+from spynnaker.pyNN.spinnaker_common import executable_finder
+# Conf moved to spynakker7 and spynakker8
+#from spynnaker.pyNN.utilities import conf
 from spynnaker.pyNN.utilities import constants
 from spynnaker import pyNN as p
 
