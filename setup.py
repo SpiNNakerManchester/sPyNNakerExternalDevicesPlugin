@@ -30,5 +30,7 @@ setup(
     url="https://github.com/SpiNNakerManchester/SpyNNaker",
     packages=packages,
     package_data=package_data,
-    install_requires=['sPyNNaker >= 1!4.0.0a4, < 1!5.0.0']
+    # Same as pynn_0.8 branch
+    # This need changing back to master version+? before/when pushing to master
+    install_requires=['sPyNNaker == 1!4.0.0a3']
 )
