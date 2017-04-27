@@ -1,21 +1,12 @@
-from six import add_metaclass
-
 from pacman.model.graphs.application.application_edge \
     import ApplicationEdge
 from spinnman.messages.eieio.eieio_type import EIEIOType
+from spynnaker.pyNN import get_spynnaker
 from spynnaker.pyNN.utilities import constants
 from spinn_front_end_common.utility_models.live_packet_gather \
     import LivePacketGather
-from spinn_utilities.abstract_base import AbstractBase, abstractmethod
 
 
-@abstractmethod
-def get_spynnaker(self):
-    """
-    Should return the spynakker 7 or 8 version
-    """
-
-@add_metaclass(AbstractBase)
 class SpynnakerExternalDevicePluginManager(object):
     """
     main entrance for the external device plugin manager
