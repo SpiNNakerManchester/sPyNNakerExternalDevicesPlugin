@@ -25,7 +25,7 @@ for dirname, dirnames, filenames in os.walk(main_package_dir):
 
 setup(
     name="sPyNNakerExternalDevicesPlugin",
-    version="1!4.0.0a2",
+    version="1!4.0.0a3",
     description="Spinnaker External Devices Plugin",
     url="https://github.com/SpiNNakerManchester/SpyNNaker",
     packages=packages,
