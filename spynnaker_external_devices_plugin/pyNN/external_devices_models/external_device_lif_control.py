@@ -150,7 +150,8 @@ class ExternalDeviceLifControl(
             input_type=input_type, synapse_type=synapse_type,
             threshold_type=threshold_type, constraints=constraints)
 
-    def get_max_atoms_per_core(self):
+    @staticmethod
+    def get_max_atoms_per_core():
         return ExternalDeviceLifControl._model_based_max_atoms_per_core
 
     def routing_key_partition_atom_mapping(self, routing_info, partition):
