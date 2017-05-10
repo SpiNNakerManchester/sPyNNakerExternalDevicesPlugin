@@ -1,7 +1,6 @@
 import spynnaker.pyNN as p
 import spynnaker_external_devices_plugin.pyNN as e
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_retina_viewer import PushBotRetinaViewer
+from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot.push_bot_parameters.push_bot_retina_viewer import PushBotRetinaViewer
 
 p.setup(1.0)
 

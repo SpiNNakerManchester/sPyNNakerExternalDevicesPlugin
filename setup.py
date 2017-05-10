@@ -2,6 +2,10 @@ from setuptools import setup
 from collections import defaultdict
 import os
 
+__version__ = None
+exec(open("spynnaker_external_devices_plugin/_version.py").read())
+assert __version__
+
 # Build a list of all project modules, as well as supplementary files
 main_package = "spynnaker_external_devices_plugin"
 data_extensions = {".aplx", ".xml"}
@@ -25,10 +29,12 @@ for dirname, dirnames, filenames in os.walk(main_package_dir):
 
 setup(
     name="sPyNNakerExternalDevicesPlugin",
-    version="3.0.0",
+    version=__version__,
     description="Spinnaker External Devices Plugin",
     url="https://github.com/SpiNNakerManchester/sPyNNakerExternalDevicesPlugin",
     packages=packages,
     package_data=package_data,
-    install_requires=['sPyNNaker >= 3.0.0, < 4.0.0']
+    # Same as pynn_0.8 branch
+    # This need changing back to master version+? before/when pushing to master
+    install_requires=['sPyNNaker >= 1!4.0.0a5, < 1!5.0.0']
 )

@@ -32,7 +32,7 @@ simulator_name = 'spiNNaker'
 benchmark = 'CUBA'
 
 #exec("from pyNN.%s import *" % simulator_name)
-from spynnaker.pyNN import *
+from spynnaker7 import *
 from pyNN.random import NumpyRNG, RandomDistribution
 from pyNN.utility import Timer
 import spynnaker_external_devices_plugin.pyNN as q

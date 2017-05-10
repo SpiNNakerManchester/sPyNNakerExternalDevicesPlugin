@@ -1,17 +1,17 @@
-import threading
-import sqlite3 as sqlite
-from time import sleep
 import math
-
+import sqlite3 as sqlite
+import threading
+from spinnman.connections.udp_packet_connections.eieio_command_connection \
+    import EieioCommandConnection
 from spinnman.connections.udp_packet_connections.reverse_iptag_connection \
     import ReverseIPTagConnection
+from time import sleep
+
 from spinnman.messages.eieio.command_messages.database_confirmation import \
     DatabaseConfirmation
 from spinnman.messages.eieio.data_messages.eieio_32bit.\
     eieio_32bit_data_message import EIEIO32BitDataMessage
-from spynnaker.pyNN.utilities.conf import config
-from spinnman.connections.udp_packet_connections.eieio_command_connection \
-    import EieioCommandConnection
+from spynnaker7 import config
 
 
 class HostBasedInjector(object):

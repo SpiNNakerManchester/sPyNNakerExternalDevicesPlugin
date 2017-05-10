@@ -1,7 +1,6 @@
-import spynnaker.pyNN as p
+import spynnaker7.pyNN as p
 import spynnaker_external_devices_plugin.pyNN as e
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_retina_viewer import PushBotRetinaViewer
+from spynnaker_external_devices_plugin.pyNN import PushBotRetinaViewer
 
 p.setup(1.0)
 
@@ -36,15 +35,12 @@ weights = {
 devices = [motor_0, motor_1, speaker, laser, led_front, led_back]
 
 # Set up the PushBot control
-pushbot = e.EthernetControlPopulation(
-    len(devices), e.PushBotLifEthernet,
-    {
-        "protocol": pushbot_protocol,
-        "devices": devices,
-        "pushbot_ip_address": "10.162.177.57",
-        # "pushbot_ip_address": "127.0.0.1",
-        "tau_syn_E": 500.0
-    },
+pushbot = p.Population(
+    len(devices), e.EthernetControl,
+    {'model': e.PushBotLifEthernet(
+        n_neurons=len(devices), protocol=pushbot_protocol, devices=devices,
+        pushbot_ip_address="10.162.177.57"),
+     "tau_syn_E": 500.0},
     label="PushBot"
 )
 

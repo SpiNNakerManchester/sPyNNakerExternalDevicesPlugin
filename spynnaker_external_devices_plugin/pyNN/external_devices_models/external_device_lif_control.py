@@ -48,7 +48,10 @@ class ExternalDeviceLifControl(
 
     default_parameters = {
         'tau_m': 20.0, 'cm': 1.0, 'v_rest': 0.0, 'v_reset': 0.0,
-        'tau_syn_E': 5.0, 'tau_syn_I': 5.0, 'tau_refrac': 0.1, 'i_offset': 0}
+        'tau_syn_E': 5.0, 'tau_syn_I': 5.0, 'tau_refrac': 0.1, 'i_offset': 0,
+        'initial_input_inh': 0, 'initial_input_exc': 0}
+
+    none_pynn_default_parameters = {'v_init': None}
 
     # all commands will use this mask
     _DEFAULT_COMMAND_MASK = 0xFFFFFFFF
@@ -57,9 +60,16 @@ class ExternalDeviceLifControl(
             self, n_neurons, devices, create_edges, translator=None,
 
             # standard neuron stuff
-            spikes_per_second=None, label=None,
-            ring_buffer_sigma=None,
-            incoming_spike_buffer_size=None, constraints=None,
+            spikes_per_second=AbstractPopulationVertex.
+            none_pynn_default_parameters['spikes_per_second'],
+            label=AbstractPopulationVertex.none_pynn_default_parameters[
+                'label'],
+            ring_buffer_sigma=AbstractPopulationVertex.
+            none_pynn_default_parameters['ring_buffer_sigma'],
+            incoming_spike_buffer_size=AbstractPopulationVertex.
+            none_pynn_default_parameters['incoming_spike_buffer_size'],
+            constraints=AbstractPopulationVertex.
+            none_pynn_default_parameters['constraints'],
 
             # default params for the neuron model type
             tau_m=default_parameters['tau_m'], cm=default_parameters['cm'],
@@ -68,7 +78,10 @@ class ExternalDeviceLifControl(
             tau_syn_E=default_parameters['tau_syn_E'],
             tau_syn_I=default_parameters['tau_syn_I'],
             tau_refrac=default_parameters['tau_refrac'],
-            i_offset=default_parameters['i_offset'], v_init=None
+            i_offset=default_parameters['i_offset'],
+            v_init=none_pynn_default_parameters['v_init'],
+            initial_input_inh=default_parameters['initial_input_inh'],
+            initial_input_exc=default_parameters['initial_input_exc']
     ):
         """
 
@@ -109,7 +122,9 @@ class ExternalDeviceLifControl(
             n_neurons, v_init, v_rest, tau_m, cm, i_offset,
             v_reset, tau_refrac)
         synapse_type = SynapseTypeExponential(
-            n_neurons, tau_syn_E, tau_syn_I)
+            n_neurons, tau_syn_E, tau_syn_I,
+            initial_input_inh=initial_input_inh,
+            initial_input_exc=initial_input_exc)
         input_type = InputTypeCurrent()
         threshold_type = ThresholdTypeMulticastDeviceControl(devices)
 

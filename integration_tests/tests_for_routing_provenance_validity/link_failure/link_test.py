@@ -3,9 +3,10 @@ retina example that just feeds data from a retina to live output via an
 intermediate population
 """
 
-import spynnaker.pyNN as p
-import spynnaker_external_devices_plugin.pyNN as q
+import spynnaker7.pyNN as p
+
 import retina_lib as retina_lib
+import spynnaker_external_devices_plugin.pyNN as q
 
 connected_chip_details = {
     "spinnaker_link_id": 0,

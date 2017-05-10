@@ -13,9 +13,13 @@ from spinn_front_end_common.abstract_models.impl\
 class ArbitraryFPGADevice(
         ApplicationFPGAVertex, ProvidesKeyToAtomMappingImpl):
 
+    default_parameters = {
+        'board_address': None, 'label': "ArbitraryFPGADevice"}
+
     def __init__(
-            self, n_neurons, fpga_link_id, fpga_id, board_address=None,
-            label=None):
+            self, n_neurons, fpga_link_id, fpga_id,
+            board_address=default_parameters['board_address'],
+            label=default_parameters['label']):
         ApplicationFPGAVertex.__init__(
             self, n_neurons, fpga_id, fpga_link_id, board_address, label)
         ProvidesKeyToAtomMappingImpl.__init__(self)

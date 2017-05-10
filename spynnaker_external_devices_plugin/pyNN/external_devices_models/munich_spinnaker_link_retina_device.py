@@ -55,9 +55,15 @@ class MunichRetinaDevice(
     LEFT_RETINA = "LEFT"
     RIGHT_RETINA = "RIGHT"
 
+    default_parameters = {
+        'label': "MunichRetinaDevice", 'polarity': None,
+        'board_address': None}
+
     def __init__(
             self, retina_key, spinnaker_link_id, position,
-            label=None, n_neurons=None, polarity=None, board_address=None):
+            label=default_parameters['label'], n_neurons=None,
+            polarity=default_parameters['polarity'],
+            board_address=default_parameters['board_address']):
 
         if polarity is None:
             polarity = MunichRetinaDevice.MERGED_POLARITY

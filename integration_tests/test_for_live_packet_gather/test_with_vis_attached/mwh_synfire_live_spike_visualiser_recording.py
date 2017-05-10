@@ -2,11 +2,12 @@
 Synfirechain-like example
 """
 #!/usr/bin/python
+import numpy
 import os
-import spynnaker.pyNN as p
+import pylab
+import spynnaker7.pyNN as p
+
 import spynnaker_external_devices_plugin.pyNN as q
-#import pyNN.spiNNaker as p
-import numpy, pylab
 
 #p.setup(timestep=1.0, min_delay = 1.0, max_delay = 32.0)
 p.setup(timestep=1.0, min_delay = 1.0, max_delay = 144.0)

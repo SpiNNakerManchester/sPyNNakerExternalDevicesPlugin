@@ -1,7 +1,8 @@
-import spynnaker.pyNN as frontend
+import pylab
+import spynnaker7.pyNN as frontend
+
 import spynnaker_external_devices_plugin.pyNN as externaldevices
 from spinnman.messages.eieio.eieio_prefix import EIEIOPrefix
-import pylab
 
 frontend.setup(timestep=1.0, min_delay=1.0, max_delay=144.0)
 

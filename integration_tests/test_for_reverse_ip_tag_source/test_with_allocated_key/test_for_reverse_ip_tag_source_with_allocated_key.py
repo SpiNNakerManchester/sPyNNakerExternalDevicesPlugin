@@ -1,8 +1,9 @@
-import spynnaker.pyNN as FrontEnd
-import spynnaker_external_devices_plugin.pyNN as ExternalDevices
 import pylab
+import spynnaker7.pyNN as FrontEnd
 
-from spynnaker.pyNN.utilities.database.socket_address import SocketAddress
+import spynnaker_external_devices_plugin.pyNN as ExternalDevices
+from spynnaker7 import SocketAddress
+
 socket_addresses = list()
 socket_addresses.append(SocketAddress(
     listen_port=19998, notify_port_no=19999, notify_host_name="localhost"))

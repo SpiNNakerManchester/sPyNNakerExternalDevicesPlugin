@@ -1,8 +1,9 @@
-from spinnman.messages.eieio.data_messages.eieio_32bit.\
-    eieio_32bit_data_message import EIEIO32BitDataMessage
-from spynnaker.pyNN.utilities.conf import config
 from spinnman.connections.udp_packet_connections.reverse_iptag_connection \
     import ReverseIPTagConnection
+
+from spinnman.messages.eieio.data_messages.eieio_32bit. \
+    eieio_32bit_data_message import EIEIO32BitDataMessage
+from spynnaker7.pyNN.conf import config
 
 udp_connection = \
     ReverseIPTagConnection(remote_host=config.get("Machine", "machineName"),
