@@ -58,12 +58,6 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="sPyNNakerExternalDevicesPlugin_neural_modelling.cdt.managedbuild.target.gnu.cross.exe.546892666" name="Executable" projectType="cdt.managedbuild.target.gnu.cross.exe"/>
 	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.debug.1679260241;cdt.managedbuild.config.gnu.cross.exe.debug.1679260241.;cdt.managedbuild.tool.gnu.cross.c.compiler.1106778375;cdt.managedbuild.tool.gnu.c.compiler.input.1585755894">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="Debug">
@@ -71,4 +65,14 @@
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.release.444497472;cdt.managedbuild.config.gnu.cross.exe.release.444497472.;cdt.managedbuild.tool.gnu.cross.c.compiler.922944666;cdt.managedbuild.tool.gnu.c.compiler.input.984195914">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.exe.debug.430977620;cdt.managedbuild.config.gnu.cross.exe.debug.430977620.;cdt.managedbuild.tool.gnu.cross.c.compiler.180694561;cdt.managedbuild.tool.gnu.c.compiler.input.1605055277">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+	</storageModule>
 </cproject>
