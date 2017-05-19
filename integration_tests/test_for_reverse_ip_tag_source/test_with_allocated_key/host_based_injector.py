@@ -24,7 +24,8 @@ class HostBasedInjector(object):
         """ method to process the DatabaseConfirmation command message
 
         :param packet: the DatabaseConfirmation message received
-        :type packet: spinnman.messages.eieio.command_messages.database_confirmation
+        :type packet: spinnman.messages.eieio.command_messages.
+            database_confirmation
         :rtype: None
         """
         self._received_hand_shake_condition.acquire()
@@ -105,6 +106,7 @@ class HostBasedInjector(object):
         cur.execute("SELECT no_atoms FROM Application_vertices "
                     "WHERE vertex_label = \"{}\"".format(self._pop_id))
         return cur.fetchone()[0]
+
 
 if __name__ == "__main__":
     injector = HostBasedInjector(5, "spike_injector_1")

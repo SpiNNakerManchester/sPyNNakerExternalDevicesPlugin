@@ -24,10 +24,10 @@ for i in range(nNeurons):
 
 cell_params_lif_in = {
                       'tau_m':      32,
-                      'v_init':     -80,
-                      'v_rest':     -75,
-                      'v_reset':    -95,
-                      'v_thresh':   -55,
+                      'v_init': -80,
+                      'v_rest': -75,
+                      'v_reset': -95,
+                      'v_thresh': -55,
                       'tau_syn_E':  5,
                       'tau_syn_I':  10,
                       'tau_refrac': 20,
@@ -35,10 +35,10 @@ cell_params_lif_in = {
                       }
 
 cell_params_lif = {'tau_m':       32,
-                   'v_init':      -80,
-                   'v_rest':      -75,
-                   'v_reset':     -95,
-                   'v_thresh':    -55,
+                   'v_init': -80,
+                   'v_rest': -75,
+                   'v_reset': -95,
+                   'v_thresh': -55,
                    'tau_syn_E':   5,
                    'tau_syn_I':   10,
                    'tau_refrac':  5,
@@ -61,7 +61,9 @@ populations[0].randomInit(v_distr)
 q.activate_live_output_for(
     populations[0], port=34567, host="130.88.198.209", tag=2,
     payload_as_time_stamps=False, use_payload_prefix=False)
-#populations.append(Population(nNeurons, IF_curr_exp, cell_params_lif, label='pop_%d' % i))
+# populations.append(Population(nNeurons,
+#                               IF_curr_exp, cell_params_lif,
+#                               label='pop_%d' % i))
 
 pop_external = p.Population(
     nNeurons, q.SpikeInjector, cell_params_ext_dev, label='Babel_Dummy')
@@ -73,14 +75,16 @@ projections.append(
     p.Projection(pop_external, populations[1], p.OneToOneConnector(
         weights=weight_to_spike, delays=10)))
 
-#populations[0].record_v()           # at the moment is only possible to observe one population per core
+# populations[0].record_v()
+#  at the moment is only possible to observe one population per core
 populations[1].record_v()
 
-for pop in populations:        
-    pop.record(to_file=False) # sends spike to the Monitoring application
+for pop in populations:
+    pop.record(to_file=False)  # sends spike to the Monitoring application
 
-#    populations[i].record_variable('rate', save_to='eth') # sends spike to the Monitoring application
-    
+#    populations[i].record_variable('rate', save_to='eth')
+#  sends spike to the Monitoring application
+
 p.run(10000)
 
 # retrieving spike results and plotting...
@@ -93,6 +97,3 @@ for pop_o in populations:
     id_accumulator = id_accumulator + pop_o.size
 
 p_plot.show()
-
-
-

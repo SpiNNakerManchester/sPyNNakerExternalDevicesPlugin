@@ -1,51 +1,49 @@
 """
 Synfirechain-like example
 """
-#!/usr/bin/python
-import numpy
-import os
+# !/usr/bin/python
 import pylab
 import spynnaker7.pyNN as p
 
 import spynnaker_external_devices_plugin.pyNN as q
 
-#p.setup(timestep=1.0, min_delay = 1.0, max_delay = 32.0)
-p.setup(timestep=1.0, min_delay = 1.0, max_delay = 144.0)
-nNeurons = 10 # number of neurons in each population
+# p.setup(timestep=1.0, min_delay = 1.0, max_delay = 32.0)
+p.setup(timestep=1.0, min_delay=1.0, max_delay=144.0)
+nNeurons = 10  # number of neurons in each population
 max_delay = 50
-#p.set_number_of_neurons_per_core("IF_curr_exp", nNeurons / 2)
-#p.set_number_of_neurons_per_core("DelayExtension", nNeurons / 2)
+# p.set_number_of_neurons_per_core("IF_curr_exp", nNeurons / 2)
+# p.set_number_of_neurons_per_core("DelayExtension", nNeurons / 2)
 
 
-cell_params_lif = {'cm'        : 0.25,  # nF
-                   'i_offset'  : 0.0,
-                   'tau_m'     : 20.0,
+cell_params_lif = {'cm': 0.25,  # nF
+                   'i_offset': 0.0,
+                   'tau_m': 20.0,
                    'tau_refrac': 2.0,
-                   'tau_syn_E' : 5.0,
-                   'tau_syn_I' : 5.0,
-                   'v_reset'   : -70.0,
-                   'v_rest'    : -65.0,
-                   'v_thresh'  : -50.0
+                   'tau_syn_E': 5.0,
+                   'tau_syn_I': 5.0,
+                   'v_reset': -70.0,
+                   'v_rest': -65.0,
+                   'v_thresh': -50.0
                    }
 
 populations = list()
 projections = list()
 
 weight_to_spike = 2.0
-#d_value = 3.1
+# d_value = 3.1
 delay = 3
-#delay = numpy.random.RandomState()
+# delay = numpy.random.RandomState()
 delays = list()
 
 connections = list()
 for i in range(0, nNeurons):
-    #d_value = int(delay.uniform(low=1, high=max_delay))
-    #if i == 0:
-     #   d_value = 16.0
-    #if i == 1:
-     #   d_value = 17.0
-    #if i == 2:
-     #   d_value = 33.0
+    # d_value = int(delay.uniform(low=1, high=max_delay))
+    # if i == 0:
+    #   d_value = 16.0
+    # if i == 1:
+    #   d_value = 17.0
+    # if i == 2:
+    #   d_value = 33.0
     delays.append(float(delay))
     singleConnection = (i, ((i + 1) % nNeurons), weight_to_spike, delay)
     connections.append(singleConnection)
@@ -53,17 +51,21 @@ for i in range(0, nNeurons):
 injectionConnection = [(0, 0, weight_to_spike, 1)]
 spikeArray = {'spike_times': [[0]]}
 
-populations.append(p.Population(nNeurons, p.IF_curr_exp, cell_params_lif, label='pop_1'))
+populations.append(p.Population(nNeurons, p.IF_curr_exp, cell_params_lif,
+                                label='pop_1'))
 
-populations.append(p.Population(1, p.SpikeSourceArray, spikeArray, label='inputSpikes_1'))
-#populations[0].set_mapping_constraint({"x": 1, "y": 0})
+populations.append(p.Population(1, p.SpikeSourceArray, spikeArray,
+                                label='inputSpikes_1'))
+# populations[0].set_mapping_constraint({"x": 1, "y": 0})
 
-projections.append(p.Projection(populations[0], populations[0], p.FromListConnector(connections)))
-projections.append(p.Projection(populations[1], populations[0], p.FromListConnector(injectionConnection)))
+projections.append(p.Projection(populations[0], populations[0],
+                                p.FromListConnector(connections)))
+projections.append(p.Projection(populations[1], populations[0],
+                                p.FromListConnector(injectionConnection)))
 
 q.activate_live_output_for(populations[0])
-populations[0].set_constraint(p.PlacerChipAndCoreConstraint(0,0,4))
-populations[1].set_constraint(p.PlacerChipAndCoreConstraint(0,0,5))
+populations[0].set_constraint(p.PlacerChipAndCoreConstraint(0, 0, 4))
+populations[1].set_constraint(p.PlacerChipAndCoreConstraint(0, 0, 5))
 
 run_time = 100
 print "Running for {} ms".format(run_time)
@@ -75,9 +77,9 @@ v = None
 gsyn = None
 spikes = None
 spikes = populations[0].getSpikes(compatible_output=True)
-#print(projections[0].getWeights())
-#print(projections[0].getDelays())
-#print delays
+# print(projections[0].getWeights())
+# print(projections[0].getDelays())
+# print delays
 
 if spikes is not None:
     print spikes

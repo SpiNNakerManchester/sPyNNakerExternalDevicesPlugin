@@ -26,12 +26,13 @@ for dirname, dirnames, filenames in os.walk(main_package_dir):
             package_data[package].append("*{}".format(ext))
             break
 
+url = "https://github.com/SpiNNakerManchester/sPyNNakerExternalDevicesPlugin"
 
 setup(
     name="sPyNNakerExternalDevicesPlugin",
     version=__version__,
     description="Spinnaker External Devices Plugin",
-    url="https://github.com/SpiNNakerManchester/sPyNNakerExternalDevicesPlugin",
+    url=url,
     packages=packages,
     package_data=package_data,
     # Same as pynn_0.8 branch

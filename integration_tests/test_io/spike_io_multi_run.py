@@ -163,6 +163,7 @@ def receive_spikes(label, time, neuron_ids):
         print "Received spike at time", time, "from", label, "-", neuron_id
         print_condition.release()
 
+
 # Set up the live connection for sending spikes
 live_spikes_connection_send = SpynnakerLiveSpikesConnection(
     receive_labels=None, local_port=19999,

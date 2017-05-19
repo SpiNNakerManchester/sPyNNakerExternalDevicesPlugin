@@ -17,6 +17,7 @@ def get_updated_params(params):
     params.update(connected_chip_details)
     return params
 
+
 # Setup
 p.setup(timestep=1.0)
 

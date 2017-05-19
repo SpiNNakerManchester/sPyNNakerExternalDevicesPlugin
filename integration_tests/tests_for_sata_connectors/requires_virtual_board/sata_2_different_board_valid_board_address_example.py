@@ -13,7 +13,7 @@ retina_pop = p.Population(
     2000, external_devices.ArbitraryFPGADevice, {
         'fpga_link_id': 12,
         'fpga_id': 1,
-        'board_address': "127.0.0.1", # 4, 8
+        'board_address': "127.0.0.1",  # 4, 8
         'label': "bacon"},
     label='External sata thing')
 
@@ -21,7 +21,7 @@ retina_pop = p.Population(
     2000, external_devices.ArbitraryFPGADevice, {
         'fpga_link_id': 11,
         'fpga_id': 1,
-        'board_address': "127.0.0.2", # 0 0
+        'board_address': "127.0.0.2",  # 0 0
         'label': "bacon"},
     label='External sata thing')
 

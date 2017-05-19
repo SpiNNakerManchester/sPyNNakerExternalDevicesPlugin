@@ -2,7 +2,6 @@ import pylab
 import spynnaker7.pyNN as frontend
 
 import spynnaker_external_devices_plugin.pyNN as externaldevices
-from spinnman.messages.eieio.eieio_prefix import EIEIOPrefix
 
 frontend.setup(timestep=1.0, min_delay=1.0, max_delay=144.0)
 
@@ -15,9 +14,9 @@ cell_params_lif = {'cm':         0.25,  # nF
                    'tau_refrac': 2.0,
                    'tau_syn_E':  5.0,
                    'tau_syn_I':  5.0,
-                   'v_reset':    -70.0,
-                   'v_rest':     -65.0,
-                   'v_thresh':   -50.0
+                   'v_reset': -70.0,
+                   'v_rest': -65.0,
+                   'v_thresh': -50.0
                    }
 
 cell_params_spike_injector_new = {
