@@ -1,7 +1,7 @@
 from pacman.model.graphs.application.application_edge \
     import ApplicationEdge
 from spinnman.messages.eieio.eieio_type import EIEIOType
-from spynnaker.pyNN.utilities import globals_variables
+from spinn_front_end_common.utilities import globals_variables
 from spynnaker.pyNN.utilities import constants
 from spinn_front_end_common.utility_models.live_packet_gather \
     import LivePacketGather
