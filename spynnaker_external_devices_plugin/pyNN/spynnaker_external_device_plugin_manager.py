@@ -9,13 +9,11 @@ from spinn_front_end_common.utilities import helpful_functions
 from spinn_front_end_common.utilities.notification_protocol.socket_address \
     import SocketAddress
 
+
 class SpynnakerExternalDevicePluginManager(object):
     """
     main entrance for the external device plugin manager
     """
-
-    def __init__(self):
-        self._live_spike_recorders = dict()
 
     @staticmethod
     def add_database_socket_address(
@@ -45,8 +43,9 @@ class SpynnakerExternalDevicePluginManager(object):
         SpynnakerExternalDevicePluginManager.add_socket_address(
             database_socket)
 
+    @staticmethod
     def activate_live_output_for(
-            self, population, database_notify_host=None,
+            population, database_notify_host=None,
             database_notify_port_num=None,
             database_ack_port_num=None, board_address=None, port=None,
             host=None, tag=None, strip_sdp=True, use_prefix=False,
@@ -114,14 +113,14 @@ class SpynnakerExternalDevicePluginManager(object):
             host = config.get("Recording", "live_spike_host")
 
         # add new edge and vertex if required to spinnaker graph
-        self.add_edge_to_recorder_vertex(
+        update_live_packet_gather_tracker(
             population._vertex, port, host, tag, board_address, strip_sdp,
             use_prefix, key_prefix, prefix_type, message_type, right_shift,
             payload_as_time_stamps, use_payload_prefix, payload_prefix,
             payload_right_shift, number_of_packets_sent_per_time_step)
 
         if notify:
-            self.add_database_socket_address(
+            SpynnakerExternalDevicePluginManager.add_database_socket_address(
                 database_notify_host, database_notify_port_num,
                 database_ack_port_num)
 
@@ -148,11 +147,11 @@ class SpynnakerExternalDevicePluginManager(object):
         :type socket_address:
         :rtype: None:
         """
-        _spinnaker = globals_variables.get_simulator()
-        _spinnaker._add_socket_address(socket_address)
+        globals_variables.get_simulator()._add_socket_address(socket_address)
 
-    def add_edge_to_recorder_vertex(
-            self, vertex_to_record_from, port, hostname, tag=None,
+    @staticmethod
+    def update_live_packet_gather_tracker(
+            vertex_to_record_from, port, hostname, tag=None,
             board_address=None,
             strip_sdp=True, use_prefix=False, key_prefix=None,
             prefix_type=None, message_type=EIEIOType.KEY_32_BIT,
@@ -164,26 +163,20 @@ class SpynnakerExternalDevicePluginManager(object):
         all the parameters for the creation of the LPG if needed
         """
 
-        _spinnaker = globals_variables.get_simulator()
+        params = LivePacketGatherParameters(
+            port=port, hostname=hostname, tag=tag, board_address=board_address,
+            strip_sdp=strip_sdp, use_prefix=use_prefix, key_prefix=key_prefix,
+            prefix_type=prefix_type, message_type=message_type,
+            right_shift=right_shift, payload_prefix=payload_prefix,
+            payload_as_time_stamps=payload_as_time_stamps,
+            use_payload_prefix=use_payload_prefix,
+            payload_right_shift=payload_right_shift,
+            number_of_packets_sent_per_time_step=
+            number_of_packets_sent_per_time_step)
 
-        # locate the live spike recorder
-        if (port, hostname) in self._live_spike_recorders:
-            live_spike_recorder = self._live_spike_recorders[(port, hostname)]
-        else:
-
-            live_spike_recorder = LivePacketGather(
-                hostname, port, board_address, tag, strip_sdp, use_prefix,
-                key_prefix, prefix_type, message_type, right_shift,
-                payload_as_time_stamps, use_payload_prefix, payload_prefix,
-                payload_right_shift, number_of_packets_sent_per_time_step,
-                label="LiveSpikeReceiver")
-            self._live_spike_recorders[(port, hostname)] = live_spike_recorder
-            _spinnaker.add_application_vertex(live_spike_recorder)
-
-        # create the edge and add
-        edge = ApplicationEdge(
-            vertex_to_record_from, live_spike_recorder, label="recorder_edge")
-        _spinnaker.add_application_edge(edge, constants.SPIKE_PARTITION_ID)
+        # add to the tracker
+        globals_variables.get_simulator().add_live_packet_gatherer_parameters(
+            params, vertex_to_record_from)
 
     @staticmethod
     def add_edge(vertex, device_vertex, partition_id):
