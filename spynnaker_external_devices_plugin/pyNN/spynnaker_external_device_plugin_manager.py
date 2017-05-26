@@ -8,6 +8,8 @@ from spinn_front_end_common.utility_models.live_packet_gather \
 from spinn_front_end_common.utilities import helpful_functions
 from spinn_front_end_common.utilities.notification_protocol.socket_address \
     import SocketAddress
+from spinn_front_end_common.utilities.utility_objs\
+    .live_packet_gather_parameters import LivePacketGatherParameters
 
 
 class SpynnakerExternalDevicePluginManager(object):
@@ -113,7 +115,7 @@ class SpynnakerExternalDevicePluginManager(object):
             host = config.get("Recording", "live_spike_host")
 
         # add new edge and vertex if required to spinnaker graph
-        update_live_packet_gather_tracker(
+        SpynnakerExternalDevicePluginManager.update_live_packet_gather_tracker(
             population._vertex, port, host, tag, board_address, strip_sdp,
             use_prefix, key_prefix, prefix_type, message_type, right_shift,
             payload_as_time_stamps, use_payload_prefix, payload_prefix,
@@ -158,7 +160,8 @@ class SpynnakerExternalDevicePluginManager(object):
             prefix_type=None, message_type=EIEIOType.KEY_32_BIT,
             right_shift=0, payload_as_time_stamps=True,
             use_payload_prefix=True, payload_prefix=None,
-            payload_right_shift=0, number_of_packets_sent_per_time_step=0):
+            payload_right_shift=0, number_of_packets_sent_per_time_step=0,
+            label=None):
         """
         adds a edge from a vertex to the LPG object, builds as needed and has
         all the parameters for the creation of the LPG if needed
@@ -173,7 +176,8 @@ class SpynnakerExternalDevicePluginManager(object):
             use_payload_prefix=use_payload_prefix,
             payload_right_shift=payload_right_shift,
             number_of_packets_sent_per_time_step=
-            number_of_packets_sent_per_time_step)
+            number_of_packets_sent_per_time_step,
+            label=label)
 
         # add to the tracker
         globals_variables.get_simulator().add_live_packet_gatherer_parameters(
