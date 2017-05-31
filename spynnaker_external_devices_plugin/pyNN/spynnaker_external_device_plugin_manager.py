@@ -3,8 +3,6 @@ from pacman.model.graphs.application.application_edge \
 from spinnman.messages.eieio.eieio_type import EIEIOType
 from spinn_front_end_common.utilities import globals_variables
 from spynnaker.pyNN.utilities import constants
-from spinn_front_end_common.utility_models.live_packet_gather \
-    import LivePacketGather
 from spinn_front_end_common.utilities import helpful_functions
 from spinn_front_end_common.utilities.notification_protocol.socket_address \
     import SocketAddress
@@ -150,7 +148,7 @@ class SpynnakerExternalDevicePluginManager(object):
         :type socket_address:
         :rtype: None:
         """
-        globals_variables.get_simulator()._add_socket_address(socket_address)
+        globals_variables.get_simulator().add_socket_address(socket_address)
 
     @staticmethod
     def update_live_packet_gather_tracker(
