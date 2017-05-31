@@ -9,6 +9,7 @@ from spinn_front_end_common.utilities.notification_protocol.socket_address \
 from spinn_front_end_common.utilities.utility_objs\
     .live_packet_gather_parameters import LivePacketGatherParameters
 
+from spynnaker.pyNN.utilities import constants as spynnaker_constants
 
 class SpynnakerExternalDevicePluginManager(object):
     """
@@ -118,7 +119,8 @@ class SpynnakerExternalDevicePluginManager(object):
             use_prefix, key_prefix, prefix_type, message_type, right_shift,
             payload_as_time_stamps, use_payload_prefix, payload_prefix,
             payload_right_shift, number_of_packets_sent_per_time_step,
-            label="LiveSpikeReceiver")
+            label="LiveSpikeReceiver",
+            partition_id=spynnaker_constants.SPIKE_PARTITION_ID)
 
         if notify:
             SpynnakerExternalDevicePluginManager.add_database_socket_address(
@@ -159,7 +161,7 @@ class SpynnakerExternalDevicePluginManager(object):
             right_shift=0, payload_as_time_stamps=True,
             use_payload_prefix=True, payload_prefix=None,
             payload_right_shift=0, number_of_packets_sent_per_time_step=0,
-            label=None):
+            label=None, partition_id=None):
         """
         adds a edge from a vertex to the LPG object, builds as needed and has
         all the parameters for the creation of the LPG if needed
@@ -175,7 +177,7 @@ class SpynnakerExternalDevicePluginManager(object):
             payload_right_shift=payload_right_shift,
             number_of_packets_sent_per_time_step=
             number_of_packets_sent_per_time_step,
-            label=label)
+            label=label, partition_id=partition_id)
 
         # add to the tracker
         globals_variables.get_simulator().add_live_packet_gatherer_parameters(
