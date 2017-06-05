@@ -11,6 +11,7 @@ from spinn_front_end_common.utilities.utility_objs\
 
 from spynnaker.pyNN.utilities import constants as spynnaker_constants
 
+
 class SpynnakerExternalDevicePluginManager(object):
     """
     main entrance for the external device plugin manager
@@ -90,7 +91,7 @@ class SpynnakerExternalDevicePluginManager(object):
                      "live_spike_port" parameter in the "Recording" \
                      section of the spynnaker cfg file.
         :type port: int
-        :param host: The host name or IP address to which the live spikes will\ 
+        :param host: The host name or IP address to which the live spikes will\
                      be sent.  If not specified, the host will be taken from \
                      the "live_spike_host" parameter in the "Recording" \
                      section of the spynnaker cfg file.
@@ -129,11 +130,11 @@ class SpynnakerExternalDevicePluginManager(object):
 
     @staticmethod
     def activate_live_output_to(population, device):
-        """ Activate the output of spikes from a population to an external 
-            device. Note that all spikes will be sent to the device.
+        """ Activate the output of spikes from a population to an external\
+             device. Note that all spikes will be sent to the device.
 
-        :param population: The pyNN population object from which spikes will 
-                           be sent.
+        :param population: The pyNN population object from which spikes will\
+                            be sent.
         :param device: The pyNN population external device to which the spikes
                        will be sent.
         """
@@ -175,8 +176,8 @@ class SpynnakerExternalDevicePluginManager(object):
             payload_as_time_stamps=payload_as_time_stamps,
             use_payload_prefix=use_payload_prefix,
             payload_right_shift=payload_right_shift,
-            number_of_packets_sent_per_time_step=
-            number_of_packets_sent_per_time_step,
+            number_of_packets_sent_per_time_step=(
+                number_of_packets_sent_per_time_step),
             label=label, partition_id=partition_id)
 
         # add to the tracker
