@@ -825,13 +825,13 @@ static inline multicast_packet munich_protocol_set_retina_transmission(
             if (size_of_time_stamp_in_bytes == 0) {
                 return _key_retina(
                     retina_pixels, _PAYLOAD_DELTA_TIMESTAMPS, uart_id);
-            } else if(size_of_time_stamp_in_bytes == 2) {
+            } else if (size_of_time_stamp_in_bytes == 2) {
                 return _key_retina(
                     retina_pixels, _PAYLOAD_TWO_BYTE_TIME_STAMPS, uart_id);
-            } else if(size_of_time_stamp_in_bytes == 3) {
+            } else if (size_of_time_stamp_in_bytes == 3) {
                 return _key_retina(
                     retina_pixels, _PAYLOAD_THREE_BYTE_TIME_STAMPS, uart_id);
-            } else if(size_of_time_stamp_in_bytes == 4) {
+            } else if (size_of_time_stamp_in_bytes == 4) {
                 return _key_retina(
                     retina_pixels, _PAYLOAD_FOUR_BYTE_TIME_STAMPS, uart_id);
             } else {
