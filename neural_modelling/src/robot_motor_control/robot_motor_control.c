@@ -33,7 +33,7 @@ static uint32_t infinite_run;
 
 //! values for the priority for each callback
 typedef enum callback_priorities{
-    MC = -1, SDP = 0, TIMER = 2
+    MC = -1, SDP = 0, TIMER = 2, DMA = 1
 } callback_priorities;
 
 static inline void send(uint32_t direction, uint32_t speed) {
@@ -192,7 +192,7 @@ static bool initialize(uint32_t *timer_period) {
     if (!simulation_initialise(
             data_specification_get_region(0, address),
             APPLICATION_NAME_HASH, timer_period, &simulation_ticks,
-            &infinite_run, SDP)) {
+            &infinite_run, SDP, DMA)) {
         return false;
     }
 
