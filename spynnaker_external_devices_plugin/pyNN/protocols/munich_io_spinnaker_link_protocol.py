@@ -1,7 +1,6 @@
 from enum import Enum
-from spinn_front_end_common.utility_models.multi_cast_command \
-    import MultiCastCommand
-from spinn_front_end_common.utilities import exceptions
+from spinn_front_end_common.utility_models import MultiCastCommand
+from spinn_front_end_common.utilities.exceptions import ConfigurationException
 
 import logging
 
@@ -614,7 +613,7 @@ class MunichIoSpiNNakerLinkProtocol(object):
 
     def _check_for_pushbot_mode(self):
         if self._mode is not self.MODES.PUSH_BOT:
-            raise exceptions.ConfigurationException(
+            raise ConfigurationException(
                 "The mode you configured is not the pushbot, and so this "
                 "message is invalid for mode {}".format(self._mode))
 
@@ -820,7 +819,7 @@ class MunichIoSpiNNakerLinkProtocol(object):
 
         if (retina_key == RetinaKey.FIXED_KEY and
                 retina_payload != RetinaPayload.EVENTS_IN_PAYLOAD):
-            raise exceptions.ConfigurationException(
+            raise ConfigurationException(
                 "If the Retina Key is FIXED_KEY, the payload must be"
                 " EVENTS_IN_PAYLOAD")
 

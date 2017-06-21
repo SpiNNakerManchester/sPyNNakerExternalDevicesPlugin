@@ -10,12 +10,10 @@ from pacman.model.constraints.key_allocator_constraints.\
 from pacman.model.decorators.overrides import overrides
 from pacman.model.routing_info.base_key_and_mask import BaseKeyAndMask
 
-from spinn_front_end_common.abstract_models.\
-    abstract_provides_outgoing_partition_constraints import \
+from spinn_front_end_common.abstract_models import \
     AbstractProvidesOutgoingPartitionConstraints
-from spinn_front_end_common.utilities import exceptions
-from spinn_front_end_common.abstract_models\
-    .abstract_vertex_with_dependent_vertices \
+from spinn_front_end_common.utilities.exceptions import ConfigurationException
+from spinn_front_end_common.abstract_models \
     import AbstractVertexWithEdgeToDependentVertices
 
 from spynnaker.pyNN.models.neuron.abstract_population_vertex \
@@ -99,11 +97,11 @@ class ExternalDeviceLifControl(
 
         # Verify that there are the correct number of neurons
         if n_neurons != len(devices):
-            raise exceptions.ConfigurationException(
+            raise ConfigurationException(
                 "The number of neurons must match the number of devices")
 
         if len(devices) == 0:
-            raise exceptions.ConfigurationException("No devices specified")
+            raise ConfigurationException("No devices specified")
 
         # Create a partition to key map
         self._partition_id_to_key = OrderedDict([
@@ -186,7 +184,7 @@ class ExternalDeviceLifControl(
     @overrides(AbstractEthernetController.get_message_translator)
     def get_message_translator(self):
         if self._message_translator is None:
-            raise exceptions.ConfigurationException(
+            raise ConfigurationException(
                 "This population was not given a translator, and so cannot be"
                 "used for Ethernet communication.  Please provide a "
                 "translator for the population.")

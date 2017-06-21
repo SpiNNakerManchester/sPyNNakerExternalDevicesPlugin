@@ -1,8 +1,6 @@
-from spinn_front_end_common.abstract_models.impl.\
-    provides_key_to_atom_mapping_impl \
+from spinn_front_end_common.abstract_models.impl \
     import ProvidesKeyToAtomMappingImpl
-from spinn_front_end_common.abstract_models.\
-    abstract_send_me_multicast_commands_vertex \
+from spinn_front_end_common.abstract_models \
     import AbstractSendMeMulticastCommandsVertex
 
 from pacman.model.decorators.overrides import overrides

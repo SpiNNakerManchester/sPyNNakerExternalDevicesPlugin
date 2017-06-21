@@ -1,5 +1,4 @@
-from spinn_front_end_common.utilities.connections.live_event_connection \
-    import LiveEventConnection
+from spinn_front_end_common.utilities.connections import LiveEventConnection
 
 
 # The maximum number of 32-bit keys that will fit in a packet

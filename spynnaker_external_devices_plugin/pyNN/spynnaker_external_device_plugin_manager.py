@@ -1,13 +1,13 @@
 from pacman.model.graphs.application.application_edge \
     import ApplicationEdge
-from spinnman.messages.eieio.eieio_type import EIEIOType
+from spinnman.messages.eieio import EIEIOType
 from spinn_front_end_common.utilities import globals_variables
 from spynnaker.pyNN.utilities import constants
 from spinn_front_end_common.utilities import helpful_functions
-from spinn_front_end_common.utilities.notification_protocol.socket_address \
+from spinn_front_end_common.utilities.notification_protocol \
     import SocketAddress
-from spinn_front_end_common.utilities.utility_objs\
-    .live_packet_gather_parameters import LivePacketGatherParameters
+from spinn_front_end_common.utilities.utility_objs \
+    import LivePacketGatherParameters
 
 from spynnaker.pyNN.utilities import constants as spynnaker_constants
 

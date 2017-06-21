@@ -4,8 +4,7 @@ from pacman.model.constraints.placer_constraints.\
     placer_radial_placement_from_chip_constraint import \
     PlacerRadialPlacementFromChipConstraint
 
-from spinn_front_end_common.utility_models.live_packet_gather import \
-    LivePacketGather
+from spinn_front_end_common.utility_models import LivePacketGather
 
 
 class TestLiveSpikeRecorder(unittest.TestCase):

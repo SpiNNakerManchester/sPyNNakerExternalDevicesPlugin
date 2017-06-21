@@ -1,7 +1,6 @@
 from pacman.model.graphs.application.application_spinnaker_link_vertex \
     import ApplicationSpiNNakerLinkVertex
-from spinn_front_end_common.abstract_models.impl.\
-    provides_key_to_atom_mapping_impl import \
+from spinn_front_end_common.abstract_models.impl import \
     ProvidesKeyToAtomMappingImpl
 
 

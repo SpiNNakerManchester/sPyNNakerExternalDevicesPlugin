@@ -1,14 +1,8 @@
-from spinn_front_end_common.utility_models.multi_cast_command \
-    import MultiCastCommand
+from spinn_front_end_common.utility_models import MultiCastCommand
 
-from spinnman.connections.udp_packet_connections.udp_eieio_connection \
-    import UDPEIEIOConnection
-from spinnman.messages.eieio.data_messages.eieio_data_message \
-    import EIEIODataMessage
-from spinnman.messages.eieio.data_messages.eieio_key_data_element \
-    import EIEIOKeyDataElement
-from spinnman.messages.eieio.data_messages.eieio_key_payload_data_element \
-    import EIEIOKeyPayloadDataElement
+from spinnman.connections.udp_packet_connections import UDPEIEIOConnection
+from spinnman.messages.eieio.data_messages \
+    import EIEIODataMessage, EIEIOKeyDataElement, EIEIOKeyPayloadDataElement
 
 from threading import Thread
 import traceback
