@@ -1,9 +1,7 @@
-from spinnman.connections.abstract_classes.abstract_listenable import \
-    AbstractListenable
+from spinnman.connections.abstract_classes import AbstractListenable
+from spinnman.connections.abstract_classes import AbstractConnection
 from spinnman.exceptions import SpinnmanIOException
 from spinnman.exceptions import SpinnmanTimeoutException
-from spinnman.connections.abstract_classes.abstract_connection \
-    import AbstractConnection
 
 import platform
 import subprocess
