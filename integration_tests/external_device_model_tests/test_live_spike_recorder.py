@@ -1,7 +1,6 @@
 import unittest
 
-from pacman.model.constraints.placer_constraints.\
-    placer_radial_placement_from_chip_constraint import \
+from pacman.model.constraints.placer_constraints import \
     PlacerRadialPlacementFromChipConstraint
 
 from spinn_front_end_common.utility_models import LivePacketGather

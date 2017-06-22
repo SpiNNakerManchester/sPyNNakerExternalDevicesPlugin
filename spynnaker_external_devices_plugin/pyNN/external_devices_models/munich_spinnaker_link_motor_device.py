@@ -2,21 +2,16 @@
 import logging
 
 from pacman.executor.injection_decorator import inject_items
-from pacman.model.constraints.key_allocator_constraints\
-    .key_allocator_fixed_mask_constraint \
+from pacman.model.constraints.key_allocator_constraints \
     import KeyAllocatorFixedMaskConstraint
-from pacman.model.decorators.overrides import overrides
-from pacman.model.graphs.machine.simple_machine_vertex \
-    import SimpleMachineVertex
-from pacman.model.graphs.application.application_spinnaker_link_vertex \
-    import ApplicationSpiNNakerLinkVertex
-from pacman.model.graphs.application.application_vertex \
-    import ApplicationVertex
-from pacman.model.resources.cpu_cycles_per_tick_resource \
-    import CPUCyclesPerTickResource
-from pacman.model.resources.dtcm_resource import DTCMResource
-from pacman.model.resources.resource_container import ResourceContainer
-from pacman.model.resources.sdram_resource import SDRAMResource
+from pacman.model.decorators import overrides
+from pacman.model.graphs.machine import SimpleMachineVertex
+from pacman.model.graphs.application import ApplicationSpiNNakerLinkVertex
+from pacman.model.graphs.application import ApplicationVertex
+from pacman.model.resources import CPUCyclesPerTickResource
+from pacman.model.resources import DTCMResource
+from pacman.model.resources import ResourceContainer
+from pacman.model.resources import SDRAMResource
 from spinn_front_end_common.abstract_models import\
     AbstractGeneratesDataSpecification, AbstractHasAssociatedBinary
 from spinn_front_end_common.abstract_models\

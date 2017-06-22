@@ -1,5 +1,4 @@
-from pacman.model.graphs.application.application_edge \
-    import ApplicationEdge
+from pacman.model.graphs.application import ApplicationEdge
 from spinnman.messages.eieio import EIEIOType
 from spinn_front_end_common.utilities import globals_variables
 from spynnaker.pyNN.utilities import constants

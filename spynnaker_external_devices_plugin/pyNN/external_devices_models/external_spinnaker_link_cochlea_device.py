@@ -1,5 +1,4 @@
-from pacman.model.graphs.application.application_spinnaker_link_vertex \
-    import ApplicationSpiNNakerLinkVertex
+from pacman.model.graphs.application import ApplicationSpiNNakerLinkVertex
 from spinn_front_end_common.abstract_models.impl import \
     ProvidesKeyToAtomMappingImpl
 

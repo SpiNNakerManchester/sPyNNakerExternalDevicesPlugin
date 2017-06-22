@@ -3,8 +3,7 @@ from six import add_metaclass
 from spinn_utilities.abstract_base import AbstractBase
 
 # pacman imports
-from pacman.model.graphs.application.application_fpga_vertex \
-    import ApplicationFPGAVertex
+from pacman.model.graphs.application import ApplicationFPGAVertex
 from spinn_front_end_common.abstract_models.impl\
     import ProvidesKeyToAtomMappingImpl
 

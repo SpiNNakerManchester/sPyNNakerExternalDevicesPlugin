@@ -4,11 +4,10 @@ from spynnaker_external_devices_plugin.pyNN.external_devices_models\
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
     .abstract_ethernet_controller import AbstractEthernetController
 
-from pacman.model.constraints.key_allocator_constraints.\
-    key_allocator_fixed_key_and_mask_constraint import \
+from pacman.model.constraints.key_allocator_constraints import \
     KeyAllocatorFixedKeyAndMaskConstraint
-from pacman.model.decorators.overrides import overrides
-from pacman.model.routing_info.base_key_and_mask import BaseKeyAndMask
+from pacman.model.decorators import overrides
+from pacman.model.routing_info import BaseKeyAndMask
 
 from spinn_front_end_common.abstract_models import \
     AbstractProvidesOutgoingPartitionConstraints
