@@ -1,14 +1,14 @@
 import math
 import sqlite3 as sqlite
 import threading
-from spinnman.connections.udp_packet_connections.udp_eieio_connection \
+from spinnman.connections.udp_packet_connections \
     import UDPEIEIOConnection
 from time import sleep
 
 from spinnman.messages.eieio.command_messages import DatabaseConfirmation
 from spinnman.messages.eieio.data_messages.specialized_message_types \
-    import EIEIO32BitDataMessage
-from spynnaker7.pyNN.uilities.conf import config
+    import EIEIO32DataMessage
+from spynnaker7.pyNN.utilities.conf import config
 
 
 class HostBasedInjector(object):
@@ -43,9 +43,9 @@ class HostBasedInjector(object):
         self._received_hand_shake_condition.release()
 
     def __init__(self, max_spikes, pop_id):
-        #self._injection_connection = ReverseIPTagConnection(
-        #    remote_host=config.get("Machine", "machineName"),
-        #    remote_port=12345)
+        # self._injection_connection = ReverseIPTagConnection(
+        #     remote_host=config.get("Machine", "machineName"),
+        #     remote_port=12345)
         self._database_connection = UDPEIEIOConnection(
             remote_host=config.get("Machine", "machineName"),
             remote_port=12345, local_host="localhost", local_port=19999)
@@ -83,7 +83,7 @@ class HostBasedInjector(object):
     def _inject_spike(self, spike, key_to_neuron_id_mapping, max_neurons):
         spike_id = spike * math.floor((max_neurons / self._max_spikes))
         key = key_to_neuron_id_mapping[spike_id]
-        message = EIEIO32BitDataMessage()
+        message = EIEIO32DataMessage()
         message.add_key(key)
         print "injecting with key {}\n".format(key)
         self._injection_connection.send_eieio_message(message)
