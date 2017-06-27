@@ -1,8 +1,7 @@
 from pacman.model.decorators import overrides
 from spinn_front_end_common.abstract_models \
     import AbstractProvidesOutgoingPartitionConstraints
-from spinn_front_end_common.utility_models \
-    import ReverseIpTagMultiCastSource
+from spinn_front_end_common.utility_models import ReverseIpTagMultiCastSource
 
 from pacman.model.constraints.key_allocator_constraints \
     import KeyAllocatorContiguousRangeContraint

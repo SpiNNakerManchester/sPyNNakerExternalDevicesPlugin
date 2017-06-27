@@ -1,7 +1,6 @@
 from pacman.model.decorators import overrides
 
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    .abstract_multicast_controllable_device \
     import AbstractMulticastControllableDevice
 
 from six import add_metaclass

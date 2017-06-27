@@ -1,8 +1,7 @@
-from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    .threshold_type_multicast_device_control \
+from spynnaker_external_devices_plugin.pyNN.external_devices_models \
     import ThresholdTypeMulticastDeviceControl
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    .abstract_ethernet_controller import AbstractEthernetController
+    import AbstractEthernetController
 
 from pacman.model.constraints.key_allocator_constraints import \
     KeyAllocatorFixedKeyAndMaskConstraint
@@ -15,15 +14,11 @@ from spinn_front_end_common.utilities.exceptions import ConfigurationException
 from spinn_front_end_common.abstract_models \
     import AbstractVertexWithEdgeToDependentVertices
 
-from spynnaker.pyNN.models.neuron.abstract_population_vertex \
-    import AbstractPopulationVertex
-from spynnaker.pyNN.models.neuron.input_types.input_type_current \
-    import InputTypeCurrent
-from spynnaker.pyNN.models.neuron.neuron_models\
-    .neuron_model_leaky_integrate_and_fire \
+from spynnaker.pyNN.models.neuron import AbstractPopulationVertex
+from spynnaker.pyNN.models.neuron.input_types import InputTypeCurrent
+from spynnaker.pyNN.models.neuron.neuron_models \
     import NeuronModelLeakyIntegrateAndFire
-from spynnaker.pyNN.models.neuron.synapse_types.synapse_type_exponential \
-    import SynapseTypeExponential
+from spynnaker.pyNN.models.neuron.synapse_types import SynapseTypeExponential
 
 import logging
 from collections import OrderedDict

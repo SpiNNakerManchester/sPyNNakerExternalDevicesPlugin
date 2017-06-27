@@ -1,12 +1,10 @@
-from spynnaker.pyNN.models.neuron.abstract_population_vertex import \
-    AbstractPopulationVertex
+from spynnaker.pyNN.models.neuron import AbstractPopulationVertex
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    .push_bot.push_bot_ethernet.push_bot_translator import PushBotTranslator
+    .push_bot.push_bot_ethernet import PushBotTranslator
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    .external_device_lif_control import ExternalDeviceLifControl
+    import ExternalDeviceLifControl
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    .push_bot.push_bot_ethernet.push_bot_wifi_connection \
-    import get_pushbot_wifi_connection
+    .push_bot.push_bot_ethernet import get_pushbot_wifi_connection
 
 
 class PushBotLifEthernet(ExternalDeviceLifControl):

@@ -1,7 +1,6 @@
 from pacman.model.graphs.application import ApplicationSpiNNakerLinkVertex
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_ethernet.push_bot_ethernet_motor_device import \
-    PushBotEthernetMotorDevice
+    .push_bot_ethernet import PushBotEthernetMotorDevice
 
 
 class PushBotSpiNNakerLinkMotorDevice(

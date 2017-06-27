@@ -1,9 +1,8 @@
-from spynnaker_external_devices_plugin.pyNN\
-    .protocols.munich_io_spinnaker_link_protocol \
+from spynnaker_external_devices_plugin.pyNN.protocols \
     import MunichIoSpiNNakerLinkProtocol
 from data_specification.enums import DataType
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .abstract_push_bot_output_device import AbstractPushBotOutputDevice
+    import AbstractPushBotOutputDevice
 
 
 class PushBotLaser(AbstractPushBotOutputDevice):
