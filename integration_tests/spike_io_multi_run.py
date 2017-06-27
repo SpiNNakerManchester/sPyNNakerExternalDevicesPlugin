@@ -7,7 +7,7 @@ from threading import Condition
 
 import spynnaker_external_devices_plugin.pyNN as ExternalDevices
 from spynnaker_external_devices_plugin.pyNN.connections \
-    .spynnaker_live_spikes_connection import SpynnakerLiveSpikesConnection
+    import SpynnakerLiveSpikesConnection
 
 # boolean allowing users to use python or c vis
 using_c_vis = False
