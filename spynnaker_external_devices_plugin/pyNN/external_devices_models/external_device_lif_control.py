@@ -1,7 +1,6 @@
-from spynnaker_external_devices_plugin.pyNN.external_devices_models \
+from .threshold_type_multicast_device_control \
     import ThresholdTypeMulticastDeviceControl
-from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    import AbstractEthernetController
+from .abstract_ethernet_controller import AbstractEthernetController
 
 from pacman.model.constraints.key_allocator_constraints import \
     KeyAllocatorFixedKeyAndMaskConstraint
