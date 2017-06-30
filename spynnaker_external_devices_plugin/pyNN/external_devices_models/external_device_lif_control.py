@@ -81,11 +81,11 @@ class ExternalDeviceLifControl(
             The AbstractMulticastControllableDevice instances to be controlled\
             by the population
         :param create_edges:\
-            True if edges to the devices should be added by this device (set\
-            to False if using the device over Ethernet using a translator)
+            True if edges to the devices should be added by this dev (set\
+            to False if using the dev over Ethernet using a translator)
         :param translator:\
             Translator to be used when used for Ethernet communication.  Must\
-            be provided if the device is to be controlled over Ethernet.
+            be provided if the dev is to be controlled over Ethernet.
         """
 
         # Verify that there are the correct number of neurons
@@ -97,11 +97,9 @@ class ExternalDeviceLifControl(
             raise ConfigurationException("No devices specified")
 
         # Create a partition to key map
-        self._partition_id_to_key = OrderedDict([
-            ("{}".format(device.device_control_partition_id),
-             device.device_control_key)
-            for device in devices
-        ])
+        self._partition_id_to_key = OrderedDict(
+            (str(dev.device_control_partition_id), dev.device_control_key)
+            for dev in devices)
 
         # Create a partition to atom map
         self._partition_id_to_atom = {
@@ -154,11 +152,10 @@ class ExternalDeviceLifControl(
                get_outgoing_partition_constraints)
     def get_outgoing_partition_constraints(self, partition):
         constraints = list()
-        constraints.append(
-            KeyAllocatorFixedKeyAndMaskConstraint(
-                [BaseKeyAndMask(
-                    self._partition_id_to_key[partition.identifier],
-                    self._DEFAULT_COMMAND_MASK)]))
+        constraints.append(KeyAllocatorFixedKeyAndMaskConstraint(
+            [BaseKeyAndMask(
+                self._partition_id_to_key[partition.identifier],
+                self._DEFAULT_COMMAND_MASK)]))
         return constraints
 
     @overrides(AbstractVertexWithEdgeToDependentVertices.dependent_vertices)

@@ -6,12 +6,10 @@ from pacman.model.constraints.key_allocator_constraints \
     import KeyAllocatorFixedMaskConstraint
 from pacman.model.decorators import overrides
 from pacman.model.graphs.machine import SimpleMachineVertex
-from pacman.model.graphs.application import ApplicationSpiNNakerLinkVertex
-from pacman.model.graphs.application import ApplicationVertex
-from pacman.model.resources import CPUCyclesPerTickResource
-from pacman.model.resources import DTCMResource
-from pacman.model.resources import ResourceContainer
-from pacman.model.resources import SDRAMResource
+from pacman.model.graphs.application \
+    import ApplicationSpiNNakerLinkVertex, ApplicationVertex
+from pacman.model.resources import CPUCyclesPerTickResource, DTCMResource
+from pacman.model.resources import ResourceContainer, SDRAMResource
 from spinn_front_end_common.abstract_models import\
     AbstractGeneratesDataSpecification, AbstractHasAssociatedBinary
 from spinn_front_end_common.abstract_models\

@@ -7,7 +7,8 @@ class ExternalCochleaDevice(
         ApplicationSpiNNakerLinkVertex, ProvidesKeyToAtomMappingImpl):
 
     default_parameters = {
-        'board_address': None, 'label': "ExternalCochleaDevice"}
+        'board_address': None,
+        'label': "ExternalCochleaDevice"}
 
     def __init__(
             self, n_neurons,

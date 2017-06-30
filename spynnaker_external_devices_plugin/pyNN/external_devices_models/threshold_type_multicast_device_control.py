@@ -39,7 +39,6 @@ class ThresholdTypeMulticastDeviceControl(AbstractThresholdType):
         return [item.data_type for item in _THRESHOLD_TYPE_MULTICAST]
 
     def get_threshold_parameters(self):
-
         timings = [device.device_control_timesteps_between_sending
                    for device in self._devices]
         max_time = max(timings)

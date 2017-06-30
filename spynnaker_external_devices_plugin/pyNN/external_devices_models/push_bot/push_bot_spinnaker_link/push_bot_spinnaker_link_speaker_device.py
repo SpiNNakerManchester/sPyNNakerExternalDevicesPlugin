@@ -9,9 +9,12 @@ class PushBotSpiNNakerLinkSpeakerDevice(
     """
 
     default_parameters = {
-        'n_neurons': 1, 'label': None, 'board_address': None,
-        'start_active_time': 50, 'start_total_period': 100,
-        'start_frequency': None, 'start_melody': None}
+        'n_neurons': 1, 'label': None,
+        'board_address': None,
+        'start_active_time': 50,
+        'start_total_period': 100,
+        'start_frequency': None,
+        'start_melody': None}
 
     def __init__(
             self, speaker, protocol, spinnaker_link_id,

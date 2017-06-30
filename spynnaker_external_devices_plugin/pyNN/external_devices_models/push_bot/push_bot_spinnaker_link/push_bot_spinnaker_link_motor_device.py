@@ -9,7 +9,9 @@ class PushBotSpiNNakerLinkMotorDevice(
     """
 
     default_parameters = {
-        'n_neurons': 1, 'label': None, 'board_address': None}
+        'n_neurons': 1,
+        'label': None,
+        'board_address': None}
 
     def __init__(
             self, motor, protocol, spinnaker_link_id,

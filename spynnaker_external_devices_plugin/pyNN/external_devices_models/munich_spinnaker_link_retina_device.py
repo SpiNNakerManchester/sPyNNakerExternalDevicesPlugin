@@ -51,7 +51,8 @@ class MunichRetinaDevice(
     RIGHT_RETINA = "RIGHT"
 
     default_parameters = {
-        'label': "MunichRetinaDevice", 'polarity': None,
+        'label': "MunichRetinaDevice",
+        'polarity': None,
         'board_address': None}
 
     def __init__(
@@ -59,7 +60,6 @@ class MunichRetinaDevice(
             label=default_parameters['label'], n_neurons=None,
             polarity=default_parameters['polarity'],
             board_address=default_parameters['board_address']):
-
         if polarity is None:
             polarity = MunichRetinaDevice.MERGED_POLARITY
 
@@ -69,11 +69,9 @@ class MunichRetinaDevice(
             self._fixed_key |= 0x4000
 
         if polarity == MunichRetinaDevice.MERGED_POLARITY:
-
             # There are 128 x 128 retina "pixels" x 2 polarities
             fixed_n_neurons = 128 * 128 * 2
         else:
-
             # There are 128 x 128 retina "pixels"
             fixed_n_neurons = 128 * 128
             self._fixed_mask = 0xFFFFC000
@@ -126,10 +124,9 @@ class MunichRetinaDevice(
             enable_command = self.MANAGEMENT_BIT | self.RIGHT_RETINA_ENABLE
         else:
             enable_command = self.MANAGEMENT_BIT | self.LEFT_RETINA_ENABLE
-        commands.append(
-            MultiCastCommand(
-                key=enable_command, payload=1, repeats=5,
-                delay_between_repeats=1000))
+        commands.append(MultiCastCommand(
+            key=enable_command, payload=1, repeats=5,
+            delay_between_repeats=1000))
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.pause_stop_commands)
@@ -142,10 +139,9 @@ class MunichRetinaDevice(
         else:
             disable_command = self.MANAGEMENT_BIT | self.LEFT_RETINA_DISABLE
 
-        commands.append(
-            MultiCastCommand(
-                key=disable_command, payload=0, repeats=5,
-                delay_between_repeats=1000))
+        commands.append(MultiCastCommand(
+            key=disable_command, payload=0, repeats=5,
+            delay_between_repeats=1000))
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.timed_commands)
