@@ -1,11 +1,11 @@
 from spinnman.connections.udp_packet_connections \
-    import UDPIpAddressesConnection
+    import IPAddressesConnection
 
 from spinnman.messages.eieio.data_messages.specialized_message_types \
     import EIEIO32DataMessage
 from spynnaker7.pyNN.conf import config
 
-udp_connection = UDPIpAddressesConnection(
+udp_connection = IPAddressesConnection(
     remote_host=config.get("Machine", "machineName"), remote_port=12345)
 
 key = 0x70800
