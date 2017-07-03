@@ -2,7 +2,7 @@ import math
 import sqlite3 as sqlite
 import threading
 from spinnman.connections.udp_packet_connections \
-    import UDPEIEIOConnection
+    import EIEIOConnection
 from time import sleep
 
 from spinnman.messages.eieio.command_messages import DatabaseConfirmation
@@ -46,7 +46,7 @@ class HostBasedInjector(object):
         # self._injection_connection = ReverseIPTagConnection(
         #     remote_host=config.get("Machine", "machineName"),
         #     remote_port=12345)
-        self._database_connection = UDPEIEIOConnection(
+        self._database_connection = EIEIOConnection(
             remote_host=config.get("Machine", "machineName"),
             remote_port=12345, local_host="localhost", local_port=19999)
         self._database_connection.register_callback(self._receive_hand_shake)

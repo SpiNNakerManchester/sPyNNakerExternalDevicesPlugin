@@ -1,6 +1,6 @@
 from spinn_front_end_common.utility_models import MultiCastCommand
 
-from spinnman.connections.udp_packet_connections import UDPEIEIOConnection
+from spinnman.connections.udp_packet_connections import EIEIOConnection
 from spinnman.messages.eieio.data_messages \
     import EIEIODataMessage, EIEIOKeyDataElement, EIEIOKeyPayloadDataElement
 
@@ -8,7 +8,7 @@ from threading import Thread
 import traceback
 
 
-class EthernetControlConnection(UDPEIEIOConnection, Thread):
+class EthernetControlConnection(EIEIOConnection, Thread):
     """ A connection that can translate Ethernet control messages received\
         from a Population
     """
@@ -21,7 +21,7 @@ class EthernetControlConnection(UDPEIEIOConnection, Thread):
         :param local_host: The optional host to listen on
         :param local_port: The optional port to listen on
         """
-        UDPEIEIOConnection.__init__(
+        EIEIOConnection.__init__(
             self, local_host=local_host, local_port=local_port)
         Thread.__init__(
             self, name="Ethernet Control Connection on {}:{}".format(
@@ -53,4 +53,4 @@ class EthernetControlConnection(UDPEIEIOConnection, Thread):
         """ Close the connection
         """
         self._running = False
-        UDPEIEIOConnection.close()
+        EIEIOConnection.close()
