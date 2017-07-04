@@ -2,7 +2,7 @@ from spinn_front_end_common.utility_models import MultiCastCommand
 
 from spinnman.connections.udp_packet_connections import EIEIOConnection
 from spinnman.messages.eieio.data_messages \
-    import EIEIODataMessage, EIEIOKeyDataElement, EIEIOKeyPayloadDataElement
+    import EIEIODataMessage, KeyDataElement, KeyPayloadDataElement
 
 from threading import Thread
 import traceback
@@ -38,10 +38,10 @@ class EthernetControlConnection(EIEIOConnection, Thread):
                 if isinstance(eieio_message, EIEIODataMessage):
                     while eieio_message.is_next_element:
                         element = eieio_message.next_element
-                        if isinstance(element, EIEIOKeyDataElement):
+                        if isinstance(element, KeyDataElement):
                             self._translator.translate_control_packet(
                                 MultiCastCommand(element.key))
-                        elif isinstance(element, EIEIOKeyPayloadDataElement):
+                        elif isinstance(element, KeyPayloadDataElement):
                             self._translator.translate_control_packet(
                                 MultiCastCommand(element.key, element.payload))
 
