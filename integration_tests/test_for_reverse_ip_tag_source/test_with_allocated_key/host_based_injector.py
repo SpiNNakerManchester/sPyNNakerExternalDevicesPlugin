@@ -1,14 +1,18 @@
 import math
 import sqlite3 as sqlite
 import threading
-from spinnman.connections.udp_packet_connections \
-    import EIEIOConnection
+from spinnman.messages.eieio.eieio_type import EIEIOType
+from spinnman.connections.udp_packet_connections import EIEIOConnection
 from time import sleep
 
 from spinnman.messages.eieio.command_messages import DatabaseConfirmation
-from spinnman.messages.eieio.data_messages.specialized_message_types \
-    import EIEIO32DataMessage
-from spynnaker7.pyNN.utilities.conf import config
+from spinnman.messages.eieio.data_messages import EIEIODataMessage
+from spynnaker.pyNN.abstract_spinnaker_common import AbstractSpiNNakerCommon
+from spinn_utilities import conf_loader
+import spynnaker.pyNN
+
+config = conf_loader.load_config(
+    spynnaker.pyNN, AbstractSpiNNakerCommon.CONFIG_FILE_NAME)
 
 
 class HostBasedInjector(object):
@@ -83,7 +87,7 @@ class HostBasedInjector(object):
     def _inject_spike(self, spike, key_to_neuron_id_mapping, max_neurons):
         spike_id = spike * math.floor((max_neurons / self._max_spikes))
         key = key_to_neuron_id_mapping[spike_id]
-        message = EIEIO32DataMessage()
+        message = EIEIODataMessage.create(EIEIOType.KEY_32_BIT)
         message.add_key(key)
         print "injecting with key {}\n".format(key)
         self._injection_connection.send_eieio_message(message)
