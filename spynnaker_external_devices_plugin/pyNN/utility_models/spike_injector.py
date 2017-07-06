@@ -4,7 +4,7 @@ from spinn_front_end_common.abstract_models \
 from spinn_front_end_common.utility_models import ReverseIpTagMultiCastSource
 
 from pacman.model.constraints.key_allocator_constraints \
-    import KeyAllocatorContiguousRangeContraint
+    import ContiguousKeyRangeContraint
 
 
 class SpikeInjector(ReverseIpTagMultiCastSource,
@@ -32,5 +32,5 @@ class SpikeInjector(ReverseIpTagMultiCastSource,
     def get_outgoing_partition_constraints(self, partition):
         constraints = ReverseIpTagMultiCastSource\
             .get_outgoing_partition_constraints(self, partition)
-        constraints.append(KeyAllocatorContiguousRangeContraint())
+        constraints.append(ContiguousKeyRangeContraint())
         return constraints

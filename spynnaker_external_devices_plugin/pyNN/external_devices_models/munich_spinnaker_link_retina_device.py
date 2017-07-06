@@ -1,6 +1,6 @@
 # front end common imports
 from pacman.model.constraints.key_allocator_constraints \
-    import KeyAllocatorFixedKeyAndMaskConstraint
+    import FixedKeyAndMaskConstraint
 from pacman.model.decorators import overrides
 from pacman.model.graphs.application import ApplicationSpiNNakerLinkVertex
 from pacman.model.routing_info import BaseKeyAndMask
@@ -96,7 +96,7 @@ class MunichRetinaDevice(
                 fixed_n_neurons)
 
     def get_outgoing_partition_constraints(self, partition):
-        return [KeyAllocatorFixedKeyAndMaskConstraint(
+        return [FixedKeyAndMaskConstraint(
             [BaseKeyAndMask(self._fixed_key, self._fixed_mask)])]
 
     @property

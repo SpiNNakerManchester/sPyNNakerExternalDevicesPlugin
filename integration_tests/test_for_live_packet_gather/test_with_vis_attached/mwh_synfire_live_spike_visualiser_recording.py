@@ -64,8 +64,8 @@ projections.append(p.Projection(populations[1], populations[0],
                                 p.FromListConnector(injectionConnection)))
 
 q.activate_live_output_for(populations[0])
-populations[0].set_constraint(p.PlacerChipAndCoreConstraint(0, 0, 4))
-populations[1].set_constraint(p.PlacerChipAndCoreConstraint(0, 0, 5))
+populations[0].set_constraint(p.ChipAndCoreConstraint(0, 0, 4))
+populations[1].set_constraint(p.ChipAndCoreConstraint(0, 0, 5))
 
 run_time = 100
 print "Running for {} ms".format(run_time)

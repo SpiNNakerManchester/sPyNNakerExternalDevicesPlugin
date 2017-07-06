@@ -3,7 +3,7 @@ from .threshold_type_multicast_device_control \
 from .abstract_ethernet_controller import AbstractEthernetController
 
 from pacman.model.constraints.key_allocator_constraints import \
-    KeyAllocatorFixedKeyAndMaskConstraint
+    FixedKeyAndMaskConstraint
 from pacman.model.decorators import overrides
 from pacman.model.routing_info import BaseKeyAndMask
 
@@ -152,7 +152,7 @@ class ExternalDeviceLifControl(
                get_outgoing_partition_constraints)
     def get_outgoing_partition_constraints(self, partition):
         constraints = list()
-        constraints.append(KeyAllocatorFixedKeyAndMaskConstraint(
+        constraints.append(FixedKeyAndMaskConstraint(
             [BaseKeyAndMask(
                 self._partition_id_to_key[partition.identifier],
                 self._DEFAULT_COMMAND_MASK)]))

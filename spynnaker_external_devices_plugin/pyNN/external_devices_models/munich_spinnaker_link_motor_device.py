@@ -3,7 +3,7 @@ import logging
 
 from pacman.executor.injection_decorator import inject_items
 from pacman.model.constraints.key_allocator_constraints \
-    import KeyAllocatorFixedMaskConstraint
+    import FixedMaskConstraint
 from pacman.model.decorators import overrides
 from pacman.model.graphs.machine import SimpleMachineVertex
 from pacman.model.graphs.application \
@@ -113,7 +113,7 @@ class MunichMotorDevice(
         # Any key to the device will work, as long as it doesn't set the
         # management bit.  We also need enough for the configuration bits
         # and the management bit anyway
-        return list([KeyAllocatorFixedMaskConstraint(0xFFFFF800)])
+        return list([FixedMaskConstraint(0xFFFFF800)])
 
     @inject_items({
         "graph_mapper": "MemoryGraphMapper",
