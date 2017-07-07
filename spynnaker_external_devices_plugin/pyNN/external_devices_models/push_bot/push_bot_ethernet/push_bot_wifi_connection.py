@@ -91,7 +91,7 @@ class PushBotWIFIConnection(Connection, Listenable):
 
     def is_connected(self):
         """ See\
-            :py:meth:`spinnman.connections.Connection.abstract_connection.is_connected`
+            :py:meth:`spinnman.connections.Connection.is_connected`
         """
 
         # check if machine is active and on the network
@@ -192,7 +192,7 @@ class PushBotWIFIConnection(Connection, Listenable):
 
     def close(self):
         """ See\
-            :py:meth:`spinnman.connections.abstract_connection.Connection.close`
+            :py:meth:`spinnman.connections.Connection.close`
         """
         try:
             self._socket.shutdown(socket.SHUT_WR)
