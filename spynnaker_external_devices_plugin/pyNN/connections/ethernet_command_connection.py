@@ -1,8 +1,6 @@
-from spinn_front_end_common.abstract_models\
-    .abstract_send_me_multicast_commands_vertex \
+from spinn_front_end_common.abstract_models \
     import AbstractSendMeMulticastCommandsVertex
-from spinn_front_end_common.utilities.database.database_connection \
-    import DatabaseConnection
+from spinn_front_end_common.utilities.database import DatabaseConnection
 
 
 class EthernetCommandConnection(DatabaseConnection):

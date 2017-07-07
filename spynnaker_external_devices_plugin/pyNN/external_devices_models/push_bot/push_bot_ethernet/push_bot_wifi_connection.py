@@ -1,9 +1,7 @@
-from spinnman.connections.abstract_classes.abstract_listenable import \
-    AbstractListenable
+from spinnman.connections.abstract_classes import Listenable
+from spinnman.connections.abstract_classes import Connection
 from spinnman.exceptions import SpinnmanIOException
 from spinnman.exceptions import SpinnmanTimeoutException
-from spinnman.connections.abstract_classes.abstract_connection \
-    import AbstractConnection
 
 import platform
 import subprocess
@@ -31,7 +29,7 @@ def get_pushbot_wifi_connection(remote_host, remote_port=56000):
     return _existing_connections[(remote_host, remote_port)]
 
 
-class PushBotWIFIConnection(AbstractConnection, AbstractListenable):
+class PushBotWIFIConnection(Connection, Listenable):
     """ A connection to a pushbot via WiFi
     """
 
@@ -93,7 +91,7 @@ class PushBotWIFIConnection(AbstractConnection, AbstractListenable):
 
     def is_connected(self):
         """ See\
-            :py:meth:`spinnman.connections.AbstractConnection.abstract_connection.is_connected`
+            :py:meth:`spinnman.connections.Connection.is_connected`
         """
 
         # check if machine is active and on the network
@@ -194,7 +192,7 @@ class PushBotWIFIConnection(AbstractConnection, AbstractListenable):
 
     def close(self):
         """ See\
-            :py:meth:`spinnman.connections.abstract_connection.AbstractConnection.close`
+            :py:meth:`spinnman.connections.Connection.close`
         """
         try:
             self._socket.shutdown(socket.SHUT_WR)

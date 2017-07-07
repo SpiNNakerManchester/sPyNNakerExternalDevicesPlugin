@@ -1,7 +1,5 @@
-from pacman.model.graphs.application.application_spinnaker_link_vertex \
-    import ApplicationSpiNNakerLinkVertex
-from spinn_front_end_common.abstract_models.impl.\
-    provides_key_to_atom_mapping_impl import \
+from pacman.model.graphs.application import ApplicationSpiNNakerLinkVertex
+from spinn_front_end_common.abstract_models.impl import \
     ProvidesKeyToAtomMappingImpl
 
 
@@ -9,7 +7,8 @@ class ExternalCochleaDevice(
         ApplicationSpiNNakerLinkVertex, ProvidesKeyToAtomMappingImpl):
 
     default_parameters = {
-        'board_address': None, 'label': "ExternalCochleaDevice"}
+        'board_address': None,
+        'label': "ExternalCochleaDevice"}
 
     def __init__(
             self, n_neurons,

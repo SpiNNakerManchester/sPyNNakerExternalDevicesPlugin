@@ -1,12 +1,11 @@
 # pynn imports
 
 from pacman.executor.injection_decorator import inject, supports_injection
-from pacman.model.graphs.application.application_spinnaker_link_vertex \
-    import ApplicationSpiNNakerLinkVertex
-from spynnaker.pyNN.utilities import constants
+from pacman.model.graphs.application import ApplicationSpiNNakerLinkVertex
+from spynnaker.pyNN.utilities.constants import SPIKE_PARTITION_ID
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .abstract_push_bot_retina_device import AbstractPushBotRetinaDevice
-from pacman.model.decorators.overrides import overrides
+    import AbstractPushBotRetinaDevice
+from pacman.model.decorators import overrides
 
 
 @supports_injection
@@ -46,7 +45,6 @@ class PushBotSpiNNakerLinkRetinaDevice(
     @property
     @overrides(AbstractPushBotRetinaDevice.start_resume_commands)
     def start_resume_commands(self):
-
         # Note this is not undefined, it is just a property so, it can't
         # be statically analysed
         commands = AbstractPushBotRetinaDevice\
@@ -56,7 +54,6 @@ class PushBotSpiNNakerLinkRetinaDevice(
         new_commands = list()
         for command in commands:
             if command.key == self._protocol.disable_retina_key:
-
                 # This has to be stored so that the payload can be updated
                 self._new_key_command = self._protocol.set_retina_key(0)
                 new_commands.append(self._new_key_command)
@@ -66,5 +63,5 @@ class PushBotSpiNNakerLinkRetinaDevice(
     def _update_new_key_payload(self):
         vertex = list(self._graph_mapper.get_machine_vertices(self))[0]
         key = self._routing_infos.get_first_key_from_pre_vertex(
-            vertex, constants.SPIKE_PARTITION_ID)
+            vertex, SPIKE_PARTITION_ID)
         self._new_key_command.payload = key

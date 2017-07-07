@@ -1,22 +1,17 @@
 import logging
 
-from pacman.model.constraints.key_allocator_constraints\
-    .key_allocator_fixed_key_and_mask_constraint \
-    import KeyAllocatorFixedKeyAndMaskConstraint
-from pacman.model.decorators.overrides import overrides
-from pacman.model.graphs.application.application_spinnaker_link_vertex \
-    import ApplicationSpiNNakerLinkVertex
-from pacman.model.routing_info.base_key_and_mask import BaseKeyAndMask
-from spinn_front_end_common.abstract_models.\
-    abstract_provides_outgoing_partition_constraints import \
+from pacman.model.constraints.key_allocator_constraints \
+    import FixedKeyAndMaskConstraint
+from pacman.model.decorators import overrides
+from pacman.model.graphs.application import ApplicationSpiNNakerLinkVertex
+from pacman.model.routing_info import BaseKeyAndMask
+from spinn_front_end_common.abstract_models import \
     AbstractProvidesOutgoingPartitionConstraints
-from spinn_front_end_common.abstract_models.impl\
-    .provides_key_to_atom_mapping_impl import ProvidesKeyToAtomMappingImpl
-from spinn_front_end_common.abstract_models\
-    .abstract_send_me_multicast_commands_vertex \
+from spinn_front_end_common.abstract_models \
     import AbstractSendMeMulticastCommandsVertex
-from spinn_front_end_common.utility_models.multi_cast_command import \
-    MultiCastCommand
+from spinn_front_end_common.abstract_models.impl\
+    import ProvidesKeyToAtomMappingImpl
+from spinn_front_end_common.utility_models import MultiCastCommand
 from spynnaker.pyNN.exceptions import SpynnakerException
 
 logger = logging.getLogger(__name__)
@@ -157,20 +152,16 @@ class ExternalFPGARetinaDevice(
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.start_resume_commands)
     def start_resume_commands(self):
-        return [
-            MultiCastCommand(
-                key=0x0000FFFF, payload=1, repeat=5,
-                delay_between_repeats=100)
-        ]
+        return [MultiCastCommand(
+            key=0x0000FFFF, payload=1, repeat=5,
+            delay_between_repeats=100)]
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.pause_stop_commands)
     def pause_stop_commands(self):
-        return [
-            MultiCastCommand(
-                key=0x0000FFFE, payload=0, repeat=5,
-                delay_between_repeats=100)
-        ]
+        return [MultiCastCommand(
+            key=0x0000FFFE, payload=0, repeat=5,
+            delay_between_repeats=100)]
 
     @property
     @overrides(AbstractSendMeMulticastCommandsVertex.timed_commands)
@@ -178,5 +169,5 @@ class ExternalFPGARetinaDevice(
         return []
 
     def get_outgoing_partition_constraints(self, partition):
-        return [KeyAllocatorFixedKeyAndMaskConstraint(
+        return [FixedKeyAndMaskConstraint(
             [BaseKeyAndMask(self._fixed_key, self._fixed_mask)])]

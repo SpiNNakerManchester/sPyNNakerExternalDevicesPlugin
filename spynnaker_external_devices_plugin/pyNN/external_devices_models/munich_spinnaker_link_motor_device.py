@@ -2,39 +2,25 @@
 import logging
 
 from pacman.executor.injection_decorator import inject_items
-from pacman.model.constraints.key_allocator_constraints\
-    .key_allocator_fixed_mask_constraint \
-    import KeyAllocatorFixedMaskConstraint
-from pacman.model.decorators.overrides import overrides
-from pacman.model.graphs.machine.simple_machine_vertex \
-    import SimpleMachineVertex
-from pacman.model.graphs.application.application_spinnaker_link_vertex \
-    import ApplicationSpiNNakerLinkVertex
-from pacman.model.graphs.application.application_vertex \
-    import ApplicationVertex
-from pacman.model.resources.cpu_cycles_per_tick_resource \
-    import CPUCyclesPerTickResource
-from pacman.model.resources.dtcm_resource import DTCMResource
-from pacman.model.resources.resource_container import ResourceContainer
-from pacman.model.resources.sdram_resource import SDRAMResource
-from spinn_front_end_common.abstract_models.\
-    abstract_generates_data_specification import\
-    AbstractGeneratesDataSpecification
+from pacman.model.constraints.key_allocator_constraints \
+    import FixedMaskConstraint
+from pacman.model.decorators import overrides
+from pacman.model.graphs.machine import SimpleMachineVertex
+from pacman.model.graphs.application \
+    import ApplicationSpiNNakerLinkVertex, ApplicationVertex
+from pacman.model.resources import CPUCyclesPerTickResource, DTCMResource
+from pacman.model.resources import ResourceContainer, SDRAMResource
+from spinn_front_end_common.abstract_models import\
+    AbstractGeneratesDataSpecification, AbstractHasAssociatedBinary
 from spinn_front_end_common.abstract_models\
-    .abstract_has_associated_binary import AbstractHasAssociatedBinary
-from spinn_front_end_common.abstract_models\
-    .abstract_provides_outgoing_partition_constraints\
     import AbstractProvidesOutgoingPartitionConstraints
-from spinn_front_end_common.abstract_models.impl.\
-    provides_key_to_atom_mapping_impl import \
+from spinn_front_end_common.abstract_models.impl import \
     ProvidesKeyToAtomMappingImpl
-from spinn_front_end_common.utilities.utility_objs.executable_start_type \
-    import ExecutableStartType
-from spinn_front_end_common.abstract_models\
-    .abstract_vertex_with_dependent_vertices \
+from spinn_front_end_common.utilities.utility_objs import ExecutableStartType
+from spinn_front_end_common.abstract_models \
     import AbstractVertexWithEdgeToDependentVertices
 from spinn_front_end_common.interface.simulation import simulation_utilities
-from spinn_front_end_common.utilities import constants
+from spinn_front_end_common.utilities.constants import SYSTEM_BYTES_REQUIREMENT
 from spynnaker.pyNN.exceptions import SpynnakerException
 
 logger = logging.getLogger(__name__)
@@ -117,7 +103,7 @@ class MunichMotorDevice(
     def get_resources_used_by_atoms(self, vertex_slice):
         return ResourceContainer(
             sdram=SDRAMResource(
-                constants.SYSTEM_BYTES_REQUIREMENT + self.PARAMS_SIZE),
+                SYSTEM_BYTES_REQUIREMENT + self.PARAMS_SIZE),
             dtcm=DTCMResource(0), cpu_cycles=CPUCyclesPerTickResource(0))
 
     @overrides(AbstractProvidesOutgoingPartitionConstraints.
@@ -127,7 +113,7 @@ class MunichMotorDevice(
         # Any key to the device will work, as long as it doesn't set the
         # management bit.  We also need enough for the configuration bits
         # and the management bit anyway
-        return list([KeyAllocatorFixedMaskConstraint(0xFFFFF800)])
+        return list([FixedMaskConstraint(0xFFFFF800)])
 
     @inject_items({
         "graph_mapper": "MemoryGraphMapper",
@@ -216,7 +202,7 @@ class MunichMotorDevice(
         # Reserve memory:
         spec.reserve_memory_region(
             region=self.SYSTEM_REGION,
-            size=constants.SYSTEM_BYTES_REQUIREMENT,
+            size=SYSTEM_BYTES_REQUIREMENT,
             label='setup')
 
         spec.reserve_memory_region(region=self.PARAMS_REGION,

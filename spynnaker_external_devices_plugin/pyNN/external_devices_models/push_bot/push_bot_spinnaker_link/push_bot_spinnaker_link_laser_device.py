@@ -1,10 +1,8 @@
 
 # pynn imports
-from pacman.model.graphs.application.application_spinnaker_link_vertex \
-    import ApplicationSpiNNakerLinkVertex
+from pacman.model.graphs.application import ApplicationSpiNNakerLinkVertex
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_ethernet.push_bot_ethernet_laser_device import \
-    PushBotEthernetLaserDevice
+    .push_bot_ethernet import PushBotEthernetLaserDevice
 
 
 class PushBotSpiNNakerLinkLaserDevice(

@@ -1,9 +1,9 @@
-from pacman.model.decorators.overrides import overrides
+from pacman.model.decorators import overrides
 
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    .abstract_ethernet_translator import AbstractEthernetTranslator
+    import AbstractEthernetTranslator
 from spynnaker_external_devices_plugin.pyNN.protocols\
-    .munich_io_ethernet_protocol import MunichIoEthernetProtocol
+    import MunichIoEthernetProtocol
 from spynnaker_external_devices_plugin.pyNN.protocols \
     import munich_io_spinnaker_link_protocol
 

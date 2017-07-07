@@ -1,32 +1,23 @@
-from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    .threshold_type_multicast_device_control \
+from .threshold_type_multicast_device_control \
     import ThresholdTypeMulticastDeviceControl
-from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    .abstract_ethernet_controller import AbstractEthernetController
+from .abstract_ethernet_controller import AbstractEthernetController
 
-from pacman.model.constraints.key_allocator_constraints.\
-    key_allocator_fixed_key_and_mask_constraint import \
-    KeyAllocatorFixedKeyAndMaskConstraint
-from pacman.model.decorators.overrides import overrides
-from pacman.model.routing_info.base_key_and_mask import BaseKeyAndMask
+from pacman.model.constraints.key_allocator_constraints import \
+    FixedKeyAndMaskConstraint
+from pacman.model.decorators import overrides
+from pacman.model.routing_info import BaseKeyAndMask
 
-from spinn_front_end_common.abstract_models.\
-    abstract_provides_outgoing_partition_constraints import \
+from spinn_front_end_common.abstract_models import \
     AbstractProvidesOutgoingPartitionConstraints
-from spinn_front_end_common.utilities import exceptions
-from spinn_front_end_common.abstract_models\
-    .abstract_vertex_with_dependent_vertices \
+from spinn_front_end_common.utilities.exceptions import ConfigurationException
+from spinn_front_end_common.abstract_models \
     import AbstractVertexWithEdgeToDependentVertices
 
-from spynnaker.pyNN.models.neuron.abstract_population_vertex \
-    import AbstractPopulationVertex
-from spynnaker.pyNN.models.neuron.input_types.input_type_current \
-    import InputTypeCurrent
-from spynnaker.pyNN.models.neuron.neuron_models\
-    .neuron_model_leaky_integrate_and_fire \
+from spynnaker.pyNN.models.neuron import AbstractPopulationVertex
+from spynnaker.pyNN.models.neuron.input_types import InputTypeCurrent
+from spynnaker.pyNN.models.neuron.neuron_models \
     import NeuronModelLeakyIntegrateAndFire
-from spynnaker.pyNN.models.neuron.synapse_types.synapse_type_exponential \
-    import SynapseTypeExponential
+from spynnaker.pyNN.models.neuron.synapse_types import SynapseTypeExponential
 
 import logging
 from collections import OrderedDict
@@ -90,27 +81,25 @@ class ExternalDeviceLifControl(
             The AbstractMulticastControllableDevice instances to be controlled\
             by the population
         :param create_edges:\
-            True if edges to the devices should be added by this device (set\
-            to False if using the device over Ethernet using a translator)
+            True if edges to the devices should be added by this dev (set\
+            to False if using the dev over Ethernet using a translator)
         :param translator:\
             Translator to be used when used for Ethernet communication.  Must\
-            be provided if the device is to be controlled over Ethernet.
+            be provided if the dev is to be controlled over Ethernet.
         """
 
         # Verify that there are the correct number of neurons
         if n_neurons != len(devices):
-            raise exceptions.ConfigurationException(
+            raise ConfigurationException(
                 "The number of neurons must match the number of devices")
 
         if len(devices) == 0:
-            raise exceptions.ConfigurationException("No devices specified")
+            raise ConfigurationException("No devices specified")
 
         # Create a partition to key map
-        self._partition_id_to_key = OrderedDict([
-            ("{}".format(device.device_control_partition_id),
-             device.device_control_key)
-            for device in devices
-        ])
+        self._partition_id_to_key = OrderedDict(
+            (str(dev.device_control_partition_id), dev.device_control_key)
+            for dev in devices)
 
         # Create a partition to atom map
         self._partition_id_to_atom = {
@@ -163,11 +152,10 @@ class ExternalDeviceLifControl(
                get_outgoing_partition_constraints)
     def get_outgoing_partition_constraints(self, partition):
         constraints = list()
-        constraints.append(
-            KeyAllocatorFixedKeyAndMaskConstraint(
-                [BaseKeyAndMask(
-                    self._partition_id_to_key[partition.identifier],
-                    self._DEFAULT_COMMAND_MASK)]))
+        constraints.append(FixedKeyAndMaskConstraint(
+            [BaseKeyAndMask(
+                self._partition_id_to_key[partition.identifier],
+                self._DEFAULT_COMMAND_MASK)]))
         return constraints
 
     @overrides(AbstractVertexWithEdgeToDependentVertices.dependent_vertices)
@@ -186,7 +174,7 @@ class ExternalDeviceLifControl(
     @overrides(AbstractEthernetController.get_message_translator)
     def get_message_translator(self):
         if self._message_translator is None:
-            raise exceptions.ConfigurationException(
+            raise ConfigurationException(
                 "This population was not given a translator, and so cannot be"
                 "used for Ethernet communication.  Please provide a "
                 "translator for the population.")

@@ -1,8 +1,6 @@
-from pacman.model.graphs.application.application_spinnaker_link_vertex \
-    import ApplicationSpiNNakerLinkVertex
+from pacman.model.graphs.application import ApplicationSpiNNakerLinkVertex
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_ethernet.push_bot_ethernet_motor_device import \
-    PushBotEthernetMotorDevice
+    .push_bot_ethernet import PushBotEthernetMotorDevice
 
 
 class PushBotSpiNNakerLinkMotorDevice(
@@ -11,7 +9,9 @@ class PushBotSpiNNakerLinkMotorDevice(
     """
 
     default_parameters = {
-        'n_neurons': 1, 'label': None, 'board_address': None}
+        'n_neurons': 1,
+        'label': None,
+        'board_address': None}
 
     def __init__(
             self, motor, protocol, spinnaker_link_id,

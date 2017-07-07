@@ -1,8 +1,6 @@
-from spynnaker.pyNN.models.neural_properties.neural_parameter \
-    import NeuronParameter
-from data_specification.enums.data_type import DataType
-from spynnaker.pyNN.models.neuron.threshold_types.abstract_threshold_type \
-    import AbstractThresholdType
+from data_specification.enums import DataType
+from spynnaker.pyNN.models.neural_properties import NeuronParameter
+from spynnaker.pyNN.models.neuron.threshold_types import AbstractThresholdType
 from enum import Enum
 
 
@@ -41,7 +39,6 @@ class ThresholdTypeMulticastDeviceControl(AbstractThresholdType):
         return [item.data_type for item in _THRESHOLD_TYPE_MULTICAST]
 
     def get_threshold_parameters(self):
-
         timings = [device.device_control_timesteps_between_sending
                    for device in self._devices]
         max_time = max(timings)

@@ -1,17 +1,18 @@
 import math
 import sqlite3 as sqlite
 import threading
-from spinnman.connections.udp_packet_connections.eieio_command_connection \
-    import EieioCommandConnection
-from spinnman.connections.udp_packet_connections.reverse_iptag_connection \
-    import ReverseIPTagConnection
+from spinnman.messages.eieio.eieio_type import EIEIOType
+from spinnman.connections.udp_packet_connections import EIEIOConnection
 from time import sleep
 
-from spinnman.messages.eieio.command_messages.database_confirmation import \
-    DatabaseConfirmation
-from spinnman.messages.eieio.data_messages.eieio_32bit.\
-    eieio_32bit_data_message import EIEIO32BitDataMessage
-from spynnaker7 import config
+from spinnman.messages.eieio.command_messages import DatabaseConfirmation
+from spinnman.messages.eieio.data_messages import EIEIODataMessage
+from spynnaker.pyNN.abstract_spinnaker_common import AbstractSpiNNakerCommon
+from spinn_utilities import conf_loader
+import spynnaker.pyNN
+
+config = conf_loader.load_config(
+    spynnaker.pyNN, AbstractSpiNNakerCommon.CONFIG_FILE_NAME)
 
 
 class HostBasedInjector(object):
@@ -46,13 +47,12 @@ class HostBasedInjector(object):
         self._received_hand_shake_condition.release()
 
     def __init__(self, max_spikes, pop_id):
-        self._injection_connection = \
-            ReverseIPTagConnection(remote_host=config.get("Machine",
-                                                          "machineName"),
-                                   remote_port=12345)
-        self._database_connection = \
-            EieioCommandConnection(port_to_notify=19998, listen_port=19999,
-                                   host_to_notify="localhost")
+        # self._injection_connection = ReverseIPTagConnection(
+        #     remote_host=config.get("Machine", "machineName"),
+        #     remote_port=12345)
+        self._database_connection = EIEIOConnection(
+            remote_host=config.get("Machine", "machineName"),
+            remote_port=12345, local_host="localhost", local_port=19999)
         self._database_connection.register_callback(self._receive_hand_shake)
 
         self._received_hand_shake_condition = threading.Condition()
@@ -87,7 +87,7 @@ class HostBasedInjector(object):
     def _inject_spike(self, spike, key_to_neuron_id_mapping, max_neurons):
         spike_id = spike * math.floor((max_neurons / self._max_spikes))
         key = key_to_neuron_id_mapping[spike_id]
-        message = EIEIO32BitDataMessage()
+        message = EIEIODataMessage.create(EIEIOType.KEY_32_BIT)
         message.add_key(key)
         print "injecting with key {}\n".format(key)
         self._injection_connection.send_eieio_message(message)

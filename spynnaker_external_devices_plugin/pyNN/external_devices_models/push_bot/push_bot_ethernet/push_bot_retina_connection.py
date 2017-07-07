@@ -3,12 +3,11 @@ from threading import RLock
 
 import numpy
 
-from spinnman.connections.connection_listener import ConnectionListener
+from spinnman.connections import ConnectionListener
 from spynnaker_external_devices_plugin.pyNN.connections \
-    .spynnaker_live_spikes_connection import SpynnakerLiveSpikesConnection
+    import SpynnakerLiveSpikesConnection
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot.\
-    push_bot_parameters.push_bot_retina_resolution import \
-    PushBotRetinaResolution
+    push_bot_parameters import PushBotRetinaResolution
 
 logger = logging.getLogger(__name__)
 

@@ -1,17 +1,12 @@
-from pacman.model.decorators.overrides import overrides
+from pacman.model.decorators import overrides
 
 from spynnaker_external_devices_plugin.pyNN.external_devices_models\
-    .abstract_ethernet_sensor import AbstractEthernetSensor
+    import AbstractEthernetSensor
+from .push_bot_translator import PushBotTranslator
+from .push_bot_wifi_connection import get_pushbot_wifi_connection
+from .push_bot_retina_connection import PushBotRetinaConnection
 from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_ethernet.push_bot_translator import PushBotTranslator
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_ethernet.push_bot_wifi_connection \
-    import get_pushbot_wifi_connection
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .push_bot_ethernet.push_bot_retina_connection \
-    import PushBotRetinaConnection
-from spynnaker_external_devices_plugin.pyNN.external_devices_models.push_bot\
-    .abstract_push_bot_retina_device import AbstractPushBotRetinaDevice
+    import AbstractPushBotRetinaDevice
 
 
 class PushBotEthernetRetinaDevice(

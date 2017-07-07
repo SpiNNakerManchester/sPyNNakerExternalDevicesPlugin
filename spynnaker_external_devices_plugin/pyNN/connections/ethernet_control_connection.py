@@ -1,20 +1,14 @@
-from spinn_front_end_common.utility_models.multi_cast_command \
-    import MultiCastCommand
+from spinn_front_end_common.utility_models import MultiCastCommand
 
-from spinnman.connections.udp_packet_connections.udp_eieio_connection \
-    import UDPEIEIOConnection
-from spinnman.messages.eieio.data_messages.eieio_data_message \
-    import EIEIODataMessage
-from spinnman.messages.eieio.data_messages.eieio_key_data_element \
-    import EIEIOKeyDataElement
-from spinnman.messages.eieio.data_messages.eieio_key_payload_data_element \
-    import EIEIOKeyPayloadDataElement
+from spinnman.connections.udp_packet_connections import EIEIOConnection
+from spinnman.messages.eieio.data_messages \
+    import EIEIODataMessage, KeyDataElement, KeyPayloadDataElement
 
 from threading import Thread
 import traceback
 
 
-class EthernetControlConnection(UDPEIEIOConnection, Thread):
+class EthernetControlConnection(EIEIOConnection, Thread):
     """ A connection that can translate Ethernet control messages received\
         from a Population
     """
@@ -27,7 +21,7 @@ class EthernetControlConnection(UDPEIEIOConnection, Thread):
         :param local_host: The optional host to listen on
         :param local_port: The optional port to listen on
         """
-        UDPEIEIOConnection.__init__(
+        EIEIOConnection.__init__(
             self, local_host=local_host, local_port=local_port)
         Thread.__init__(
             self, name="Ethernet Control Connection on {}:{}".format(
@@ -44,10 +38,10 @@ class EthernetControlConnection(UDPEIEIOConnection, Thread):
                 if isinstance(eieio_message, EIEIODataMessage):
                     while eieio_message.is_next_element:
                         element = eieio_message.next_element
-                        if isinstance(element, EIEIOKeyDataElement):
+                        if isinstance(element, KeyDataElement):
                             self._translator.translate_control_packet(
                                 MultiCastCommand(element.key))
-                        elif isinstance(element, EIEIOKeyPayloadDataElement):
+                        elif isinstance(element, KeyPayloadDataElement):
                             self._translator.translate_control_packet(
                                 MultiCastCommand(element.key, element.payload))
 
@@ -59,4 +53,4 @@ class EthernetControlConnection(UDPEIEIOConnection, Thread):
         """ Close the connection
         """
         self._running = False
-        UDPEIEIOConnection.close()
+        EIEIOConnection.close()
