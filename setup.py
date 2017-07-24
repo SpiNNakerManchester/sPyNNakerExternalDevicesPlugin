@@ -35,7 +35,5 @@ setup(
     url=url,
     packages=packages,
     package_data=package_data,
-    # Same as pynn_0.8 branch
-    # This need changing back to master version+? before/when pushing to master
     install_requires=['sPyNNaker >= 1!4.0.0a5, < 1!5.0.0']
 )
